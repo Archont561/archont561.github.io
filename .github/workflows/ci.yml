@@ -1,0 +1,82 @@
+# Quality gate: biome, typecheck, tests, actionlint, convco.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # The generated relock workflow dispatches CI to validate a repaired lock.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, typecheck, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # convco checks the full base-to-head PR range, not just the merge commit.
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: prefix-dev/setup-pixi@9936258fee697aff89b3fed6ca1f80a382ef694e # v0.11.3
+        with:
+          pixi-version: v0.84.1
+          cache: true
+          activate-environment: true
+      - name: Install JS dependencies
+        run: bun install --frozen-lockfile
+      - name: Sandbox generated files match the pinned renderer
+        shell: bash
+        run: |
+          stage=$(mktemp -d)
+          base="https://github.com/Archont561/pixi-sandbox/releases/download/v0.9.0"
+          asset="pixi-sandbox-x86_64-unknown-linux-musl"
+          curl --proto '=https' --proto-redir '=https' --tlsv1.2 --fail --silent --show-error --location --retry 3 --output "$stage/$asset" "$base/$asset"
+          curl --proto '=https' --proto-redir '=https' --tlsv1.2 --fail --silent --show-error --location --retry 3 --output "$stage/SHA256SUMS" "$base/SHA256SUMS"
+          digest=$(awk -v name="$asset" '{ if ($2 == name) print $1 }' "$stage/SHA256SUMS")
+          echo "$digest  $stage/$asset" | sha256sum --check
+          install -m 755 "$stage/$asset" "$RUNNER_TEMP/pixi-sandbox"
+          "$RUNNER_TEMP/pixi-sandbox" init --check --project-root . --script-path scripts/restore.sh
+        # canonical arguments also live in the `sandbox-check` pixi task
+      - name: Lint
+        run: pixi run lint
+      - name: Typecheck
+        run: pixi run typecheck
+      - name: Test
+        run: pixi run test
+      - name: Coverage (lcov)
+        run: bun run coverage
+      - name: Actionlint
+        run: pixi run lint-actions
+      - name: PCC policy (recommended)
+        run: pixi run policy
+      - name: Conventional commits (PR range)
+        if: github.event_name == 'pull_request'
+        run: pixi run convco check "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+      - name: Upload coverage to Codecov
+        id: codecov
+        uses: codecov/codecov-action@0fb7174895f61a3b6b78fc075e0cd60383518dac # v5.5.5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/tools/coverage/lcov.info
+          disable_search: true
+          fail_ci_if_error: true
+      - name: Diagnose Codecov upload failure
+        if: failure() && steps.codecov.outcome == 'failure'
+        shell: bash
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          if [ -z "$CODECOV_TOKEN" ]; then
+            echo "::error::Codecov upload failed and CODECOV_TOKEN is unset. Configure the token or enable tokenless uploads in Codecov."
+          else
+            echo "::error::Codecov upload failed with CODECOV_TOKEN set. Check the Codecov step logs and service configuration."
+          fi

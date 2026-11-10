@@ -1,0 +1,24 @@
+# Codecov configuration (DOC-009).
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto # keep pace with the base branch
+        threshold: 1% # tiny drift allowed
+    patch:
+      default:
+        target: 80% # new code must arrive tested
+
+ignore:
+  - "vendor/**" # vendored polyglot-clean-code presets
+  - "**/dist/**"
+  - "**/*.config.ts"
+  - "**/*.feature" # Gherkin specs (Bun instruments them via the cucumber preload)
+  - "scripts/**"
+
+comment:
+  layout: "condensed_header, diff, files"
+  behavior: default

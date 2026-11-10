@@ -1,0 +1,23 @@
+# Dependency automation (DOC-009). Two ecosystems, both needed:
+# - "bun" (NOT "npm") — Dependabot's npm ecosystem refuses bun.lock-only repos
+#   and its PRs fail `bun install --frozen-lockfile`; the bun ecosystem
+#   regenerates bun.lock alongside package.json (requires Bun >= 1.1.39).
+# - "github-actions" keeps the SHA-pinned actions current.
+# Known gap: the bun ecosystem covers version updates only — Dependabot
+# security updates are not supported for it yet (audit alerts still apply).
+# Generated workflows (publish-sandbox.yml, relock.yml) are rendered by
+# `pixi-sandbox init` (D-009): if an actions PR touches them, resolve by
+# regenerating / upgrading pixi-sandbox — never by hand-editing.
+version: 2
+updates:
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
