@@ -7,13 +7,13 @@ Monorepo for the Archont561 site and its automation. Deployed to GitHub Pages at
 | --- | --- | --- |
 | `apps/portfolio` | `@archont561/portfolio` | Next.js + Fumadocs static site (scaffold only) |
 | `apps/github-app` | `@archont561/github-app` | Cloudflare Worker (Hono + OpenAPI) + GitHub Action (scaffold only) |
-| `packages/tools` | `@archont561/tools` | Repo-internal toolkit: package metadata and CLI discovery |
+| `packages/tools` | `@archont561/tools` | Repo-internal toolkit: package metadata, CLI discovery and shared configs |
 | `packages/github-app-client` | `@archont561/github-app-client` | Generated OpenAPI client (bunup build, published to npm with provenance) |
 
 ## Status
 
-Scaffold. Package metadata and CLI command discovery (`version` only) are
-implemented; the apps and remaining automation are still planned in
+Scaffold. Package metadata, CLI command discovery (`version` only), and shared
+configs are implemented; the apps and remaining automation are still planned in
 [`backlog/`](backlog/). Milestones: `backlog/milestones/`.
 
 ## Quickstart

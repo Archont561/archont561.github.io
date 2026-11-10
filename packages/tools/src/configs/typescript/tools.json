@@ -1,0 +1,10 @@
+{
+  "extends": "./package.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["${configDir}/*", "../*"],
+      "@root/*": ["${configDir}/../../*", "../../../*"]
+    }
+  },
+  "include": ["../src", "../tests"]
+}

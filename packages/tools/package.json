@@ -7,7 +7,10 @@
   "license": "MIT",
   "exports": {
     ".": "./src/index.ts",
-    "./package-meta": "./src/package-meta/index.ts"
+    "./package-meta": "./src/package-meta/index.ts",
+    "./configs/bunup": "./src/configs/bunup/base.ts",
+    "./configs/unocss": "./src/configs/unocss/base.ts",
+    "./configs/next": "./src/configs/next/base.mjs"
   },
   "bin": {
     "tools": "./src/cli/index.ts"

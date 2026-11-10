@@ -56,9 +56,20 @@ Key points:
 ## Aliases
 
 `openapi-ts.config.ts` and generated code use `@/*` → package root (DOC-002 —
-write `@/src/...`, `@/tests/...`). No
-nested `../../` in imports anywhere. bunup resolves the same aliases from the
-package tsconfig.
+write `@/src/...`, `@/tests/...`). No nested `../../` in imports anywhere.
+The shared bunup factory uses each workspace's nearest tsconfig for JS and the
+client's `.tsconfig.bunup.json` link for declaration alias resolution. The link
+exposes the effective `@` → `.` mapping to bunup's declaration resolver, which
+otherwise ignores inherited `paths`.
+
+That resolver uses the **entry package's** context for every declaration,
+including declarations from inlined source packages. An inlined source package's
+public import graph must therefore use relative imports or package
+self-references, not its own `@/` aliases: otherwise the resolver can silently
+pick a matching path in the entry package. The factory rejects unresolved `@/`
+imports in emitted declarations, but that check cannot detect a wrong path
+that already resolved. The client build is tested from an isolated external
+consumer with no private `tools` dependency.
 
 ## Steps (M3)
 

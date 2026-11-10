@@ -31,8 +31,11 @@ bunup**, committed under `packages/github-app-client`:
   appears in the published manifest; consumers see zero trace of it. The
   `@hey-api/openapi-ts` generator stays a real `dependencies` entry because the
   generated client tree imports its runtime.
-- **Path aliases**: bunup resolves `@/*` from the package tsconfig automatically
-  (no alias config needed in bunup.config.ts).
+- **Path aliases**: the shared bunup factory keeps JS `@/*` imports
+  package-root scoped using workspace tsconfigs. The declaration-specific
+  config compensates for bunup's resolver not reading inherited `paths`, but
+  that resolver has only the entry package's context. Inlined source packages
+  use relative or package self-references in their public graph; see DOC-005.
 - **Publishing**: `publishConfig.access = public`; provenance via
   `.github/workflows/publish-client.yml` on version tags (`npm publish
   --provenance`), per DOC-009. `files: ["dist"]`.
