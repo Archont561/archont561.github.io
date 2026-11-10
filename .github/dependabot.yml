@@ -6,8 +6,8 @@
 # Known gap: the bun ecosystem covers version updates only — Dependabot
 # security updates are not supported for it yet (audit alerts still apply).
 # Generated workflows (publish-sandbox.yml, relock.yml) are rendered by
-# `pixi-sandbox init` (D-009): if an actions PR touches them, resolve by
-# regenerating / upgrading pixi-sandbox — never by hand-editing.
+# `pixi-sandbox init` (D-009) and excluded from Actions version updates below.
+# Update their pins through a pixi-sandbox release and regeneration, not by hand.
 version: 2
 updates:
   - package-ecosystem: "bun"
@@ -21,3 +21,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    exclude-paths:
+      - ".github/workflows/publish-sandbox.yml"
+      - ".github/workflows/relock.yml"

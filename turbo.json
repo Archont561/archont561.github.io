@@ -24,7 +24,8 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["generate", "^build"]
+      "dependsOn": ["generate", "^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.github/dependabot.yml"]
     }
   }
 }

@@ -48,6 +48,11 @@
 - Known gap: the bun ecosystem supports version updates only — Dependabot
   **security updates** are not available for it yet (GitHub audit alerts
   still cover advisories).
-- `github-actions` PRs may touch generated workflows (`publish-sandbox.yml`,
-  `relock.yml`) — never hand-merge those (D-009); regenerate via
-  `pixi-sandbox init` or upgrade the pinned pixi-sandbox release instead.
+- `github-actions` version updates exclude the generated workflows
+  `.github/workflows/publish-sandbox.yml` and `.github/workflows/relock.yml`.
+  Handwritten workflows such as `ci.yml` remain monitored. Update generated
+  action pins by upgrading the pinned `pixi-sandbox` release and regenerating
+  its files, never by hand (D-009).
+- Dependabot's `exclude-paths` applies to version updates, not security
+  updates. Investigate any security alerts or PRs for generated action pins
+  and resolve them through the generator.
