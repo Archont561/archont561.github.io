@@ -53,7 +53,15 @@ jobs:
       - name: Test
         run: pixi run test
       - name: Coverage (lcov)
-        run: bun run coverage
+        shell: bash
+        run: |
+          report=packages/tools/coverage/lcov.info
+          rm -f "$report"
+          bun run coverage
+          if [[ ! -s "$report" ]] || ! grep -q '^SF:' "$report"; then
+            echo "::error::Coverage did not produce a valid LCOV report at $report"
+            exit 1
+          fi
       - name: Actionlint
         run: pixi run lint-actions
       - name: PCC policy (recommended)
