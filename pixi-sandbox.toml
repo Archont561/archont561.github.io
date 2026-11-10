@@ -1,0 +1,11 @@
+# Reviewed sandbox plan (D-009) — consumed by `pixi-sandbox init`.
+# bundle = authoring unit; branch names derive as `<branch_prefix>/<bundle>-<platform>`.
+
+schema = 1
+branch_prefix = "sandbox"
+cargo_vendor = false  # JS-only repo: no Cargo manifests to vendor
+
+[[bundle]]
+name = "developer"
+environments = ["default"]
+platforms = ["linux-64"]

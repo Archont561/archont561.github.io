@@ -1,0 +1,30 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "openapi": {
+      "cache": false,
+      "inputs": ["src/**/*.ts", "package.json"]
+    },
+    "generate": {
+      "dependsOn": ["@archont561/github-app#openapi"],
+      "inputs": ["openapi.json", "openapi-ts.config.ts", "package.json"],
+      "outputs": ["src/client/**"]
+    },
+    "build": {
+      "dependsOn": ["generate", "^build"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "dependsOn": ["generate"],
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {},
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["generate", "^build"]
+    }
+  }
+}

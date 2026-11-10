@@ -1,0 +1,35 @@
+{
+  "name": "archont561-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "packageManager": "bun@1.4.4",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "tools": "bun packages/tools/src/cli/index.ts",
+    "dev": "turbo run dev",
+    "lint": "biome ci .",
+    "format": "biome check --write .",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "coverage": "turbo run test --force -- --coverage-reporter=text --coverage-reporter=lcov --coverage-dir=coverage",
+    "check": "bun run lint && bun run typecheck && bun run test"
+  },
+  "devDependencies": {
+    "@asamarts/alint": "^0.22.0",
+    "@ast-grep/cli": "^0.51.1",
+    "@biomejs/biome": "2.6.6",
+    "@eugeniughelbur/agents-md": "0.1.0",
+    "backlog": "^1.4.56",
+    "turbo": "^2.11.10",
+    "typescript": "^7.0.2"
+  },
+  "trustedDependencies": [
+    "@asamarts/alint",
+    "@ast-grep/cli"
+  ]
+}

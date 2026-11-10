@@ -1,0 +1,28 @@
+{
+  "name": "@archont561/tools",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Repo-internal toolkit: typed package metadata, citty CLI, shared configs",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package-meta": "./src/package-meta/index.ts"
+  },
+  "bin": {
+    "tools": "./src/cli/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@types/node": "^26.6.6",
+    "citty": "^0.2.2"
+  },
+  "devDependencies": {
+    "@aboviq/bun-test-cucumber": "^0.2.0",
+    "@archont561/bun-test-utils": "^0.2.0",
+    "@types/bun": "^1.4.4"
+  }
+}
