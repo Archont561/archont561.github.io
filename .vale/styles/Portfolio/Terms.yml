@@ -1,0 +1,11 @@
+extends: substitution
+message: Prefer '%s' instead of '%s'
+level: error
+ignorecase: false
+swap:
+  github: GitHub
+  Github: GitHub
+  typescript: TypeScript
+  javascript: JavaScript
+  nodejs: Node.js
+  Nodejs: Node.js

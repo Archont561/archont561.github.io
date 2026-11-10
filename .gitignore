@@ -1,0 +1,36 @@
+# dependencies & build output
+node_modules/
+dist/
+out/
+.next/
+coverage/
+*.tsbuildinfo
+
+# pixi
+.pixi/
+
+# wrangler / cloudflare
+.wrangler/
+.dev.vars
+
+# env & secrets
+.env
+.env.*
+!.env.example
+
+# editors / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# tool caches (the workspace root doubles as $HOME in some environments)
+.bun/
+.npm/
+.semgrep/
+.turbo/
+.config/
+.local/
+.cache/
+.bashrc
+*.zip

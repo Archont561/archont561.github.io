@@ -1,0 +1,48 @@
+[workspace]
+name = "archont561-github-io"
+version = "0.0.0"
+description = "Archont561 monorepo: portfolio site, GitHub App worker, repo tools"
+channels = ["conda-forge"]
+platforms = ["linux-64", "linux-aarch64", "osx-arm64", "osx-64"]
+
+# System-level tools only. npm-package tooling lives in bun.lock / package.json.
+[dependencies]
+nodejs = ">=22,<25"
+bun = ">=1.4,<2"
+lefthook = ">=2,<3"
+actionlint = ">=1.7,<2"
+convco = ">=0.7,<0.8"
+vale = ">=3,<4"
+python = ">=3.12,<3.13"
+git = ">=2,<3"
+gh = ">=2,<3"
+
+# Python-layer tools ride the same lockfile (D-002: pixi owns system tooling).
+[pypi-dependencies]
+# Pinned below latest: the 1.18x sdist builds a manylinux_2_34 wheel that uv
+# rejects against conda-forge Python's conservative manylinux baseline (the
+# sandbox glibc is fine). Revisit on the next dependency sweep.
+semgrep = "==1.120.*"
+# semgrep 1.120 imports pkg_resources at runtime; conda Python ships no setuptools.
+setuptools = ">=75,<82"
+
+[tasks]
+# `pixi run tools <args>` -> `bun run --bun tools` -> workspace bin `tools`
+# (packages/tools/src/cli/index.ts, executed natively as TypeScript by Bun).
+tools = "bun run --bun tools"
+# Bun exposes workspace-local executables such as Biome on PATH.
+lint = "bun run lint"
+format = "bun run format"
+typecheck = "bun run typecheck"
+test = "bun run test"
+check = "bun run check"
+lint-actions = "actionlint .github/workflows/*.yml"
+sandbox-check = "pixi-sandbox init --check --project-root . --script-path scripts/restore.sh"
+# PCC policy (Archont561/polyglot-clean-code, vendored at vendor/clean-code-presets,
+# pin in UPSTREAM.pin). Tier: recommended. Alint runs the local .alint.yml config
+# (adoption guide path 2 — the upstream Alint presets require the doit harness).
+policy-vale = "vale --no-global --config=vendor/clean-code-presets/vale/recommended.ini docs/"
+policy-ast-grep = "bunx ast-grep --config vendor/clean-code-presets/ast-grep/recommended/sgconfig.yml scan ."
+policy-semgrep = "semgrep scan --config vendor/clean-code-presets/semgrep/recommended.yml --exclude node_modules --exclude vendor --exclude .pixi --exclude .cache --exclude dist --exclude out --exclude .next ."
+policy = "pixi run policy-vale && pixi run policy-ast-grep && pixi run policy-semgrep"
+hooks-install = "lefthook install"

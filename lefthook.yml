@@ -1,0 +1,21 @@
+# Git hooks. System tools come from the Pixi environment; npm tooling via bun.
+pre-commit:
+  parallel: true
+  commands:
+    code:
+      glob: '*.{ts,tsx,mjs,json,jsonc,css}'
+      run: pixi run lint
+    docs:
+      glob: '*.{md,mdx}'
+      run: pixi run tools check-structure
+    workflows:
+      glob: '.github/workflows/*.{yml,yaml}'
+      run: pixi run lint-actions
+commit-msg:
+  commands:
+    conventional-commit:
+      run: 'pixi run convco check --from-stdin --strip < "{1}"'
+pre-push:
+  commands:
+    quality:
+      run: pixi run check

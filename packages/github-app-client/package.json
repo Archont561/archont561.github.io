@@ -1,0 +1,36 @@
+{
+  "name": "@archont561/github-app-client",
+  "description": "Typed client for the github-app worker API (generated from its OpenAPI document)",
+  "version": "0.0.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bunup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hey-api/openapi-ts": "^0.99.0"
+  },
+  "devDependencies": {
+    "@archont561/tools": "workspace:*",
+    "@types/node": "^26.6.6",
+    "bunup": "^0.16.32"
+  }
+}

@@ -1,0 +1,39 @@
+version: 1
+rules:
+  - id: docs-sections-have-index
+    kind: dir_contains
+    select: docs/*
+    require:
+      - index.mdx
+    level: error
+  - id: unique-doc-headings
+    kind: markdown_no_duplicate_headings
+    paths: docs/**/*.mdx
+    level: error
+  - id: images-have-alt
+    kind: markdown_images_have_alt
+    paths: docs/**/*.mdx
+    level: error
+  - id: no-empty-docs
+    kind: no_empty_files
+    paths: docs/**/*.mdx
+    level: error
+
+  - id: shared-root-contract
+    kind: file_exists
+    paths: ["README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", "pixi.toml", "pixi.lock", "pixi-sandbox.toml", "scripts/restore.sh", "bun.lock", "lefthook.yml", "biome.json", "turbo.json", "docs/index.mdx"]
+    root_only: true
+    level: error
+  - id: immutable-actions
+    kind: pinned_references
+    paths: [".github/workflows/*.yml"]
+    format: github_actions
+    level: error
+  - id: no-merge-markers
+    kind: no_merge_conflict_markers
+    paths: ["apps/**", "packages/**", "docs/**", ".github/**"]
+    level: error
+  - id: no-bidi-controls
+    kind: no_bidi_controls
+    paths: ["apps/**", "packages/**", "docs/**", ".github/**"]
+    level: error
