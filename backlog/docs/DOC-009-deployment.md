@@ -31,10 +31,13 @@
 
 ## Coverage
 
-- CI runs `bun run coverage` (Bun lcov via `--coverage-reporter=lcov`) and
-  uploads `packages/tools/coverage/lcov.info` with `codecov-action`
-  (SHA-pinned). Status gates live in `codecov.yml`: project `auto` ±1%,
+- CI runs `bun run coverage` (explicitly enabling Bun coverage and the lcov
+  reporter), verifies a fresh non-empty report with source records at
+  `packages/tools/coverage/lcov.info`, and uploads it with the SHA-pinned
+  `codecov-action`. Status gates live in `codecov.yml`: project `auto` ±1%,
   patch ≥ 80%; vendored/feature/config files ignored.
+- The explicit `--coverage` flag is required by the Pixi-locked Bun 1.4.2;
+  reporter flags alone do not enable coverage in that version.
 - `CODECOV_TOKEN` is an Actions secret; the upload fails the CI on error.
 
 ## Dependency automation

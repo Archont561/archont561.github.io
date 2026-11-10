@@ -16,7 +16,7 @@
     "format": "biome check --write .",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "coverage": "turbo run test --force -- --coverage-reporter=text --coverage-reporter=lcov --coverage-dir=coverage",
+    "coverage": "turbo run test --force -- --coverage --coverage-reporter=text --coverage-reporter=lcov --coverage-dir=coverage",
     "check": "bun run lint && bun run typecheck && bun run test"
   },
   "devDependencies": {
