@@ -7,9 +7,9 @@ apps/portfolio/            @archont561/portfolio        (M4)
 apps/github-app/           @archont561/github-app       (M2)
 packages/tools/            @archont561/tools            private, this repo only
   src/package-meta/        typed package.json loader    IMPLEMENTED
-  src/cli/                 citty CLI (version stub)     (M1)
-  features/                Gherkin specs                IMPLEMENTED (version)
-  tests/                   steps + unit tests           IMPLEMENTED (version)
+  src/cli/                 citty CLI (discovery + version)
+  features/                Gherkin specs                IMPLEMENTED
+  tests/                   steps + unit tests           IMPLEMENTED
 packages/github-app-client/ @archont561/github-app-client  publishable (M3)
 backlog/                   tasks, docs, decisions, milestones
 docs/                      site content (M4)

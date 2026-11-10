@@ -9,9 +9,9 @@ repos.
 | Path | Status | Purpose |
 | --- | --- | --- |
 | `src/package-meta/` | implemented | Typed `package.json` loader shared by every workspace (D-006) |
-| `src/cli/` | stub (`version` only) | citty CLI — `pixi run tools <command>` (D-005, full set in M1) |
+| `src/cli/` | discovery + `version` | citty CLI — `pixi run tools <command>` (D-005; additional commands in M1) |
 | `src/configs/` | M1 | Shared TS/bunup/UnoCSS/Biome configs (TASK-003) |
-| `features/` + `tests/` | implemented (version) | Gherkin specs + steps/unit tests — shared code is tested **once**, here (D-007) |
+| `features/` + `tests/` | implemented | Gherkin specs + steps/unit tests — shared code is tested **once**, here (D-007) |
 
 ## Usage
 

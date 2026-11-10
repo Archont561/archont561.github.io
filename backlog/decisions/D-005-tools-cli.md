@@ -16,15 +16,16 @@ automation of the previous repo. Scope: **this repository only**.
   the kebab-case filename is the command name; each module default-exports a
   citty `Command` (shape-checked on load with a clear error). No registry file
   to maintain. Nested subdirectories may later map to command groups.
-- **TS-only:** discovery accepts `*.ts` (excluding `*.d.ts` / `*.test.ts`);
+- **TS-only:** discovery accepts `*.ts` (excluding `*.d.ts`, `*.test.ts`, and
+  `*.spec.ts`);
   there is no build step and `packages/tools/dist` must never exist
   (`check-structure` asserts this). Typecheck is `tsc --noEmit`.
 - **Invocation chain:** `pixi run tools <args>` → `bun run --bun tools <args>`
   → root `package.json` script `tools` → `bun packages/tools/src/cli/index.ts`
   (executed natively as TypeScript by Bun). The workspace `bin` entry mirrors
   the same file for `bunx tools`.
-- The scaffold exposes only `version`; autodiscovery and the full command set
-  land in M1.
+- The initial scaffold exposed only `version`; autodiscovery now loads it from
+  `commands/`, while the remaining commands land in M1.
 
 ## Consequences
 

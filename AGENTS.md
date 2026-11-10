@@ -30,8 +30,9 @@ packages do not duplicate those suites.
 <!-- agents-md:begin id=structure -->
 ## Project structure
 Top-level: `apps/` (portfolio, github-app), `packages/` (tools, github-app-client),
-`backlog/` (tasks, docs, decisions, milestones), `docs/` (site content). Only the
-package-metadata helper is implemented; everything else is design in `backlog/`.
+`backlog/` (tasks, docs, decisions, milestones), `docs/` (site content). Tools
+provide package metadata and CLI discovery; the apps and remaining automation
+are scaffolded or planned in `backlog/`.
 <!-- agents-md:end id=structure -->
 
 ## Agent skills
@@ -81,9 +82,9 @@ Never commit secrets. Cloudflare secrets (`GITHUB_APP_PRIVATE_KEY`, `DATABASE_UR
 - Install with `pixi install` and `bun install`. Pixi owns system tools; Bun owns JS.
 - `packages/tools` is **repo-internal** (`private: true`) — it is not published and
   not meant for other repositories.
-- The only implemented code is `packages/tools/src/package-meta/` (typed package.json
-  loader) and each workspace's `src/version.ts`. Everything else is design-only in
-  `backlog/` — do not implement features outside a milestone without asking.
+- Implemented tools include package metadata and CLI command discovery (`version`
+  only); the apps and remaining automation are still scaffolds or designs in
+  `backlog/`. Do not implement features outside a milestone without asking.
 - `pixi-sandbox init` (v0.9.0) will generate `scripts/restore.sh`,
   `.github/workflows/relock.yml`, `.github/workflows/publish-sandbox.yml`. Those
   files are generated — regenerate, never hand-edit. Gate drift with

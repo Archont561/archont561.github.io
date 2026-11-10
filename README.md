@@ -7,20 +7,21 @@ Monorepo for the Archont561 site and its automation. Deployed to GitHub Pages at
 | --- | --- | --- |
 | `apps/portfolio` | `@archont561/portfolio` | Next.js + Fumadocs static site (scaffold only) |
 | `apps/github-app` | `@archont561/github-app` | Cloudflare Worker (Hono + OpenAPI) + GitHub Action (scaffold only) |
-| `packages/tools` | `@archont561/tools` | Repo-internal toolkit: typed package metadata (implemented), citty CLI (design only) |
+| `packages/tools` | `@archont561/tools` | Repo-internal toolkit: package metadata and CLI discovery |
 | `packages/github-app-client` | `@archont561/github-app-client` | Generated OpenAPI client (bunup build, published to npm with provenance) |
 
 ## Status
 
-Scaffold. Everything except the **package metadata helper** is design-only —
-the proposed design lives in [`backlog/`](backlog/). Milestones: `backlog/milestones/`.
+Scaffold. Package metadata and CLI command discovery (`version` only) are
+implemented; the apps and remaining automation are still planned in
+[`backlog/`](backlog/). Milestones: `backlog/milestones/`.
 
 ## Quickstart
 
 ```bash
 pixi install          # system tooling (bun, actionlint, convco, vale, lefthook, ...)
 bun install           # workspace dependencies
-bun run test          # package-meta tests (tools/features + tools/tests)
+bun run test          # shared tests (tools/features + tools/tests)
 pixi run tools version
 ```
 
