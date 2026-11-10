@@ -9,9 +9,9 @@
   .alint.yml, .vale.ini), CI workflow (pinned actions), devcontainer, docs stub.
 - `@archont561/tools/package-meta`: typed package.json loader (the one
   implemented module), used by every workspace's `src/version.ts`.
-- Test harness: `tools/features/version.feature` (Gherkin) +
-  `tools/tests/` (cucumber steps + bun-test-utils unit tests) — shared code
-  tested once per repo (D-007).
+- Initial test harness: Gherkin features plus cucumber steps and bun-test-utils
+  unit tests. It was later migrated to executable `test.scenario` specs in
+  `tools/features/*.test.ts` (D-007); shared code remains tested once per repo.
 - Backlog with proposed design: 11 decisions, 12 docs, 5 milestones.
 
 ## Exit criteria

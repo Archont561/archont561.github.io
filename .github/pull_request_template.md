@@ -7,5 +7,5 @@
 ## Test plan
 
 - [ ] `bun run check` passes
-- [ ] New behaviour has a Gherkin scenario in `packages/tools/features/` (shared code)
+- [ ] New shared behaviour has a `test.scenario` spec in `packages/tools/features/`
 - [ ] Docs/backlog updated if a decision changed

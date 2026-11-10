@@ -22,7 +22,7 @@
 - [ ] `pixi run tools <command>` works for every ported command
 - [ ] `pixi run tools task <name>` runs the kernel: skip-if-clean proven
       (docs:index / version:sync + `readme:check:*` preset), `--force`/`--dry-run` work
-- [ ] Old Python behaviours covered by `features/` scenarios (ported specs)
+- [ ] Old Python behaviours covered by `features/` `test.scenario` specs
 - [ ] No Python/doit left in the repo
 - [ ] `tools/dist` never exists (enforced by `check-structure`)
 - [ ] `bun run check` green including new suites

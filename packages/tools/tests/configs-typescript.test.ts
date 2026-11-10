@@ -45,7 +45,11 @@ function assertCompilerSettings(workspace: Workspace): void {
     workspace.kind === "tools" ? ["@/*", "@root/*"] : ["@/*"],
   );
   expect(config.files).toContain("./src/version.ts");
-  if (workspace.kind === "tools") expect(config.files).toContain("./tests/version.test.ts");
+  if (workspace.kind === "tools") {
+    expect(config.files).toContain("./tests/version.test.ts");
+    expect(config.files).toContain("./features/cli.test.ts");
+    expect(config.files).toContain("./features/version.test.ts");
+  }
 }
 
 function typecheckAlias(workspace: Workspace): void {

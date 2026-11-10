@@ -20,7 +20,8 @@ pixi run hooks-install   # lefthook git hooks
 - `packages/tools` is private to this repository.
 - Generated files (`scripts/restore.sh`, sandbox workflows after `pixi-sandbox init`)
   must be regenerated via their tool, never hand-edited.
-- New shared behaviour needs a Gherkin scenario in `packages/tools/features/` first.
+- New shared behaviour needs an executable `test.scenario` Given/When/Then spec
+  in `packages/tools/features/*.test.ts` first.
 
 ## Clean code standard
 

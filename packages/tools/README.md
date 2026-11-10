@@ -11,7 +11,7 @@ repos.
 | `src/package-meta/` | implemented | Typed `package.json` loader shared by every workspace (D-006) |
 | `src/cli/` | discovery + `version` | citty CLI — `pixi run tools <command>` (D-005; additional commands in M1) |
 | `src/configs/` | implemented | Shared TypeScript, bunup, UnoCSS, and Biome configs (TASK-003) |
-| `features/` + `tests/` | implemented | Gherkin specs + steps/unit tests — shared code is tested **once**, here (D-007) |
+| `features/` + `tests/` | implemented | Executable `test.scenario` specs + unit/integration tests — shared code is tested **once**, here (D-007) |
 
 ## Usage
 
@@ -37,7 +37,7 @@ symlink in each workspace root. This keeps inherited `@/*` paths relative to the
 consumer in both TypeScript and Bun, which does not expand `${configDir}`.
 To add a workspace, link that directory and extend `app.json`, `worker.json`,
 or `package.json`; see DOC-002 for an example. Only the tools variant adds
-`@root/*` and includes `tests/`.
+`@root/*` and includes `features/` and `tests/`.
 
 For a publishable bunup package, link `.tsconfig.bunup.json` in its root to
 `src/configs/bunup/tsconfig.json` (as the client does), then spread the factory

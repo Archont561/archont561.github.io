@@ -9,8 +9,8 @@ packages/tools/            @archont561/tools            private, this repo only
   src/package-meta/        typed package.json loader    IMPLEMENTED
   src/cli/                 citty CLI (discovery + version)
   src/configs/             shared workspace configs
-  features/                Gherkin specs                IMPLEMENTED
-  tests/                   steps + unit tests           IMPLEMENTED
+  features/                executable scenario specs    IMPLEMENTED
+  tests/                   unit + integration tests     IMPLEMENTED
 packages/github-app-client/ @archont561/github-app-client  publishable (M3)
 backlog/                   tasks, docs, decisions, milestones
 docs/                      site content (M4)
@@ -35,7 +35,7 @@ symlink to `packages/tools/src/configs/typescript/`: `app.json` for the
 portfolio, `worker.json` for the worker, `package.json` for the client, and
 `tools.json` for tools. `base.json` contains the strict compiler settings and
 package-root alias. The tools variant repeats `@/*` because TypeScript replaces
-rather than merges `paths`, and adds `@root/*` and tests to its include list.
+rather than merges `paths`, adds `@root/*`, and includes `features/` and `tests/`.
 
 The symlink must live directly in the workspace root. TypeScript and Wrangler's
 esbuild expand `${configDir}` relative to the consuming config. Bun does not

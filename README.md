@@ -21,7 +21,7 @@ configs are implemented; the apps and remaining automation are still planned in
 ```bash
 pixi install          # system tooling (bun, actionlint, convco, vale, lefthook, ...)
 bun install           # workspace dependencies
-bun run test          # shared tests (tools/features + tools/tests)
+bun run test          # executable scenarios + unit tests (tools/features + tools/tests)
 pixi run tools version
 ```
 
