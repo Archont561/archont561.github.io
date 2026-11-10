@@ -24,7 +24,7 @@ Status: todo · Depends on: TASK-002 · Blocks: M1 exit · Decisions: [D-010](..
       and `version:sync` (stubs ↔ package.json drift gate via package-meta).
       `release:prepare` lands in M3; `snapshots:refresh` / `seo:artifacts`
       in M4 (their milestones, per DOC-013's table).
-- [ ] Gherkin coverage in `tools/features/`: skip-if-clean, dirty re-run,
+- [ ] `test.scenario` coverage in `tools/features/`: skip-if-clean, dirty re-run,
       `--force`, DAG ordering, preset expansion, discovery merge + duplicate
       error. `bun run check` green.
 

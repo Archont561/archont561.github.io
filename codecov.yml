@@ -16,7 +16,7 @@ ignore:
   - "vendor/**" # vendored polyglot-clean-code presets
   - "**/dist/**"
   - "**/*.config.ts"
-  - "**/*.feature" # Gherkin specs (Bun instruments them via the cucumber preload)
+  - "**/*.feature" # Ignore standalone Gherkin reference files if added
   - "scripts/**"
 
 comment:

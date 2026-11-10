@@ -31,6 +31,6 @@ repository's workflows — it is not a cross-repo platform.
 
 ## Consequences
 
-- Gherkin scenarios in `tools/features/` carry over the old
-  `automation/features/*.feature` behaviour, one command at a time.
+- Executable `test.scenario` specs in `tools/features/*.test.ts` carry over the
+  old `automation/features/*.feature` behaviour, one command at a time.
 - `pixi run tools <command>` becomes the only automation entry.

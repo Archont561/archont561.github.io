@@ -3,7 +3,8 @@
 **Status:** not started · **Milestone:** M1 · **Labels:** tools
 
 First slice of D-010 (the old `doit` automation → citty commands). Each
-command lands with its `features/` scenario and `tests/` steps.
+command lands with an executable `test.scenario` in `features/` and supporting
+unit tests in `tests/`.
 
 ## Acceptance criteria
 

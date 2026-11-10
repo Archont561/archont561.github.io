@@ -25,12 +25,12 @@ bunx tools <command>              # same entry via workspace bin
 
 ## Adding a command
 
-1. Write a scenario in `features/<name>.feature`.
+1. Write an executable `test.scenario` in `features/<name>.test.ts`.
 2. Add `src/cli/commands/<name>.ts` — `export default defineCommand({...})`.
 3. The kebab-case filename becomes the command name; no registration needed.
    Only top-level `.ts` files are discovered; `.d.ts`, `.test.ts`, and
    `.spec.ts` files are excluded. A command must provide `run` or `subCommands`.
-4. Steps in `tests/<name>.steps.ts`; unit tests in `tests/<name>.test.ts`.
+4. Add any supporting unit tests in `tests/<name>.test.ts`.
 
 Commands are imported lazily. Root help loads their metadata, and a broken
 module or invalid command export fails with its filename and a clear reason

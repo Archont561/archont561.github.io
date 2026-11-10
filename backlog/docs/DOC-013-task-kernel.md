@@ -123,9 +123,10 @@ export const readmeCheck = forWorkspaces((ws) => task({
 
 ## Testing
 
-Gherkin scenarios in `tools/features/` (the repo's test convention):
-skip-if-clean on unchanged `fileDep`, re-run on change, `--force` override,
-DAG ordering, parallel branches, preset factory expansion.
+Executable `test.scenario` Given/When/Then specs in `tools/features/*.test.ts`
+(the repo's test convention): skip-if-clean on unchanged `fileDep`, re-run on
+change, `--force` override, DAG ordering, parallel branches, and preset factory
+expansion.
 
 ## Non-goals (v1)
 

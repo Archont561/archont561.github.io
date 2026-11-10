@@ -25,7 +25,7 @@ pixi run lint-actions      # actionlint over workflows
 | --- | --- | --- |
 | biome lint/format | `bun run lint` | ci.yml |
 | typecheck | `bun run typecheck` | ci.yml |
-| tests (Gherkin + unit) | `bun run test` | ci.yml |
+| tests (`test.scenario` + unit) | `bun run test` | ci.yml |
 | actionlint | `pixi run lint-actions` | ci.yml |
 | convco | commit-msg hook | ci.yml (PR range) |
 | vale / alint | `pixi run` tasks (M1) | ci.yml (M1) |

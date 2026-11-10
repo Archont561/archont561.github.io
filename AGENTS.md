@@ -21,10 +21,11 @@ archont561-workspace. Stack: bun, turbo, hono (planned), next/fumadocs (planned)
 
 <!-- agents-md:begin id=testing -->
 ## Testing
-Behaviour specs in Gherkin live in `packages/tools/features/`, step definitions and
-unit tests in `packages/tools/tests/`, run with `bun test` (Bun test runner +
-`@archont561/bun-test-utils`). Shared code is tested once, in `tools` — consuming
-packages do not duplicate those suites.
+Executable Given/When/Then specs use `test.scenario` from
+`@archont561/bun-test-utils` in `packages/tools/features/*.test.ts`; unit and
+integration tests live in `packages/tools/tests/`. Run them with `bun test`.
+Shared code is tested once, in `tools` — consuming packages do not duplicate
+those suites.
 <!-- agents-md:end id=testing -->
 
 <!-- agents-md:begin id=structure -->
