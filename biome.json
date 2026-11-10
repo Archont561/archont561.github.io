@@ -1,5 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.6.6/schema.json",
+  "extends": ["./packages/tools/src/configs/biome/base.json"],
   "files": {
     "includes": [
       "**/*.ts",
@@ -12,8 +13,8 @@
       "!**/.source",
       "!**/out",
       "!**/dist",
-      "!**/node_modules",
-      "!**/.bun",
+      "!**/node_modules/**",
+      "!**/.bun/**",
       "!**/coverage",
       "!**/.pixi",
       "!**/.cache",
@@ -22,51 +23,16 @@
       "!**/*.tsbuildinfo"
     ]
   },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 100
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "preset": "recommended",
-      "complexity": {
-        "noExcessiveLinesPerFunction": {
-          "level": "error",
-          "options": {
-            "maxLines": 40
+  "overrides": [
+    {
+      "includes": ["biome.json"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "useBiomeIgnoreFolder": "off"
           }
-        },
-        "useMaxParams": {
-          "level": "error",
-          "options": {
-            "max": 3
-          }
-        },
-        "noExcessiveCognitiveComplexity": {
-          "level": "error",
-          "options": {
-            "maxAllowedComplexity": 15
-          }
-        },
-        "noExcessiveNestedCallbacks": {
-          "level": "error"
         }
       }
     }
-  },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
-    }
-  },
-  "css": {
-    "parser": {
-      "cssModules": false
-    }
-  }
+  ]
 }

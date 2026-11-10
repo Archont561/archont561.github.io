@@ -1,2 +1,4 @@
 [test]
 preload = ["./tests/cucumber-preload.ts"]
+# Command discovery exercises temporary TypeScript files outside the repository.
+coveragePathIgnorePatterns = ["**/tools commands */**"]

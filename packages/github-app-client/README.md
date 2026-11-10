@@ -27,7 +27,9 @@ const client = createClient({ baseUrl: "https://github-app.archont561.workers.de
 
 ## Conventions
 
-- `@/*` → package root (tsconfig `paths`; bunup resolves the same aliases — `@/src/...`).
+- `@/*` → package root (`@/src/...`). The shared bunup factory uses
+  `.tsconfig.bunup.json` for declaration aliases and rejects unresolved `@/`
+  imports in generated declarations (DOC-005).
 - `src/version.ts` reports `name`/`version` via `@archont561/tools/package-meta`
   (inlined at build; explicit export annotations — bunup dts is isolated-declarations).
 - `src/client/` is generated — never hand-edit (regenerate + CI diff gate).

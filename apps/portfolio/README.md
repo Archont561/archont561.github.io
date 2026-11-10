@@ -14,6 +14,11 @@ GitHub Pages. **Scaffold only** — migration lands in M4
 
 ## Conventions
 
-- `@/*` → `src/*` (tsconfig paths; Next.js honours them natively).
+- `@/*` → package root (use `@/src/...`). The shared Next config supplies the
+  Turbopack alias because it does not expand the shared tsconfig's
+  `${configDir}` paths. Imported source packages must not use their own `@/`
+  aliases in public entrypoints; use package self-references or relative imports
+  instead, since Next and TypeScript resolve them in the app's context.
 - `src/version.ts` reports `name`/`version` via `@archont561/tools/package-meta`.
-- UnoCSS custom rules + handwritten styles (no Tailwind/PostCSS).
+- `uno.config.ts` consumes the shared custom-rule preset (including `sr-only`);
+  use custom rules + handwritten styles, not Tailwind/PostCSS.

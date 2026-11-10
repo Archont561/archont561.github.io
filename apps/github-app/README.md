@@ -15,7 +15,7 @@ M2 (`backlog/milestones/M2-github-app.md`).
 
 ## Conventions
 
-- `@/*` → `src/*` (tsconfig paths; wrangler/esbuild honours them).
+- `@/*` → package root (use `@/src/...`; wrangler/esbuild honours tsconfig paths).
 - `src/version.ts` reports `name`/`version` via `@archont561/tools/package-meta`
   (served at `/health` and `/version`).
 - API design: `backlog/docs/DOC-004-github-app-api.md`.

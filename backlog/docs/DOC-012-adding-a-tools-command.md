@@ -36,8 +36,10 @@ export default defineCommand({
 ```
 
 Rules: kebab-case filename (that is the command name), default-export a
-citty `Command`, `.ts` only (`*.d.ts` / `*.test.ts` are skipped). The CLI
-shape-checks the export at load and fails loudly otherwise.
+citty command with `run` or `subCommands`, `.ts` only (`*.d.ts`, `*.test.ts`,
+and `*.spec.ts` are skipped). Discovery is flat and imports commands lazily;
+root help loads each command to list its description. The CLI shape-checks
+exports when loaded and reports the command and file on import/shape errors.
 
 ## 3. Steps + unit tests
 

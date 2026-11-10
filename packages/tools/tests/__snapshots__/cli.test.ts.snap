@@ -1,0 +1,15 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`tools CLI root help lists discovered commands 1`] = `
+"Archont561 repo automation (tools v0.0.0)
+
+USAGE tools version
+
+COMMANDS
+
+  version    Print the tools package name and version
+
+Use tools <command> --help for more information about a command.
+
+"
+`;

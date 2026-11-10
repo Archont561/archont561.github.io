@@ -1,6 +1,6 @@
 # M1: tools — CLI, shared configs, automation port
 
-**Status:** not started · **Depends on:** M0 · **Decisions:** D-005, D-010
+**Status:** in progress · **Depends on:** M0 · **Decisions:** D-005, D-010
 
 ## Scope
 
