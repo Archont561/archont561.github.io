@@ -58,18 +58,25 @@ test("every documentation source has a sitemap entry, LLM row, Markdown twin and
     expect(head(html)).toContain('name="twitter:card"');
     expect(html).toContain(`href="${page.markdown}"`);
   }
-  expect((sitemap.match(/<loc>/g) ?? []).length).toBe(pages.length + 3);
-  for (const path of ["/", "/search/", "/packages/"])
+  expect((sitemap.match(/<loc>/g) ?? []).length).toBe(pages.length + 4);
+  for (const path of ["/", "/projects/", "/search/", "/packages/"])
     expect(sitemap).toContain(`<loc>${origin}${path}</loc>`);
 });
 
 test("discovery, JSON-LD, feeds, assets and search index use root-site paths", () => {
   const home = file("index.html");
-  for (const path of ["index.html", "packages/index.html", "search/index.html"]) {
+  for (const path of [
+    "index.html",
+    "projects/index.html",
+    "packages/index.html",
+    "search/index.html",
+  ]) {
     const html = file(path);
     const url =
       path === "index.html" ? `${origin}/` : `${origin}/${path.replace("index.html", "")}`;
     expect(head(html)).toContain(`<link rel="canonical" href="${url}"`);
+    expect(head(html)).toContain(`<meta property="og:url" content="${url}"`);
+    expect(head(html)).toContain('name="twitter:card"');
     expect(head(html)).toContain('href="/feed.xml"');
     expect(head(html)).toContain('href="/feed.json"');
   }
@@ -147,4 +154,311 @@ test("JSON-LD escapes script-breaking input without changing its data", () => {
   const text = jsonLd({ name: "</script><script>alert(1)</script>" });
   expect(text).not.toContain("<");
   expect(JSON.parse(text)).toEqual({ name: "</script><script>alert(1)</script>" });
+});
+
+function projectGroupsFromMeta(): Record<string, string[]> {
+  const meta = JSON.parse(readFileSync(join(root, "docs/projects/meta.json"), "utf8")) as {
+    pages: string[];
+  };
+  const groups: Record<string, string[]> = {};
+  let category = "";
+  for (const entry of meta.pages) {
+    const separator = /^---(.+)---$/.exec(entry);
+    if (separator?.[1]) {
+      category = separator[1];
+      groups[category] = [];
+    } else if (entry !== "index") {
+      if (!category) throw new Error(`Project ${entry} has no domain separator`);
+      groups[category]?.push(entry);
+    }
+  }
+  return groups;
+}
+
+test("project navigation metadata matches the curated domains", () => {
+  const projects = JSON.parse(readFileSync(join(app, "src/lib/projects.json"), "utf8")) as {
+    category: string;
+    slug: string;
+  }[];
+  const expected: Record<string, string[]> = {};
+  for (const project of projects) {
+    if (!expected[project.category]) expected[project.category] = [];
+    expected[project.category]?.push(project.slug);
+  }
+  expect(projectGroupsFromMeta()).toEqual(expected);
+});
+
+test("Fumadocs navigation covers every route and groups project pages without moving them", () => {
+  const pages = manifest();
+  const groups = projectGroupsFromMeta();
+  for (const page of pages) {
+    const html = file(`${page.url.slice(1)}index.html`);
+    const nav = html.match(
+      /<nav class="docs-navigation" aria-label="Documentation">[\s\S]*?<\/nav>/,
+    )?.[0];
+    if (!nav) throw new Error(`Missing documentation navigation on ${page.url}`);
+    for (const target of pages) expect(nav).toContain(`href="${target.url}"`);
+    expect(nav).toContain(`aria-current="page" href="${page.url}"`);
+    expect((nav.match(/aria-current="page"/g) ?? []).length).toBe(1);
+    for (const [name, slugs] of Object.entries(groups)) {
+      const heading = nav.indexOf(`>${name}</span>`);
+      expect(heading).toBeGreaterThan(-1);
+      for (const slug of slugs)
+        expect(nav.indexOf(`href="/docs/projects/${slug}/"`)).toBeGreaterThan(heading);
+    }
+    expect(html).toContain('class="docs-mobile-nav"');
+  }
+});
+
+test("the shared navigation, static atlas placeholder, and project fallback are exported", () => {
+  for (const [path, current] of [
+    ["index.html", "/"],
+    ["projects/index.html", "/projects/"],
+    ["packages/index.html", "/packages/"],
+    ["search/index.html", "/search/"],
+    ["docs/index.html", "/docs/"],
+    ["docs/projects/qgis-sdk/index.html", "/docs/"],
+  ] as const) {
+    const html = file(path);
+    const header = html.match(/<header class="site-header">[\s\S]*?<\/header>/)?.[0];
+    if (!header) throw new Error(`Missing shared header on ${path}`);
+    for (const href of [
+      "/",
+      "/projects/",
+      "/packages/",
+      "/docs/",
+      "/search/",
+      "https://github.com/Archont561",
+    ])
+      expect(header).toContain(`href="${href}"`);
+    expect(header).toMatch(new RegExp(`aria-current="page"[^>]*href="${current}"`));
+    expect(header).toContain('class="site-mobile-menu"');
+    // Before hydration Search is a normal link, not a falsely advertised dialog.
+    expect(header).not.toContain('aria-haspopup="dialog"');
+    expect(html).toContain('id="search-palette"');
+    expect(html).toContain('href="#main-content"');
+    expect(html).toContain('id="main-content"');
+  }
+});
+
+test("the atlas preview, full project directory, and search fallback are exported", () => {
+  const home = file("index.html");
+  expect(home).toContain('<section class="atlas-preview"');
+  expect(home).toContain('href="#work"');
+  expect(home).toContain('id="work"');
+  expect(home).toContain('href="/projects/"');
+  expect(home).toContain("An interactive globe is planned. For now, explore the projects below.");
+  expect((home.match(/<a class="project-card /g) ?? []).length).toBe(3);
+  const directory = file("projects/index.html");
+  const projects = JSON.parse(readFileSync(join(app, "src/lib/projects.json"), "utf8")) as {
+    slug: string;
+  }[];
+  expect((directory.match(/<a class="project-card /g) ?? []).length).toBe(projects.length);
+  for (const project of projects)
+    expect(directory).toContain(`href="/docs/projects/${project.slug}/"`);
+  expect(directory).toContain("Browse all projects below. Filters require JavaScript.");
+  const noScript = file("search/index.html").match(/<noscript>[\s\S]*?<\/noscript>/)?.[0];
+  expect(noScript).toContain("Search requires JavaScript.");
+  expect(noScript).toContain('href="/projects/"');
+});
+
+interface RegistrySnapshot {
+  retrieved: string;
+  registries: {
+    name: string;
+    label: string;
+    url: string;
+    packages: { name: string; relation?: string; url: string }[];
+  }[];
+}
+
+function registrySnapshot(): RegistrySnapshot {
+  return JSON.parse(readFileSync(join(root, "data/packages.json"), "utf8")) as RegistrySnapshot;
+}
+
+async function exportedRegistryControls(html: string) {
+  const inputs: { id: string | null; value: string | null; checked: boolean }[] = [];
+  const labels: { id: string | null; text: string }[] = [];
+  const sectionNames: (string | null)[] = [];
+  let currentLabel: (typeof labels)[number] | undefined;
+  const response = new HTMLRewriter()
+    .on('fieldset.registry-filter input[type="radio"][name="registry"]', {
+      element(element) {
+        inputs.push({
+          id: element.getAttribute("id"),
+          value: element.getAttribute("value"),
+          checked: element.hasAttribute("checked"),
+        });
+      },
+    })
+    .on('fieldset.registry-filter label[for^="registry-filter-"]', {
+      element(element) {
+        currentLabel = { id: element.getAttribute("for"), text: "" };
+        labels.push(currentLabel);
+        element.onEndTag(() => {
+          currentLabel = undefined;
+        });
+      },
+      text(chunk) {
+        if (currentLabel) currentLabel.text += chunk.text;
+      },
+    })
+    .on("section.registry-section[data-registry]", {
+      element(element) {
+        sectionNames.push(element.getAttribute("data-registry"));
+      },
+    })
+    .transform(new Response(html));
+  await response.text();
+  return { inputs, labels, sectionNames };
+}
+
+async function exportedRegistrySection(html: string, name: string) {
+  const section = {
+    heading: "",
+    links: [] as string[],
+    rows: 0,
+    hidden: false,
+    scrollLabel: null as string | null,
+    tabIndex: null as string | null,
+  };
+  const selector = `section.registry-section[data-registry="${name}"]`;
+  const response = new HTMLRewriter()
+    .on(selector, {
+      element(element) {
+        section.hidden = element.hasAttribute("hidden");
+      },
+    })
+    .on(`${selector} h2`, {
+      text(chunk) {
+        section.heading += chunk.text;
+      },
+    })
+    .on(`${selector} tbody tr`, {
+      element() {
+        section.rows++;
+      },
+    })
+    .on(`${selector} a[href]`, {
+      element(element) {
+        const href = element.getAttribute("href");
+        if (href) section.links.push(href);
+      },
+    })
+    .on(`${selector} section.registry-table-scroll`, {
+      element(element) {
+        section.scrollLabel = element.getAttribute("aria-label");
+        section.tabIndex = element.getAttribute("tabindex");
+      },
+    })
+    .transform(new Response(html));
+  await response.text();
+  return section;
+}
+
+test("package filters export the complete snapshot, controls, and registry links", async () => {
+  const data = registrySnapshot();
+  const html = file("packages/index.html");
+  const { inputs, labels, sectionNames } = await exportedRegistryControls(html);
+  const names = ["all", ...data.registries.map((registry) => registry.name)];
+  expect(html).toContain("<legend>Filter by registry</legend>");
+  expect(inputs).toEqual(
+    names.map((name) => ({
+      id: `registry-filter-${name}`,
+      value: name,
+      checked: name === "all",
+    })),
+  );
+  expect(labels.map((label) => label.id)).toEqual(names.map((name) => `registry-filter-${name}`));
+  expect(labels[0]?.text).toContain("All registries");
+  expect(sectionNames).toEqual(data.registries.map((registry) => registry.name));
+  for (const registry of data.registries) {
+    const section = await exportedRegistrySection(html, registry.name);
+    const label = labels.find((item) => item.id === `registry-filter-${registry.name}`);
+    const published = registry.packages.filter((item) =>
+      ["authored", "upstream", "unreviewed"].includes(item.relation ?? ""),
+    ).length;
+    expect(label?.text).toContain(registry.label);
+    expect(label?.text).toContain(`${published} published`);
+    expect(section.hidden).toBe(false);
+    expect(section.heading).toContain(registry.label);
+    expect(section.heading).toContain(data.retrieved);
+    expect(section.rows).toBe(registry.packages.length);
+    expect(section.scrollLabel).toBe(`${registry.label} package table`);
+    expect(section.tabIndex).toBe("0");
+    expect(section.links).toContain(registry.url);
+    for (const item of registry.packages) expect(section.links).toContain(item.url);
+  }
+});
+
+test("exported CSS filters other registries and leaves All registries unfiltered", () => {
+  const html = file("packages/index.html");
+  const stylesheets = [...head(html).matchAll(/href="(\/_next\/static\/css\/[^"]+\.css)"/g)]
+    .map((match) => match[1])
+    .filter((path): path is string => Boolean(path));
+  expect(stylesheets.length).toBeGreaterThan(0);
+  const css = stylesheets.map((path) => file(path.slice(1))).join("\n");
+  const hiddenRules = css.match(/[^{}]+\{[^{}]*display\s*:\s*none[^{}]*\}/g) ?? [];
+  for (const registry of registrySnapshot().registries) {
+    // A checked radio hides sections whose data-registry is not the selected value.
+    const selector = new RegExp(
+      `#registry-filter-${registry.name}:checked\\)\\s*~\\s*\\.registry-sections\\s+\\.registry-section:not\\(\\[data-registry=["']?${registry.name}["']?\\]\\)`,
+    );
+    expect(hiddenRules.some((rule) => selector.test(rule))).toBe(true);
+  }
+  expect(
+    hiddenRules.some(
+      (rule) => rule.includes("#registry-filter-all:checked") && rule.includes(".registry-section"),
+    ),
+  ).toBe(false);
+  expect(css).toContain("input:checked");
+  expect(css).toContain("input:focus-visible");
+});
+
+test("project Markdown retains provenance, caveats, and source links", () => {
+  const projects = JSON.parse(readFileSync(join(app, "src/lib/projects.json"), "utf8")) as {
+    slug: string;
+    url: string;
+  }[];
+  for (const project of projects) {
+    const markdown = file(`docs/projects/${project.slug}.md`);
+    expect(markdown).toContain(project.url);
+    expect(markdown).toContain("November 9, 2026");
+    expect(markdown).toContain("not a guarantee of feature completeness");
+  }
+});
+
+test("on-page table-of-contents links point to rendered headings", () => {
+  for (const page of manifest()) {
+    const html = file(`${page.url.slice(1)}index.html`);
+    const toc = html.match(/<nav aria-label="On this page">[\s\S]*?<\/nav>/)?.[0];
+    if (!toc) continue;
+    for (const match of toc.matchAll(/href="#([^"]+)"/g)) {
+      expect(html).toContain(`id="${match[1]}"`);
+    }
+  }
+});
+
+test("previous documentation heading fragments remain valid", () => {
+  const index = file("docs/index.html");
+  expect(index).toContain('id="start-here"');
+  expect(index).toContain('id="source-of-truth"');
+  expect(file("docs/projects/index.html")).toContain('id="selected-repositories"');
+  const projects = JSON.parse(readFileSync(join(app, "src/lib/projects.json"), "utf8")) as {
+    slug: string;
+  }[];
+  for (const project of projects) {
+    expect(file(`docs/projects/${project.slug}/index.html`)).toContain('id="overview"');
+    expect(file(`docs/projects/${project.slug}.md`)).toContain('<span id="overview"></span>');
+  }
+});
+
+test("the exported not-found page has a skip-link target and working navigation", () => {
+  for (const path of ["404.html", "404/index.html", "_not-found/index.html"]) {
+    const html = file(path);
+    expect(html).toContain('href="#main-content"');
+    expect(html).toContain('id="main-content"');
+    expect(html).toContain("This page is not on the map.");
+    expect(html).toContain('href="/docs/"');
+  }
 });

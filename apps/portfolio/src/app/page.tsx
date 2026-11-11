@@ -1,4 +1,5 @@
 import Portfolio from "@/src/components/portfolio";
+import SiteHeader from "@/src/components/site-header";
 import StructuredData from "@/src/components/structured-data";
 import { ORIGIN, SITE_DESCRIPTION, staticPageMetadata } from "@/src/lib/site";
 
@@ -30,6 +31,7 @@ export default function Page() {
   return (
     <>
       <StructuredData value={structured} />
+      <SiteHeader active="atlas" />
       <Portfolio />
     </>
   );

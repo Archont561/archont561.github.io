@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import Link from "next/link";
+import SiteHeader from "@/src/components/site-header";
 import { staticPageMetadata } from "@/src/lib/site";
 
 type Package = {
@@ -86,12 +87,12 @@ const style = {
     padding: "2px 6px",
     whiteSpace: "nowrap" as const,
   },
-  hint: { fontSize: 13, opacity: 0.72 },
+  hint: { color: "var(--muted)", fontSize: 13 },
   note: {
     borderLeft: "3px solid rgba(127,127,127,.4)",
     fontSize: 13,
     margin: "20px 0 0",
-    opacity: 0.82,
+    color: "var(--muted)",
     padding: "4px 0 4px 12px",
   },
   table: {
@@ -117,7 +118,7 @@ function PackageName({ item, registry }: PackageProps) {
       <div style={{ ...style.hint, maxWidth: 430 }}>
         {item.description ?? extra ?? registry.label}
       </div>
-      {item.note && <div style={{ ...style.hint, opacity: 0.64 }}>{item.note}</div>}
+      {item.note && <div style={style.hint}>{item.note}</div>}
       {!reserve && (
         <div style={{ marginTop: 6 }}>
           <code style={style.code}>{installCommand(registry, item.name)}</code>
@@ -145,8 +146,8 @@ function PackageVersion({ item }: { item: Package }) {
 function PackagePublished({ item }: { item: Package }) {
   return (
     <td style={{ padding: 10, verticalAlign: "top" }}>
-      <span style={style.hint}>{item.published ?? "—"}</span>
-      {item.size && <div style={{ ...style.hint, opacity: 0.64 }}>{mebibytes(item.size)}</div>}
+      <span style={{ ...style.hint, whiteSpace: "nowrap" }}>{item.published ?? "—"}</span>
+      {item.size && <div style={style.hint}>{mebibytes(item.size)}</div>}
     </td>
   );
 }
@@ -156,9 +157,7 @@ function PackageLicense({ item }: { item: Package }) {
     <td style={{ padding: 10, verticalAlign: "top" }}>
       <span style={style.hint}>{item.license ?? "—"}</span>
       {!!item.platforms?.length && (
-        <div style={{ ...style.hint, maxWidth: 150, opacity: 0.64 }}>
-          {item.platforms.join(", ")}
-        </div>
+        <div style={{ ...style.hint, maxWidth: 150 }}>{item.platforms.join(", ")}</div>
       )}
     </td>
   );
@@ -169,7 +168,7 @@ function PackageRelation({ item }: { item: Package }) {
     <td style={{ padding: 10, verticalAlign: "top" }}>
       <span style={style.hint}>{relationLabels[item.relation ?? ""] ?? item.relation}</span>
       {item.alias_of && (
-        <div style={{ ...style.hint, opacity: 0.64 }}>
+        <div style={style.hint}>
           of <code style={style.code}>{item.alias_of}</code>
         </div>
       )}
@@ -199,45 +198,59 @@ function PackageRow({ item, registry }: PackageProps) {
   );
 }
 
-function RegistryOverview() {
+function RegistryOption({
+  registry,
+  label,
+  detail,
+  initiallySelected = false,
+}: {
+  registry: Registry["name"] | "all";
+  label: string;
+  detail: string;
+  initiallySelected?: boolean;
+}) {
+  const id = `registry-filter-${registry}`;
   return (
-    <section
-      aria-label="Registry overview"
-      style={{ display: "flex", flexWrap: "wrap", gap: 12, margin: "26px 0" }}
-    >
-      {data.registries.map((registry) => (
-        <a
-          href={registry.url}
-          key={registry.name}
-          style={{
-            border: "1px solid rgba(127,127,127,.32)",
-            borderRadius: 10,
-            flex: "1 1 190px",
-            padding: "12px 14px",
-            textDecoration: "none",
-          }}
-        >
-          <strong style={{ display: "block", fontSize: 17 }}>{registry.label}</strong>
-          <span style={style.hint}>
-            {registry.ecosystem} · {published(registry).length} published
-          </span>
-        </a>
-      ))}
-    </section>
+    <>
+      <input
+        className="visually-hidden"
+        type="radio"
+        name="registry"
+        id={id}
+        value={registry}
+        defaultChecked={initiallySelected}
+      />
+      <label className="registry-option" htmlFor={id}>
+        <strong>{label}</strong>
+        <span className="registry-option-detail">{detail}</span>
+      </label>
+    </>
   );
 }
 
 function RegistryTable({ registry }: { registry: Registry }) {
   return (
-    <section style={{ marginTop: 34 }}>
-      <h2 style={{ fontSize: 21, marginBottom: 4 }}>
-        {registry.label}
-        <span style={{ ...style.hint, fontWeight: 400 }}>
-          {"  "}
-          {registry.ecosystem} · captured {data.retrieved}
-        </span>
-      </h2>
-      <div style={{ overflowX: "auto" }}>
+    <section
+      className="registry-section"
+      data-registry={registry.name}
+      aria-labelledby={`registry-${registry.name}-title`}
+    >
+      <div className="registry-section-heading">
+        <h2 id={`registry-${registry.name}-title`}>
+          {registry.label}
+          <span style={{ ...style.hint, fontWeight: 400 }}>
+            {"  "}
+            {registry.ecosystem} · captured {data.retrieved}
+          </span>
+        </h2>
+        <a href={registry.url}>Visit {registry.label} ↗</a>
+      </div>
+      <section
+        className="registry-table-scroll"
+        aria-label={`${registry.label} package table`}
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: Allow keyboard users to scroll a wide table.
+        tabIndex={0}
+      >
         <table style={style.table}>
           <thead>
             <tr style={{ textAlign: "left" }}>
@@ -254,38 +267,64 @@ function RegistryTable({ registry }: { registry: Registry }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
     </section>
   );
 }
 
 export default function Page() {
   return (
-    <main style={{ margin: "60px auto 90px", maxWidth: 980, padding: 24 }}>
-      <Link href="/">← Back to the workspace</Link>
-      <h1 style={{ fontSize: 34, margin: "22px 0 10px" }}>Package portfolio</h1>
-      <p style={{ maxWidth: "70ch" }}>
-        One directory over every registry the {data.owner} account publishes to. Versions, dates,
-        licenses, and platforms are captured from each registry on {data.retrieved} — nothing here
-        is maintained by hand.
-      </p>
-      <RegistryOverview />
-      {data.registries.map((registry) => (
-        <RegistryTable key={registry.name} registry={registry} />
-      ))}
-      <p style={style.note}>
-        Reserved names are listed because the account holds them; they publish no release, and a{" "}
-        <code style={style.code}>0.0.0</code> stub is never counted as a package. Download totals
-        are shown only where a registry publishes them: PyPI removed download counts from its JSON
-        API, so no figure appears for Python. Conda channel download counts are omitted until the
-        capture includes them.
-      </p>
-      <p style={{ marginTop: 26 }}>
-        <Link href="/docs/reference">Configuration reference</Link> ·{" "}
-        <Link href="/docs/development">Development workflow</Link> ·{" "}
-        <a href="https://github.com/Archont561?tab=repositories">Repositories</a> ·{" "}
-        <a href="https://github.com/Archont561/qgis-sdk/issues">Issues</a>
-      </p>
-    </main>
+    <>
+      <SiteHeader active="packages" />
+      <main id="main-content" className="utility-page package-page" tabIndex={-1}>
+        <Link href="/" className="utility-back">
+          ← Back to the workspace
+        </Link>
+        <h1 style={{ fontSize: 34, margin: "22px 0 10px" }}>Package portfolio</h1>
+        <p style={{ maxWidth: "70ch" }}>
+          One directory over every registry the {data.owner} account publishes to. Versions, dates,
+          licenses, and platforms are captured from each registry on {data.retrieved} — nothing here
+          is maintained by hand.
+        </p>
+        <fieldset className="registry-filter">
+          <legend>Filter by registry</legend>
+          <div className="registry-grid">
+            <RegistryOption
+              registry="all"
+              label="All registries"
+              detail="Show every package"
+              initiallySelected
+            />
+            {data.registries.map((registry) => (
+              <RegistryOption
+                registry={registry.name}
+                label={registry.label}
+                detail={`${registry.ecosystem} · ${published(registry).length} published`}
+                key={registry.name}
+              />
+            ))}
+            <div className="registry-sections">
+              <p className="registry-scroll-hint">Scroll sideways to see every column.</p>
+              {data.registries.map((registry) => (
+                <RegistryTable key={registry.name} registry={registry} />
+              ))}
+            </div>
+          </div>
+        </fieldset>
+        <p style={style.note}>
+          Reserved names are listed because the account holds them; they publish no release, and a{" "}
+          <code style={style.code}>0.0.0</code> stub is never counted as a package. Download totals
+          are shown only where a registry publishes them: PyPI removed download counts from its JSON
+          API, so no figure appears for Python. Conda channel download counts are omitted until the
+          capture includes them.
+        </p>
+        <p style={{ marginTop: 26 }}>
+          <Link href="/docs/reference">Configuration reference</Link> ·{" "}
+          <Link href="/docs/development">Development workflow</Link> ·{" "}
+          <a href="https://github.com/Archont561?tab=repositories">Repositories</a> ·{" "}
+          <a href="https://github.com/Archont561/qgis-sdk/issues">Issues</a>
+        </p>
+      </main>
+    </>
   );
 }

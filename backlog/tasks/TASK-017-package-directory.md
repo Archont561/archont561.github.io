@@ -1,10 +1,10 @@
 # TASK-017: Package directory filters and accurate registry details
 
-**Status:** not started · **Milestone:** M5 · **Labels:** portfolio, packages, data
+**Status:** in progress · **Milestone:** M5 · **Labels:** portfolio, packages, data
 
 ## Acceptance criteria
 
-- [ ] Keep `/packages/` as a static, useful directory using the committed npm,
+- [x] Keep `/packages/` as a static, useful directory using the committed npm,
       PyPI, and Prefix.dev snapshot. Retain its capture date and external links.
 - [ ] Add accessible filters or search by registry, project family, and relation;
       keep an unfiltered, navigable result available on mobile and without
@@ -19,6 +19,11 @@
       relation labels; link to package-specific docs only when they exist.
 - [ ] Verify keyboard/mobile behavior, static export, and browser regression
       tests without introducing request-time registry calls.
+
+The registry filter now uses native radio controls and CSS, so npm, PyPI,
+Prefix.dev, and the All registries reset work without JavaScript. Family and
+relation filters, the reserved-name discrepancy, and the browser regression
+suite remain open.
 
 This task changes the presentation of existing data only. Package-name checking,
 registration, and reservation automation remain discussion only.

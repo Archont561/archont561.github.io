@@ -12,6 +12,7 @@
     "dev": "bun run source && bun run styles && next dev --webpack --hostname 0.0.0.0",
     "build": "bun run source && bun run styles && next build --webpack && bun run --cwd ../.. --bun tools export-ai && pagefind --site out",
     "typecheck": "bun run source && next typegen && tsc --noEmit",
+    "test": "bun test tests/palette-search.test.ts",
     "test:seo": "bun test tests/seo.test.ts"
   },
   "dependencies": {
