@@ -39,3 +39,12 @@ pytest-bdd). Shared code must not be re-tested in every consumer.
 - `bun run test` (turbo) is the one test entry; CI runs it in `ci.yml`.
 - One scenario is one Bun test; example tables can be expressed as typed loops.
 - E2E/Playwright suites stay out of scope until M4.
+
+## M5 browser-test proposal
+
+`@playwright/test` is declared in the portfolio for the proposed browser suite,
+but no suite or runner is configured. Playwright Test is a separate runner from
+`bun test`; the Bun-only decision above remains in force until it is revised.
+[TASK-016](../tasks/TASK-016-portfolio-browser-tests.md) must resolve whether to
+record a targeted exception or use the Bun test-utils browser fixtures instead.
+Existing shared-code and scenario tests remain on Bun either way.

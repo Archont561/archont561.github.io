@@ -20,4 +20,6 @@
 
 The snapshot-only site and SEO surface are deployed. Live client data and
 fallback remain outstanding; do not mark this milestone complete until M2/M3
-and that integration are finished.
+and that integration are finished. The separate [M5](M5-portfolio-experience.md)
+tracks atlas, documentation, and offline improvements on the static foundation;
+those improvements do not require the unfinished M2/M3 integration.

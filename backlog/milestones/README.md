@@ -15,3 +15,4 @@ building `tools` itself (M1), per D-010.
 | [M2](M2-github-app.md) | Worker: Hono + OpenAPI + Neon + KV + webhooks |
 | [M3](M3-client.md) | github-app-client: codegen + bunup + npm publish |
 | [M4](M4-portfolio-seo.md) | Portfolio migration + SEO/LLM surface |
+| [M5](M5-portfolio-experience.md) | Portfolio atlas, documentation, and offline experience |
