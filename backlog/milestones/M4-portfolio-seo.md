@@ -14,10 +14,10 @@
 
 ## Exit criteria
 
-- [ ] Site builds and deploys to `https://archont561.github.io/`
+- [x] Site builds and deploys to `https://archont561.github.io/`
 - [x] All DOC-010 artifacts present and snapshot-tested
 - [ ] Live client data with snapshot fallback verified
 
-The snapshot-only site and SEO surface can ship before M2/M3. Live client data
-and fallback remain outstanding; do not mark this milestone complete until
-those dependencies and deployment verification are finished.
+The snapshot-only site and SEO surface are deployed. Live client data and
+fallback remain outstanding; do not mark this milestone complete until M2/M3
+and that integration are finished.
