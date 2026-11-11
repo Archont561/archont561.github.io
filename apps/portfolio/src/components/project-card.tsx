@@ -18,7 +18,7 @@ const icons = {
   "developer-tools": Terminal,
 };
 
-type Project = (typeof projects)[number];
+type Project = Omit<(typeof projects)[number], "language"> & { language: string | null };
 
 export default function ProjectCard({ project }: { project: Project }) {
   const Icon = icons[project.categoryId as keyof typeof icons] ?? Layers;

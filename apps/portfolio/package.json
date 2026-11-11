@@ -14,7 +14,8 @@
     "dev": "bun run source && bun run styles && next dev --webpack --hostname 0.0.0.0",
     "build": "bun run source && bun run styles && next build --webpack && bun run --cwd ../.. --bun tools export-ai && pagefind --site out",
     "typecheck": "bun run source && next typegen && tsc --noEmit",
-    "test": "bun test tests/palette-search.test.ts tests/project-catalog.test.ts tests/theme.test.ts",
+    "test": "bun test tests features --path-ignore-patterns=\"**/seo.test.ts\"",
+    "test:browser": "bun test tests/browser.test.ts",
     "test:seo": "bun test tests/seo.test.ts"
   },
   "dependencies": {
@@ -30,6 +31,8 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@aboviq/bun-test-cucumber": "^0.2.0",
+    "@archont561/bun-test-utils": "^0.2.0",
     "@playwright/test": "^1.65.0",
     "@types/bun": "^1.4.4",
     "@types/node": "^26.6.6",
@@ -37,6 +40,7 @@
     "@types/react-dom": "^19.3.0",
     "@unocss/cli": "^66.12.0",
     "pagefind": "^1.6.0",
+    "playwright": "^1.65.0",
     "typescript": "^7.0.2",
     "unocss": "^66.12.0",
     "workbox-build": "^7.4.1"

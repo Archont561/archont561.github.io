@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "@archont561/bun-test-utils";
 import {
   indexedPageToItem,
   matchingQuickLinks,

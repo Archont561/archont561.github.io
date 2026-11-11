@@ -40,11 +40,25 @@ pytest-bdd). Shared code must not be re-tested in every consumer.
 - One scenario is one Bun test; example tables can be expressed as typed loops.
 - E2E/Playwright suites stay out of scope until M4.
 
-## M5 browser-test proposal
+## M5 browser tests
 
-`@playwright/test` is declared in the portfolio for the proposed browser suite,
-but no suite or runner is configured. Playwright Test is a separate runner from
-`bun test`; the Bun-only decision above remains in force until it is revised.
-[TASK-016](../tasks/TASK-016-portfolio-browser-tests.md) must resolve whether to
-record a targeted exception or use the Bun test-utils browser fixtures instead.
-Existing shared-code and scenario tests remain on Bun either way.
+The portfolio uses the Bun runner and `bun-test-utils` fixtures with its
+`playwright` peer, not the separate Playwright Test runner. Its regular test
+entry includes component, scenario, and browser tests. Browser cases skip when
+no Playwright-managed Chromium or explicitly configured executable is installed;
+other launch failures remain failures. When a browser is available, the suite
+builds a fresh static export and serves it on a local test server. The portfolio
+Turbo test task bypasses the cache so installing a browser takes effect without a
+source change. Installation and executable-override instructions live in the
+portfolio README. No browser binary is bundled with the repository.
+
+Playwright's managed Chromium is the default rather than adding
+`@sparticuz/chromium`: the evaluated 153.0.0 package includes a separate, roughly
+70 MB unpacked serverless-oriented binary payload and requires explicit
+executable and launch-argument configuration. It is not discovered automatically
+by these fixtures. An externally provisioned binary, including Sparticuz Chromium, can
+still be used with the documented overrides when its version and platform are
+compatible.
+
+[TASK-016](../tasks/TASK-016-portfolio-browser-tests.md) remains open for WebKit,
+physical-device checks, the future interactive globe, and offline behavior.

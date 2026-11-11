@@ -1,8 +1,8 @@
-import { expect, test } from "bun:test";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { expect, test } from "@archont561/bun-test-utils";
 import { loadProjectCatalog } from "../src/lib/project-catalog";
 import { jsonLd } from "../src/lib/site";
 import { THEME_STORAGE_KEY } from "../src/lib/theme";
