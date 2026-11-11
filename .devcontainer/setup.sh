@@ -11,4 +11,4 @@ if [[ "${INSTALL_HOOKS:-false}" == "true" ]]; then
 else
   pixi run --locked tools devcontainer --setup
 fi
-printf '\nReady. Run pixi run check or pixi run dev.\n'
+printf '\nReady. Run pixi run check or pixi run bun run --cwd apps/portfolio dev.\n'

@@ -15,7 +15,7 @@ All artifacts are generated **at build time** into the static export:
 
 | Artifact | Mechanism |
 | --- | --- |
-| `sitemap.xml` | `app/sitemap.ts` (Next metadata route, from the Fumadocs loader; `lastModified` from frontmatter/file mtime) |
+| `sitemap.xml` | `app/sitemap.ts` (Next metadata route, from the Fumadocs loader; `lastModified` from frontmatter when declared; omitted otherwise to keep exports reproducible across checkouts) |
 | `robots.txt` | `app/robots.ts` (allow + `Sitemap:` line; explicit AI-crawler policy) |
 | `feed.xml` + `feed.json` | build-time generation (`tools export-ai`), discovery `<link>`s rendered manually in the layout (relative hrefs — `metadata.alternates` would emit absolute URLs that break link-check pre-deploy) |
 | `llms.txt` / `llms-full.txt` | build-time via Fumadocs processed-markdown (`includeProcessedMarkdown` + `getLLMText`) |

@@ -31,6 +31,7 @@ pixi run readme              # render templates/README.md.ejs
 pixi run agents              # refresh marked AGENTS.md regions safely
 pixi run readme-check        # check without writing
 pixi run agents-check        # check without writing
+pixi run tools export-ai    # after a portfolio static build
 pixi run tools registries --check
 pixi run tools watch-repos --check
 pixi run tools task --list

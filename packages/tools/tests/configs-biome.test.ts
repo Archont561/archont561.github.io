@@ -8,6 +8,7 @@ function seedBiomeProject(directory: string): void {
   const shared = "packages/tools/src/configs/biome";
   for (const path of [
     "src",
+    "apps/portfolio/src/app",
     "data",
     "node_modules/one",
     "nested/node_modules/two",
@@ -19,6 +20,8 @@ function seedBiomeProject(directory: string): void {
   copyFileSync(join(repo, "biome.json"), join(directory, "biome.json"));
   copyFileSync(join(repo, shared, "base.json"), join(directory, shared, "base.json"));
   writeFileSync(join(directory, "src/main.ts"), "export function value() {\nreturn 1;\n}\n");
+  writeFileSync(join(directory, "apps/portfolio/src/app/uno.css"), ".generated{color:red;}\n");
+  writeFileSync(join(directory, "apps/portfolio/next-env.d.ts"), "export const generated=1;\n");
   for (const path of [
     "data/packages.json",
     "data/repositories.json",
@@ -45,6 +48,12 @@ test("root Biome inherits the base and never rewrites dependency trees", () => {
     expect(readFileSync(join(directory, "biome.json"), "utf8")).toBe(rootConfig);
     expect(readFileSync(join(directory, "src/main.ts"), "utf8")).toBe(
       "export function value() {\n  return 1;\n}\n",
+    );
+    expect(readFileSync(join(directory, "apps/portfolio/src/app/uno.css"), "utf8")).toBe(
+      ".generated{color:red;}\n",
+    );
+    expect(readFileSync(join(directory, "apps/portfolio/next-env.d.ts"), "utf8")).toBe(
+      "export const generated=1;\n",
     );
     for (const path of ["data/packages.json", "data/repositories.json"]) {
       expect(readFileSync(join(directory, path), "utf8")).toBe('{"items":[1,2]}\n');

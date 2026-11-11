@@ -1,0 +1,67 @@
+---
+title: Documentation policy
+description: "Purpose, ownership, drift prevention, and the definition of done."
+---
+
+## Purpose
+
+The `docs/` directory is the primary user-facing knowledge layer of this repository.
+It contains the maintained, discoverable source of truth for understanding, using, configuring, and operating the software.
+Documentation serves both human users and AI agents. It must be accurate, actionable, easy to navigate, and consistent with the implementation.
+
+## Principles
+
+1. **Documentation is part of the product.** It is not an afterthought or an optional summary of implementation.
+2. **Prefer one canonical explanation.** Avoid duplicating the same knowledge across multiple documents.
+3. **Document observable behavior.** Describe what the software does, not merely what was intended.
+4. **Write for users first.** Prefer practical explanations, examples, and clear instructions over implementation-centric descriptions.
+5. **Keep documentation discoverable.** Organize documents by purpose and provide clear navigation.
+6. **Treat outdated documentation as a defect.** Correct incorrect instructions and obsolete references.
+
+## Organization
+
+* `guides/`: task-oriented instructions and workflows.
+* `concepts/`: domain concepts and explanations.
+* `reference/`: APIs, configuration, commands, and schemas.
+* `architecture/`: system architecture and architectural decisions.
+* `development/`: contribution, testing, and development workflows.
+* `projects/`: repository summaries and source links.
+
+The root README introduces the product and directs readers to relevant documentation.
+
+## Prevent documentation drift
+
+Every change affecting user-visible behavior, configuration, APIs, workflows, or operational requirements must include a documentation-impact assessment.
+During implementation and review:
+
+* Identify affected documentation.
+* Update canonical documents instead of creating unnecessary duplicates.
+* Document new user-facing capabilities.
+* Remove obsolete instructions, examples, and references.
+* Verify that commands, configuration examples, and code snippets remain valid.
+* Ensure internal links and navigation resolve correctly.
+
+A change is not fully documented merely because implementation is complete.
+
+## Validation
+
+CI runs alint for repository conventions, Vale for prose, lychee for local links, and SEO contract tests against the static build.
+Configure required checks in GitHub branch protection before merging.
+Automated checks are necessary but insufficient: reviewers must assess whether documentation accurately reflects implemented behavior.
+
+## Definition of done
+
+* Relevant documentation has been identified.
+* Existing documentation has been updated where necessary.
+* New user-facing behavior is documented.
+* Examples and instructions reflect the implementation.
+* Obsolete information has been removed.
+* Documentation validation passes.
+
+If no documentation change is necessary, state that decision and its rationale during review.
+
+## Ownership
+
+Every contributor changing the product is responsible for assessing its documentation impact.
+Maintain documentation continuously as part of development, not occasional cleanup.
+The goal is for `docs/` to remain a trustworthy representation of the software.

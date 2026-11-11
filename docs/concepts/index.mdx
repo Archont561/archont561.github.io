@@ -1,0 +1,27 @@
+---
+title: Concepts
+description: "Understand the static site, repository data, and agent interfaces."
+---
+
+## Static by design
+
+Fumadocs MDX compiles source content into React pages. Next.js enumerates
+documentation routes at build time. The host only serves files. Browser-side
+project filters and Pagefind search do not need a server.
+
+## Repository-led content
+
+`data/repositories.json` records the committed public repository capture;
+`data/repository-audit.json` preserves the historical upstream audit.
+`apps/portfolio/src/lib/projects.json` selects homepage projects. Update the
+curation and corresponding project MDX pages together when metadata changes.
+`data/packages.json` supplies the package page. Builds do not call the GitHub
+API or registries. Descriptions state repository scope, not verified maturity.
+
+The intended live worker-client integration and snapshot fallback depend on
+unfinished M2 and M3 work. The current site is snapshot-only.
+
+## Human and agent access
+
+The same canonical sources produce HTML and portable Markdown. See
+[AI access](/docs/ai-access) for the generated indexes.

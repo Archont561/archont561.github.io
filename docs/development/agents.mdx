@@ -1,0 +1,16 @@
+---
+title: Agent instructions
+description: Maintain generated instructions and human-owned notes safely.
+---
+
+## Generate or check
+
+```sh
+pixi run agents
+pixi run agents-check
+```
+
+`packages/tools/src/maintenance/agents.ts` runs the pinned `agents-md` tool and
+updates marked regions safely. Put durable repository instructions outside the
+`agents-md:begin/end` markers; the human-owned notes are preserved. Tests in
+`packages/tools/tests/` cover normalization, safety, and idempotence.

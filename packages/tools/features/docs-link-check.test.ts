@@ -83,3 +83,60 @@ test
   .then("its failure reaches the caller", ({ message, expect }) => {
     expect(message).toContain("lychee failed");
   });
+
+test
+  .scenario<Fixtures>("Link checking: validate source routes without a build")
+  .given("documentation with a page and a section index", ({ tmpdir }) => {
+    docsFixture(tmpdir.dir);
+    writeFixture(tmpdir.dir, "docs/about.mdx", "# About\n");
+    writeFixture(tmpdir.dir, "docs/guides/index.mdx", "# Guides\n");
+    return { root: tmpdir.dir };
+  })
+  .when("source-only link checking is prepared", ({ root }) => {
+    const stage = mkdtempSync(join(tmpdir(), "links-source-"));
+    try {
+      const args = linkArguments({ root, offline: true }, stage);
+      return {
+        root: args[args.indexOf("--root-dir") + 1],
+        indexFiles: args[args.indexOf("--index-files") + 1],
+        about: readlinkSync(join(stage, "docs/about/index.mdx")),
+        guides: readlinkSync(join(stage, "docs/guides/index.mdx")),
+      };
+    } finally {
+      rmSync(stage, { recursive: true, force: true });
+    }
+  })
+  .then(
+    "published routes resolve to their MDX sources",
+    ({ root, indexFiles, about, guides, expect }) => {
+      expect(root).toContain("links-source-");
+      expect(indexFiles).toBe("index.mdx,index.html");
+      expect(about).toEndWith("docs/about.mdx");
+      expect(guides).toEndWith("docs/guides/index.mdx");
+    },
+  );
+
+test
+  .scenario<Fixtures>("Link checking: reject ambiguous documentation routes")
+  .given("two pages with the same published slug", ({ tmpdir }) => {
+    docsFixture(tmpdir.dir);
+    writeFixture(tmpdir.dir, "docs/guides.mdx", "# Guides\n");
+    writeFixture(tmpdir.dir, "docs/guides/index.mdx", "# Guides\n");
+    return { root: tmpdir.dir };
+  })
+  .when("source-only checking is prepared", ({ root }) => {
+    const stage = mkdtempSync(join(tmpdir(), "links-duplicate-"));
+    try {
+      try {
+        linkArguments({ root }, stage);
+        return { message: "" };
+      } catch (error) {
+        return { message: String(error) };
+      }
+    } finally {
+      rmSync(stage, { recursive: true, force: true });
+    }
+  })
+  .then("the duplicate route fails closed", ({ message, expect }) => {
+    expect(message).toContain("Duplicate documentation route");
+  });

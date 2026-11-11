@@ -3,7 +3,7 @@
 exports[`tools CLI root help lists discovered commands 1`] = `
 "Archont561 repo automation (tools v0.0.0)
 
-USAGE tools agents|check-structure|devcontainer|docs-link-check|readme|registries|task|version|watch-repos
+USAGE tools agents|check-structure|devcontainer|docs-link-check|export-ai|readme|registries|task|version|watch-repos
 
 COMMANDS
 
@@ -11,6 +11,7 @@ COMMANDS
   check-structure    Validate repository structure and package versions
      devcontainer    Validate or prepare the locked development container
   docs-link-check    Check documentation links with lychee
+        export-ai    Export processed documentation to Markdown, feeds and LLM indexes
            readme    Generate the root README from package metadata
        registries    Refresh npm, PyPI and Prefix.dev package snapshots
              task    List and run file-aware repository tasks

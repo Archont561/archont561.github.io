@@ -22,7 +22,7 @@ bunx tools <command>              # same entry via workspace bin
 | `docs-link-check` | implemented | `doit docs_link_check` | lychee/link check over `docs/` |
 | `devcontainer` | implemented | `doit devcontainer_setup` | devcontainer lifecycle checks |
 | `task` | implemented | doit runner | list and execute file-aware DAG tasks (DOC-013) |
-| `export-ai` | M4 | `doit export_ai` | llms.txt, llms-full.txt, per-page `.md`, feeds (D-008) |
+| `export-ai` | implemented | `doit export_ai` | llms.txt, llms-full.txt, per-page `.md`, feeds (D-008) |
 
 ## Repository maintenance
 
@@ -91,9 +91,10 @@ README is not present here, so the monorepo README is not modified by watchers.
 Lychee checks `README.md` and `docs/**/*.{md,mdx}`; by default it also contacts
 remote links. CI uses `--offline` for deterministic local checks. After a static
 export exists, `--site-dir apps/portfolio/out --base-path /project` adds HTML
-and remaps the published GitHub Pages prefix to local files. Unsafe paths and a
-missing export fail closed. Neither this check nor devcontainer validation
-starts a server. See DOC-008 for locked bootstrap and opt-in hooks.
+and remaps the published GitHub Pages prefix to local files. Without an export,
+source-only checks stage Fumadocs-style routes pointing at the corresponding MDX. Unsafe paths and a
+missing export fail closed. The portfolio uses root hosting, so omit `--base-path` for its export. Neither
+this check nor devcontainer validation starts a server. See DOC-008 for locked bootstrap and opt-in hooks.
 
 ## Task kernel
 
@@ -124,3 +125,12 @@ against its manifest, and `readme:check` depends on every workspace check. See
 Commands are imported lazily. Root help loads their metadata, and a broken
 module or invalid command export fails with its filename and a clear reason
 rather than silently disappearing from help. See DOC-012 for an example.
+
+## Static AI exports
+
+`pixi run tools export-ai` consumes the Fumadocs-processed `ai-manifest.json`
+from `apps/portfolio/out` after Next.js has built it. It writes Markdown twins,
+LLM indexes, RSS/JSON feeds, and `.nojekyll`; it validates paths and dates before
+writing. The portfolio build invokes it and then indexes HTML with Pagefind.
+Run `bun run --cwd apps/portfolio test:seo` after building to verify the actual
+HTML, sitemap, Markdown, feeds, search index, and locked output hashes.

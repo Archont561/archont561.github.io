@@ -1,0 +1,19 @@
+{
+  "title": "Projects",
+  "pages": [
+    "index",
+    "qgis-agent-harness",
+    "qgis-sdk",
+    "cloudcompare-conda",
+    "odm-conda",
+    "pixi-sandbox",
+    "universe",
+    "staged-recipes-submit",
+    "bun-test-utils",
+    "playtest",
+    "artifactspec",
+    "skills",
+    "pyshellforge",
+    "clifacet"
+  ]
+}

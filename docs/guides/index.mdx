@@ -1,0 +1,37 @@
+---
+title: Run the portfolio
+description: "Install dependencies and preview the portfolio locally."
+---
+
+## Prerequisites
+
+Install Pixi 0.84.1. Pixi locks Node.js, Bun, and native quality tools; Bun
+locks the JavaScript workspaces. The devcontainer uses Linux x86-64, while the
+Pixi lock also includes Linux ARM and macOS platforms.
+
+Prefer a container? Follow [Development container](/docs/guides/devcontainer).
+
+## Install and run
+
+```sh
+pixi install --locked
+pixi run bun install --frozen-lockfile
+pixi run bun run --cwd apps/portfolio dev
+```
+
+Open `http://localhost:3000/`. The development server binds to `0.0.0.0`.
+Documentation search needs the production Pagefind index; the homepage project
+filter also works in development.
+
+## Build
+
+```sh
+pixi run bun run --cwd apps/portfolio build
+pixi run bun run --cwd apps/portfolio test:seo
+```
+
+The build exports HTML, creates AI-readable files, and builds Pagefind search.
+Serve `apps/portfolio/out/` from the root of a static server. A Next.js runtime
+server is not required or supported with `output: 'export'`.
+See the [deployment guide](/docs/guides/deployment) and
+[command reference](/docs/reference).

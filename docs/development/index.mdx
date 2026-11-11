@@ -1,0 +1,36 @@
+---
+title: Development workflow
+description: Local checks, tests, generation, and contribution workflow.
+---
+
+## Install and validate
+
+```sh
+pixi install --locked
+pixi run bun install --frozen-lockfile
+pixi run check
+pixi run bun run --cwd apps/portfolio build
+pixi run bun run --cwd apps/portfolio test:seo
+pixi run tools docs-link-check --offline --site-dir apps/portfolio/out
+```
+
+The workspace quality gate runs Biome, TypeScript, Bun tests, maintenance
+checks, offline documentation links, Vale, and alint. CI also runs actionlint,
+policy checks, coverage, and Conventional Commit validation. The site build
+uses committed data; refresh snapshots separately when network access is
+available. See the [reference](/docs/reference) for commands.
+
+## Tests and generated content
+
+Executable Given/When/Then scenarios live in `packages/tools/features/`, with
+unit and integration tests in `packages/tools/tests/`. SEO contract tests run
+after the site build. Do not edit generated `.next/`, `.source/`, `out/`,
+`src/app/uno.css`, or the marked generated regions in `AGENTS.md`.
+The root README is rendered from `templates/README.md.ejs` by `pixi run readme`.
+Use `pixi run agents` to refresh agent instructions while retaining human notes.
+
+## Contributions
+
+Use Conventional Commits. Install Git hooks explicitly with
+`pixi run hooks-install`. Update canonical documentation when behavior changes,
+and refresh the backlog index when task or milestone status changes.

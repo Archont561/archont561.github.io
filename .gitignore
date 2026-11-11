@@ -3,6 +3,9 @@ node_modules/
 dist/
 out/
 .next/
+.source/
+**/next-env.d.ts
+apps/portfolio/src/app/uno.css
 coverage/
 *.tsbuildinfo
 

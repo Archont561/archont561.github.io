@@ -1,0 +1,20 @@
+---
+title: Developer sandbox configuration
+description: The declared pixi-sandbox bundle and its validation boundary.
+---
+
+## Configuration
+
+`pixi-sandbox.toml` declares schema 1 and a `developer` bundle for the locked
+Pixi default environment on `linux-64`. Cargo vendoring is disabled because
+this repository has no Rust workspace. The structure checker validates the
+configuration.
+
+## Build and distribution boundary
+
+The generated `.github/workflows/publish-sandbox.yml` publishes the bundle to
+`sandbox/developer-linux-64`. The generated `scripts/restore.sh` fetches and
+restores it. Regenerate these files with `pixi-sandbox init`; do not edit them.
+See [pixi-sandbox](https://github.com/Archont561/pixi-sandbox) for its current
+verification contract. The Pixi environment and JavaScript dependencies have
+separate lockfiles; generated site artifacts are not part of the bundle.

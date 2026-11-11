@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test } from "@archont561/bun-test-utils";
 import { assertSuccess, repo, run, tsc } from "@/tests/fixtures/config-test-utils.ts";
@@ -13,10 +13,21 @@ const workspaces = [
 
 type Workspace = (typeof workspaces)[number];
 
+function assertRawConfig(workspace: Workspace, raw: Record<string, unknown>): void {
+  if (workspace.kind !== "app") {
+    expect(Object.keys(raw)).toEqual(["extends"]);
+    return;
+  }
+  expect(Object.keys(raw)).toEqual(["extends", "compilerOptions", "include"]);
+  expect(raw.compilerOptions).toEqual({ plugins: [{ name: "next" }], types: ["node", "bun"] });
+  expect(raw.include).toContain(".source/**/*.ts");
+  expect(raw.include).toContain("tests/**/*.ts");
+}
+
 function assertCompilerSettings(workspace: Workspace): void {
   const dir = join(repo, workspace.path);
   const raw = JSON.parse(readFileSync(join(dir, "tsconfig.json"), "utf8"));
-  expect(Object.keys(raw)).toEqual(["extends"]);
+  assertRawConfig(workspace, raw);
   const result = run(tsc, ["--showConfig", "-p", dir], dir);
   assertSuccess(result);
   const config = JSON.parse(result.stdout);
@@ -37,7 +48,11 @@ function assertCompilerSettings(workspace: Workspace): void {
   });
   const expectedLib = workspace.kind === "app" ? ["esnext", "dom", "dom.iterable"] : ["esnext"];
   const expectedTypes =
-    workspace.kind === "worker" ? ["@cloudflare/workers-types", "node"] : ["node"];
+    workspace.kind === "worker"
+      ? ["@cloudflare/workers-types", "node"]
+      : workspace.kind === "app"
+        ? ["node", "bun"]
+        : ["node"];
   expect(config.compilerOptions.lib).toEqual(expectedLib);
   expect(config.compilerOptions.types).toEqual(expectedTypes);
   expect(config.compilerOptions.jsx).toBe(workspace.kind === "app" ? "preserve" : undefined);
@@ -65,6 +80,9 @@ function typecheckAlias(workspace: Workspace): void {
     source += 'export { default as config } from "../bunup.config.ts";\n';
   }
   try {
+    if (workspace.kind === "app" && !existsSync(join(dir, ".source/server.ts"))) {
+      assertSuccess(run(process.execPath, ["run", "source"], dir));
+    }
     writeFileSync(file, workspace.kind === "tools" ? source + rootImport : source);
     assertSuccess(run(tsc, ["--noEmit", "-p", dir], dir));
     if (workspace.kind !== "tools") {

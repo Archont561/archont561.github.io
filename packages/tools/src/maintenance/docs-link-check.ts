@@ -29,12 +29,27 @@ function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/** Model Fumadocs routes for source-only checks without needing a site build. */
+function stageSourceRoutes(root: string, stage: string): void {
+  const docs = join(root, "docs");
+  const pages = [...new Bun.Glob("**/*.mdx").scanSync({ cwd: docs, onlyFiles: true })].sort();
+  for (const page of pages) {
+    const slug = page.replace(/\.mdx$/, "").replace(/(^|\/)index$/, "");
+    const directory = join(stage, "docs", slug);
+    const target = join(directory, "index.mdx");
+    mkdirSync(directory, { recursive: true });
+    if (pathExists(target)) throw new Error(`Duplicate documentation route: /docs/${slug}`);
+    symlinkSync(join(docs, page), target, "file");
+  }
+}
+
 function siteArguments(root: string, options: LinkCheckOptions, stage: string): string[] {
   const base = normalizeBasePath(options.basePath);
   const siteDir = options.siteDir;
   if (!siteDir) {
     if (base) throw new Error("A base path requires --site-dir");
-    return ["--root-dir", root];
+    stageSourceRoutes(root, stage);
+    return ["--root-dir", stage, "--index-files", "index.mdx,index.html"];
   }
   if (
     isAbsolute(siteDir) ||

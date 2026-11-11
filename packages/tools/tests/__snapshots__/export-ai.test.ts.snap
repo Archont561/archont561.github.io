@@ -1,0 +1,12 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`exports processed Markdown, escaped indexes and honest dates deterministically 1`] = `
+"{
+  "docs/index.md": "# A title\\n\\n[Other](https://archont561.github.io/docs/other/)\\n",
+  "docs/other.md": "# Other\\n\\nProcessed content.\\n",
+  "llms.txt": "# Archont561\\n\\n> Public geospatial and reproducibility tooling.\\n\\n## Documentation\\n\\n- [A \\\\[title\\\\] & more](https://archont561.github.io/docs/index.md): A <summary> & notes\\n- [Other](https://archont561.github.io/docs/other.md): A dated page\\n",
+  "llms-full.txt": "# A title\\n\\n[Other](https://archont561.github.io/docs/other/)\\n\\n---\\n\\n# Other\\n\\nProcessed content.\\n",
+  "feed.xml": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>\\n<rss version=\\"2.0\\">\\n  <channel>\\n    <title>Archont561 field notes</title>\\n    <link>https://archont561.github.io/docs/</link>\\n    <description>Documentation for the Archont561 portfolio.</description>\\n    <language>en</language>\\n    <item>\\n      <title>A [title] &amp; more</title>\\n      <link>https://archont561.github.io/docs/</link>\\n      <guid isPermaLink=\\"true\\">https://archont561.github.io/docs/</guid>\\n      <description>A &lt;summary&gt; &amp; notes</description>\\n    </item>\\n    <item>\\n      <title>Other</title>\\n      <link>https://archont561.github.io/docs/other/</link>\\n      <guid isPermaLink=\\"true\\">https://archont561.github.io/docs/other/</guid>\\n      <pubDate>Thu, 29 Feb 2024 00:00:00 GMT</pubDate>\\n      <description>A dated page</description>\\n    </item>\\n  </channel>\\n</rss>\\n",
+  "feed.json": "{\\n  \\"version\\": \\"https://jsonfeed.org/version/1.1\\",\\n  \\"title\\": \\"Archont561 field notes\\",\\n  \\"home_page_url\\": \\"https://archont561.github.io/docs/\\",\\n  \\"feed_url\\": \\"https://archont561.github.io/feed.json\\",\\n  \\"items\\": [\\n    {\\n      \\"id\\": \\"https://archont561.github.io/docs/\\",\\n      \\"url\\": \\"https://archont561.github.io/docs/\\",\\n      \\"title\\": \\"A [title] & more\\",\\n      \\"content_text\\": \\"A <summary> & notes\\"\\n    },\\n    {\\n      \\"id\\": \\"https://archont561.github.io/docs/other/\\",\\n      \\"url\\": \\"https://archont561.github.io/docs/other/\\",\\n      \\"title\\": \\"Other\\",\\n      \\"content_text\\": \\"A dated page\\",\\n      \\"date_modified\\": \\"2024-02-29T00:00:00Z\\"\\n    }\\n  ]\\n}\\n"
+}"
+`;

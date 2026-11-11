@@ -1,0 +1,37 @@
+---
+title: Deploy to GitHub Pages
+description: Publish the static export from the user-site repository.
+---
+
+## Prepare the repository
+
+1. Clone `Archont561/archont561.github.io` and work from its root.
+2. Run `pixi install --locked`, `pixi run bun install --frozen-lockfile`,
+   `pixi run check`, `pixi run bun run --cwd apps/portfolio build`, and
+   `pixi run bun run --cwd apps/portfolio test:seo`.
+3. In **Settings → Pages → Build and deployment**, select **GitHub Actions**.
+4. Review and merge the change to `main` after the required checks pass.
+
+The intended user-site URL is `https://archont561.github.io/`.
+
+## Validation and deployment
+
+`ci.yml` runs the repository quality gate on pull requests and pushes to `main`.
+`pages.yml` builds and checks the static site on pull requests; pushes to `main`
+and manual dispatches on `main` also deploy through the `github-pages`
+environment. Configure branch protection and any environment approvals in
+GitHub settings; workflow files cannot enforce those repository settings.
+
+The older profile repository may independently serve the project-site URL
+`https://archont561.github.io/Archont561/`. This user-site repository neither
+controls that deployment nor supplies redirects for it. Preserve or redirect
+the old project site in its own repository if its existing links must continue
+to work; do not assume a root-site deployment changes or replaces it.
+
+## Operational checks
+
+After deployment, check the homepage, a project page, search, packages,
+`llms.txt`, and a Markdown twin. Fetch `robots.txt`, `sitemap.xml`, `feed.xml`,
+and `feed.json` at the site root. A missing artifact indicates a failed export
+or deployment. Other static hosts can serve `apps/portfolio/out/` at the root,
+but the canonical origin is fixed to the GitHub Pages user site.
