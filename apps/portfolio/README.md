@@ -69,20 +69,52 @@ Command+K to open it, the arrow keys and Enter to select a result, and Escape to
 close it. Quick links cover the main site sections; search results come from the
 built Pagefind documentation index. The direct `/search/` page remains available,
 and the search links lead there without JavaScript; its fallback links to the
-documentation and project list.
+documentation and project list. The not-found page offers the same search, a
+small site index, and a link to the full XML sitemap. Its decorative map honors
+reduced-motion preferences, and its navigation remains usable without JavaScript.
+The site-wide `llms.txt` is linked from the homepage footer; documentation pages
+retain links to their individual Markdown twins.
 
 The packages page reads the committed `data/packages.json`. Choose npm, PyPI,
 or Prefix.dev to filter its directory, or choose All registries to reset it;
 these controls work without JavaScript. Each registry heading retains a link to
 its external registry. Project cards and docs are generated from curated
 `data/projects/` records and the committed `data/repositories.json` snapshot.
-Run `bun run --cwd apps/portfolio projects:generate` after changing them, and
+Run `pixi run tools task portfolio:projects:generate` after changing them, and
 commit the generated project pages, navigation, and `src/lib/projects.json`.
 See the [project data workflow](../../docs/development/documentation.mdx#project-data)
-for overrides and optional project-specific notes. Builds and `projects:check`
-validate the catalog without network access. No live worker call or client
-fallback is implemented yet: M2/M3 must land first (D-011).
+for overrides, optional project-specific notes, and adoption of existing pages.
+Builds and `pixi run tools task portfolio:projects:check` validate the catalog
+without network access. No live worker call or client fallback is implemented
+yet: M2/M3 must land first (D-011).
 
 `@/*` maps to this package root. The shared Next and TypeScript configs support
-that alias; cross-workspace imports use package names. UnoCSS consumes the
-shared preset; handwritten CSS supplies the visual identity.
+that alias; cross-workspace imports use package names. The tools task kernel
+finds the portfolio's `tasks/*.ts` registry through its workspace manifest.
+
+## Design tokens
+
+`src/app/tokens.css` is the source of truth for the day and night palettes and
+semantic CSS variables. Change both `--palette-day-*` and `--palette-night-*`
+values when updating the identity; components should consume semantic tokens,
+not palette primitives. Primary actions use `--color-primary` with
+`--color-on-primary`; `--color-secondary` is an accent for text and details.
+Use `--color-background`, `--color-surface`, `--color-text`, `--color-muted`,
+`--color-border`, and `--color-link` for common surfaces and content. Spacing
+and radius tokens such as `--space-4` and `--radius-md` are also available.
+
+```css
+.example-action {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-control);
+  gap: var(--space-3);
+}
+```
+
+The semantic values follow the document theme, including the CSS-only system
+preference fallback. Existing short variable names remain compatibility aliases;
+use `--color-*` in new CSS. UnoCSS exposes the same values through the
+`terrain-text-primary`, `terrain-text-secondary`, `terrain-bg-primary`, and
+`terrain-surface` utilities. The token tests check key text/background pairs for
+at least 4.5:1 contrast in both themes; test any new combinations separately.

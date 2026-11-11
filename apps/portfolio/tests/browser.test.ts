@@ -62,6 +62,78 @@ async function expectTheme(page: Page, theme: "day" | "night") {
   expect(await page.locator(".theme-icon-moon").isVisible()).toBe(!dark);
 }
 
+async function expectNotFoundAnimations(page: Page, reducedMotion: boolean) {
+  for (const name of ["not-found-orbit", "not-found-pulse"]) {
+    const animation = await page
+      .locator(`.${name}`)
+      .evaluate((node) => getComputedStyle(node).animationName);
+    expect(animation).toBe(reducedMotion ? "none" : name);
+  }
+}
+
+async function expectResponsiveWidths(page: Page) {
+  for (const width of [320, 360, 361, 375, 390, 400, 410, 411, 480, 768]) {
+    await page.setViewportSize({ width, height: 800 });
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+  }
+}
+
+async function expectSearchFallback(page: Page) {
+  const fallback = page.locator(".search-panel noscript");
+  expect(await fallback.isVisible()).toBe(true);
+  expect(await fallback.textContent()).toContain("Search requires JavaScript.");
+  expect(await fallback.getByRole("link", { name: "documentation" }).getAttribute("href")).toBe(
+    "/docs/",
+  );
+}
+
+async function themeTokens(page: Page, mode: "day" | "night") {
+  return page.evaluate((selected) => {
+    const style = getComputedStyle(document.documentElement);
+    const value = (name: string) => style.getPropertyValue(name).trim();
+    return {
+      primary: value("--color-primary"),
+      secondary: value("--color-secondary"),
+      primaryAlias: value("--green"),
+      secondaryAlias: value("--atlas-accent"),
+      expectedPrimary: value(`--palette-${selected}-primary`),
+      expectedSecondary: value(`--palette-${selected}-secondary`),
+    };
+  }, mode);
+}
+
+async function primaryButtonColors(page: Page) {
+  // Let the button's background transition finish before comparing colors.
+  await page.waitForFunction(() => {
+    const button = document.querySelector<HTMLElement>(".button.primary");
+    if (!button) return false;
+    const probe = document.createElement("span");
+    button.appendChild(probe);
+    probe.style.color = "var(--color-primary)";
+    const matches = getComputedStyle(button).backgroundColor === getComputedStyle(probe).color;
+    probe.remove();
+    return matches;
+  });
+  return page
+    .locator(".button.primary")
+    .first()
+    .evaluate((button) => {
+      const style = getComputedStyle(button);
+      const background = style.backgroundColor;
+      const foreground = style.color;
+      const probe = document.createElement("span");
+      button.appendChild(probe);
+      probe.style.color = "var(--color-primary)";
+      const expectedBackground = getComputedStyle(probe).color;
+      probe.style.color = "var(--color-on-primary)";
+      const expectedForeground = getComputedStyle(probe).color;
+      probe.remove();
+      return { background, foreground, expectedBackground, expectedForeground };
+    });
+}
+
 browserTest(
   "theme follows, persists, and reacts to browser preference changes",
   async ({ browserPage, portfolioUrl }) => {
@@ -88,6 +160,75 @@ browserTest(
     expect(await page.evaluate((key) => localStorage.getItem(key), THEME_STORAGE_KEY)).toBe(
       "light",
     );
+  },
+  timeout,
+);
+
+browserTest(
+  "inline bootstrap applies browser and saved themes before React hydration",
+  async ({ browser, portfolioUrl }) => {
+    const instance: Browser = browser;
+    const context = await instance.newContext({ colorScheme: "dark" });
+    // Block framework scripts, not the synchronous inline bootstrap in the head.
+    await context.route("**/_next/static/**/*.js*", (route) => route.abort());
+    try {
+      const page = await context.newPage();
+      await page.goto(`${portfolioUrl}/`);
+      expect(await page.locator("html").getAttribute("data-terrain-theme")).toBe("night");
+      expect(await page.locator(".theme-toggle").isDisabled()).toBe(true);
+      expect(await page.locator(".theme-icon-sun").isVisible()).toBe(true);
+      expect(await page.evaluate((key) => localStorage.getItem(key), THEME_STORAGE_KEY)).toBeNull();
+      const night = await themeTokens(page, "night");
+      expect(night.primary).toBe(night.expectedPrimary);
+      expect(night.secondary).toBe(night.expectedSecondary);
+
+      await page.evaluate((key) => localStorage.setItem(key, "light"), THEME_STORAGE_KEY);
+      await page.reload();
+      expect(await page.locator("html").getAttribute("data-terrain-theme")).toBe("day");
+      expect(await page.locator(".theme-toggle").isDisabled()).toBe(true);
+      expect(await page.locator(".theme-icon-moon").isVisible()).toBe(true);
+      const day = await themeTokens(page, "day");
+      expect(day.primary).toBe(day.expectedPrimary);
+      expect(day.secondary).toBe(day.expectedSecondary);
+    } finally {
+      await context.close();
+    }
+  },
+  timeout,
+);
+
+browserTest(
+  "semantic color tokens switch with the theme on the portfolio and docs",
+  async ({ browserPage, portfolioUrl }) => {
+    const page: Page = browserPage;
+    await page.emulateMedia({ colorScheme: "light" });
+    await page.goto(`${portfolioUrl}/`);
+    await expectTheme(page, "day");
+    const day = await themeTokens(page, "day");
+    expect(day.primary).toBe(day.expectedPrimary);
+    expect(day.secondary).toBe(day.expectedSecondary);
+    expect(day.primaryAlias).toBe(day.primary);
+    expect(day.secondaryAlias).toBe(day.secondary);
+    const dayButton = await primaryButtonColors(page);
+    expect(dayButton.background).toBe(dayButton.expectedBackground);
+    expect(dayButton.foreground).toBe(dayButton.expectedForeground);
+
+    await page.getByRole("button", { name: "Switch to dark theme" }).click();
+    await expectTheme(page, "night");
+    const night = await themeTokens(page, "night");
+    expect(night.primary).toBe(night.expectedPrimary);
+    expect(night.secondary).toBe(night.expectedSecondary);
+    expect(night.primaryAlias).toBe(night.primary);
+    expect(night.secondaryAlias).toBe(night.secondary);
+    const nightButton = await primaryButtonColors(page);
+    expect(nightButton.background).toBe(nightButton.expectedBackground);
+    expect(nightButton.foreground).toBe(nightButton.expectedForeground);
+    expect(nightButton.background).not.toBe(dayButton.background);
+    expect(night.primary).not.toBe(day.primary);
+    expect(night.secondary).not.toBe(day.secondary);
+    await page.goto(`${portfolioUrl}/docs/`);
+    await expectTheme(page, "night");
+    expect((await themeTokens(page, "night")).primary).toBe(night.primary);
   },
   timeout,
 );
@@ -264,6 +405,91 @@ browserTest(
 );
 
 browserTest(
+  "the not-found page offers workspace navigation and indexed search",
+  async ({ browserPage, portfolioUrl }) => {
+    const page: Page = browserPage;
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    const response = await page.goto(`${portfolioUrl}/a-missing-trail/`);
+    expect(response?.status()).toBe(404);
+    await expectNotFoundAnimations(page, false);
+    expect(
+      await page
+        .getByRole("heading", { level: 1, name: "This page is not on the map." })
+        .isVisible(),
+    ).toBe(true);
+    const index = page.getByRole("navigation", { name: "Explore the workspace" });
+    expect(await index.getByRole("link", { name: /Project directory/ }).getAttribute("href")).toBe(
+      "/projects/",
+    );
+    expect(await index.getByRole("link", { name: /Full sitemap/ }).getAttribute("href")).toBe(
+      "/sitemap.xml",
+    );
+
+    const search = page.locator('.not-found-search[aria-haspopup="dialog"]');
+    await search.waitFor();
+    await search.focus();
+    await page.keyboard.press("Enter");
+    const dialog = page.getByRole("dialog", { name: "Search the workspace" });
+    await dialog.waitFor();
+    await page.keyboard.press("Escape");
+    expect(await search.evaluate((node) => document.activeElement === node)).toBe(true);
+    await search.click();
+    await dialog.waitFor();
+    await dialog.getByRole("combobox", { name: "Search the documentation" }).fill("qgis-sdk");
+    const result = dialog.getByRole("option").filter({ hasText: "qgis-sdk" }).first();
+    await result.waitFor();
+    await result.click();
+    await page.waitForURL("**/docs/projects/qgis-sdk/");
+  },
+  timeout,
+);
+
+browserTest(
+  "the mobile not-found page works without JavaScript and respects reduced motion",
+  async ({ browser, portfolioUrl }) => {
+    const instance: Browser = browser;
+    const context = await instance.newContext({
+      javaScriptEnabled: false,
+      colorScheme: "dark",
+      reducedMotion: "reduce",
+      viewport: { width: 320, height: 800 },
+    });
+    try {
+      const page = await context.newPage();
+      const response = await page.goto(`${portfolioUrl}/missing/nested/page/`);
+      expect(response?.status()).toBe(404);
+      expect(
+        await page
+          .getByRole("heading", { level: 1, name: "This page is not on the map." })
+          .isVisible(),
+      ).toBe(true);
+      await expectResponsiveWidths(page);
+      await page.setViewportSize({ width: 375, height: 800 });
+      await expectNotFoundAnimations(page, true);
+      expect(
+        await page
+          .getByRole("navigation", { name: "Explore the workspace" })
+          .getByRole("link")
+          .count(),
+      ).toBe(5);
+      await page.getByRole("link", { name: "Search the workspace", exact: true }).click();
+      await page.waitForURL("**/search/");
+      await expectSearchFallback(page);
+      await page.goBack();
+      await page
+        .getByRole("navigation", { name: "Explore the workspace" })
+        .getByRole("link", { name: /Project directory/ })
+        .click();
+      await page.waitForURL("**/projects/");
+      expect(await page.locator(".project-directory").isVisible()).toBe(true);
+    } finally {
+      await context.close();
+    }
+  },
+  timeout,
+);
+
+browserTest(
   "without JavaScript the directory and browser theme remain usable",
   async ({ browser, portfolioUrl }) => {
     const instance: Browser = browser;
@@ -275,6 +501,12 @@ browserTest(
       expect(await page.locator(".theme-toggle").isDisabled()).toBe(true);
       expect(await page.locator(".theme-icon-sun").isVisible()).toBe(true);
       expect(await page.locator(".theme-icon-moon").isVisible()).toBe(false);
+      const night = await themeTokens(page, "night");
+      expect(night.primary).toBe(night.expectedPrimary);
+      await page.emulateMedia({ colorScheme: "light" });
+      const day = await themeTokens(page, "day");
+      expect(day.primary).toBe(day.expectedPrimary);
+      expect(day.primary).not.toBe(night.primary);
       expect(await page.locator(".project-directory .project-card").count()).toBe(projects.length);
       const fallback = page.locator(".project-directory-noscript");
       expect(await fallback.isVisible()).toBe(true);

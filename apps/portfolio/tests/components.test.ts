@@ -1,6 +1,7 @@
 import { expect, test } from "@archont561/bun-test-utils";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import NotFound from "@/src/app/not-found";
 import BrandMark from "@/src/components/brand-mark";
 import GlobePlaceholder from "@/src/components/globe-placeholder";
 import Portfolio from "@/src/components/portfolio";
@@ -80,11 +81,25 @@ test("the homepage preview contains only featured projects", () => {
   expect(html).toContain('id="work"');
 });
 
-test("the footer keeps documentation and machine-readable destinations", () => {
-  const html = renderToStaticMarkup(createElement(SiteFooter));
-  expect(html).toContain('href="/llms.txt"');
-  expect(html).toContain('href="/feed.xml"');
-  expect(html).toContain("https://github.com/Archont561/archont561.github.io");
+test("the site-wide LLM index is only offered by the homepage footer", () => {
+  const home = renderToStaticMarkup(createElement(SiteFooter, { showLlmsIndex: true }));
+  const other = renderToStaticMarkup(createElement(SiteFooter, {}));
+  expect(home).toContain('href="/llms.txt"');
+  expect(other).not.toContain('href="/llms.txt"');
+  expect(other).toContain('href="/feed.xml"');
+  expect(other).toContain("https://github.com/Archont561/archont561.github.io");
+});
+
+test("the not-found page provides search and a navigable site index", () => {
+  const html = renderToStaticMarkup(createElement(NotFound));
+  expect(html).toContain('id="main-content"');
+  expect(html).toContain("This page is not on the map.");
+  expect(html).toMatch(/class="not-found-search" href="\/search\/?"/);
+  expect(html).toContain('aria-label="Explore the workspace"');
+  expect(html).toContain('href="/sitemap.xml"');
+  expect(html).toContain("Project directory");
+  expect(html).toContain("Package directory");
+  expect(html).toContain('class="not-found-map" aria-hidden="true"');
 });
 
 test("structured data cannot terminate its script element", () => {

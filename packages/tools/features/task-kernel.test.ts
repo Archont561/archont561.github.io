@@ -175,6 +175,35 @@ test
   });
 
 test
+  .scenario<Fixtures>("Task kernel: discover workspace-owned tasks through the CLI")
+  .given("a task registry in a declared workspace", ({ tmpdir }) => {
+    createRepository(tmpdir.dir);
+    writeFixture(
+      tmpdir.dir,
+      "apps/portfolio/tasks/project.ts",
+      `import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+export default [{ name: 'portfolio:example', run({ root }) { writeFileSync(join(root, 'workspace-ran.txt'), root); } }];\n`,
+    );
+    return { root: tmpdir.dir };
+  })
+  .when("the CLI lists and executes the workspace task", ({ root }) => ({
+    root,
+    list: runTool(root, "task", "--list"),
+    result: runTool(root, "task", "portfolio:example"),
+  }))
+  .then(
+    "the source is shown and the task receives the selected root",
+    ({ root, list, result, expect }) => {
+      expect(list.status).toBe(0);
+      expect(list.stdout).toContain("portfolio:example\tapps/portfolio/tasks/project.ts");
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain("run\tportfolio:example");
+      expect(readFixture(root, "workspace-ran.txt")).toBe(root);
+    },
+  );
+
+test
   .scenario<Fixtures>("Task kernel: reject duplicate registries")
   .given("two files declaring the same task name", ({ tmpdir }) => {
     fileTask(tmpdir.dir);

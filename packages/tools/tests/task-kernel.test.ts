@@ -90,6 +90,61 @@ tempTest(
   },
 );
 
+tempTest(
+  "discovers tasks in declared workspaces and executes them against the selected root",
+  async ({ root }) => {
+    createRepository(root);
+    writeFixture(root, "tasks/repo.ts", "export default [{name: 'repo:fixture', run() {}}];");
+    writeFixture(
+      root,
+      "apps/portfolio/tasks/fixture.ts",
+      `import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+export default [{ name: 'portfolio:fixture', run({root}) { writeFileSync(join(root, 'ran.txt'), root); } }];`,
+    );
+    writeFixture(root, "apps/portfolio/tasks/ignored.test.ts", "throw new Error('test file')");
+    writeFixture(root, "apps/portfolio/tasks/ignored.spec.ts", "throw new Error('spec file')");
+    writeFixture(root, "apps/portfolio/tasks/ignored.d.ts", "throw new Error('declaration')");
+    writeFixture(
+      root,
+      "apps/portfolio/tasks/internal/ignored.ts",
+      "throw new Error('nested file')",
+    );
+    writeFixture(
+      root,
+      "packages/github-app-client/tasks/fixture.ts",
+      "export default [{name: 'client:fixture', run() {}}];",
+    );
+    writeFixture(root, "apps/unlisted/tasks/ignored.ts", "throw new Error('undeclared workspace')");
+    const registry = await discoverTasks(root);
+    const item = registry.find(({ task }) => task.name === "portfolio:fixture");
+    expect(item?.source).toBe("apps/portfolio/tasks/fixture.ts");
+    expect(registry.findIndex(({ task }) => task.name === "repo:fixture")).toBeLessThan(
+      registry.findIndex(({ task }) => task.name === "portfolio:fixture"),
+    );
+    expect(registry.findIndex(({ task }) => task.name === "portfolio:fixture")).toBeLessThan(
+      registry.findIndex(({ task }) => task.name === "client:fixture"),
+    );
+    expect(await runTasks(registry, ["portfolio:fixture"], { root })).toEqual([
+      { name: "portfolio:fixture", status: "run" },
+    ]);
+    expect(await Bun.file(join(root, "ran.txt")).text()).toBe(root);
+  },
+);
+
+tempTest(
+  "duplicate names across repository and workspace task registries fail clearly",
+  async ({ root }) => {
+    createRepository(root);
+    const source = "export default [{name: 'duplicate', run() {}}];";
+    writeFixture(root, "tasks/root.ts", source);
+    writeFixture(root, "apps/portfolio/tasks/workspace.ts", source);
+    await expect(discoverTasks(root)).rejects.toThrow(
+      'Duplicate task "duplicate" in tasks/root.ts and apps/portfolio/tasks/workspace.ts',
+    );
+  },
+);
+
 test("backlog statuses support frontmatter and existing bold status lines", () => {
   expect(statusOf("---\nstatus: in progress\n---\n")).toBe("in progress");
   expect(statusOf("**Status:** done · **Milestone:** M1")).toBe("done");

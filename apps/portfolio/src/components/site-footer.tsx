@@ -2,7 +2,7 @@ import { ArrowUpRight, Github } from "lucide-react";
 import Link from "next/link";
 import BrandMark from "@/src/components/brand-mark";
 
-export default function SiteFooter() {
+export default function SiteFooter({ showLlmsIndex = false }: { showLlmsIndex?: boolean }) {
   return (
     <footer>
       <Link href="/" className="footer-brand">
@@ -13,9 +13,11 @@ export default function SiteFooter() {
         <Link href="/projects/">
           Projects <ArrowUpRight size={12} />
         </Link>
-        <a href="/llms.txt">
-          llms.txt <ArrowUpRight size={12} />
-        </a>
+        {showLlmsIndex && (
+          <a href="/llms.txt">
+            llms.txt <ArrowUpRight size={12} />
+          </a>
+        )}
         <Link href="/docs/ai-access">
           AI exports <ArrowUpRight size={12} />
         </Link>

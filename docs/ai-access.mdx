@@ -27,8 +27,8 @@ pixi run bun run --cwd apps/portfolio test:seo
 pixi run tools docs-link-check --offline --site-dir apps/portfolio/out
 ```
 
-The homepage footer and documentation header link to `llms.txt`. Every docs
-page also links to its Markdown twin and advertises it in its HTML metadata.
+The homepage footer links to the site-wide `llms.txt`. Each documentation page
+links to its own Markdown twin and advertises it in its HTML metadata.
 The site is rooted at `https://archont561.github.io/`; there is no base-path
 setting. Pagefind searches the exported HTML in production. If custom MDX
 components are introduced, provide a portable Fumadocs Markdown representation

@@ -1,7 +1,7 @@
 import { test } from "@archont561/bun-test-utils";
-import { renderProjectOutputs } from "@/scripts/project-render";
 import { indexedPageToItem, matchingQuickLinks, mergePaletteItems } from "@/src/lib/palette-search";
 import { loadProjectCatalog } from "@/src/lib/project-catalog";
+import { renderProjectOutputs } from "@/tasks/lib/project-render";
 
 interface Fixtures {
   tmpdir: { dir: string; write: (path: string, content: string) => string };

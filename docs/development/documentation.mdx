@@ -59,13 +59,19 @@ as ordinary Markdown rather than relying on JSX to supply facts: the Markdown
 twins and AI indexes use Fumadocs processed Markdown, not rendered components.
 
 After editing records, optional project notes, categories, or repository snapshots,
-run `bun run --cwd apps/portfolio projects:generate` and review the generated
+run `pixi run tools task portfolio:projects:generate` and review the generated
 `docs/projects/` pages, navigation metadata, and
 `apps/portfolio/src/lib/projects.json`. Commit these outputs with their inputs;
-do not edit generated files directly. `projects:check` detects drift, and the
-portfolio source/build scripts also generate the files before Fumadocs runs.
-Removing a record removes its generated page, so review URL compatibility before
-doing so.
+do not edit generated files directly. `pixi run tools task portfolio:projects:check`
+detects drift without changing generated files. The portfolio source and build
+commands also invoke the generator before Fumadocs runs. Removing a record
+removes its generated page, so review URL compatibility before doing so.
+
+The generator refuses to overwrite an existing, unmarked project page. Move any
+custom content into its matching `data/projects/<slug>.mdx` first, then review and
+run `pixi run tools task portfolio:projects:adopt` if the page should be replaced
+by generated output. An extra, unmarked page with no matching data record must be
+moved or given a record before generation can continue.
 
 ## Prevent documentation drift
 

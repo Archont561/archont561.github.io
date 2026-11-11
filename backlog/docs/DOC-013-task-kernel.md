@@ -16,9 +16,9 @@ zero-dependency module, not a framework.
 
 ## Kernel semantics (doit's runner loop)
 
-1. Load the task registries — built-in `packages/tools/src/tasks/*.ts` plus
-   repo-authored `tasks/*.ts` at the root (every file default-exports `Tasks`;
-   discovery rules below).
+1. Load the task registries — built-in `packages/tools/src/tasks/*.ts`,
+   repo-authored `tasks/*.ts` at the root, and `tasks/*.ts` in declared
+   workspaces (every file default-exports `Tasks`; discovery rules below).
 2. Resolve the DAG for the requested task name(s).
 3. Per task: hash `fileDep` globs, consult state (`.tools-cache/tasks.json`,
    gitignored), run the `upToDate` predicate — **skip if clean, run if dirty**.
@@ -79,19 +79,25 @@ running actions or writing state. Cache files are local, not a cross-process loc
 
 ## Task discovery
 
-The loader merges two registries and every file default-exports `Tasks`:
+The loader merges registries in this order; each file default-exports `Tasks`:
 
 - `packages/tools/src/tasks/*.ts` — **built-ins**: generic tasks + presets
   (`forWorkspaces`, `readme:check`).
 - `tasks/*.ts` at the repo root — **repo-authored** chores.
+- `<workspace>/tasks/*.ts` — project-owned chores in workspaces declared by the
+  root manifest, sorted by workspace path. The portfolio's project generator is
+  one example; list it with `pixi run tools task --list`.
 
-Rules: TS only; deterministic sorted order; duplicate names across files are
-a hard error naming both sources; `--list` shows each task's source file;
-discovered files must typecheck (tools' tsconfig `include` covers
-`tasks/**/*.ts`); `@archont561/tools/tasks` is a real subpath export so repo
-files import the same kernel instance the CLI runs. Built-in registries can also
-export `createTasks(root)` to expand against an explicitly selected `--root`;
-their default export remains a `Tasks` array.
+Rules: immediate `.ts` files only, excluding declarations and `*.test.ts` or
+`*.spec.ts`; files are sorted in each directory. Duplicate names across files
+are a hard error naming both sources, and `--list` shows each task's source.
+Discovered files must typecheck: tools' tsconfig covers root `tasks/**/*.ts`,
+while each workspace should include its own `tasks/**/*.ts`. File dependencies,
+targets, and `TaskContext.root` are relative to the selected repository root,
+not the workspace. `@archont561/tools/tasks` is a real subpath export so repo
+files import the same kernel instance the CLI runs. Registries can also export
+`createTasks(root)` to expand against an explicitly selected `--root`; their
+default export remains a `Tasks` array.
 
 ## Division of labor
 
@@ -117,8 +123,9 @@ their default export remains a `Tasks` array.
 `readme:check` depends on all `readme:check:<workspace-path>` tasks.
 
 Generic machinery (`forWorkspaces`, `readme:check`) ships as built-ins in
-tools; the repo-specific rows live in root `tasks/` — the engine is the
-package, the chores are repo files (D-010).
+tools; repository-wide chores live in root `tasks/`, and project-specific chores
+can live with their workspace. The engine is the package, and the chores are repo
+files (D-010).
 
 ## Presets in practice
 

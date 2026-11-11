@@ -65,6 +65,15 @@ test("every documentation source has a sitemap entry, LLM row, Markdown twin and
     expect(sitemap).toContain(`<loc>${origin}${path}</loc>`);
 });
 
+test("the site-wide LLM index is linked only from the homepage", () => {
+  expect(file("index.html")).toContain('href="/llms.txt"');
+  const otherPages = [...new Bun.Glob("**/*.html").scanSync({ cwd: out, onlyFiles: true })].filter(
+    (path) => path !== "index.html",
+  );
+  expect(otherPages.length).toBeGreaterThan(0);
+  for (const path of otherPages) expect(file(path)).not.toContain('href="/llms.txt"');
+});
+
 test("discovery, JSON-LD, feeds, assets and search index use root-site paths", () => {
   const home = file("index.html");
   for (const path of [
@@ -527,6 +536,9 @@ test("the exported not-found page has a skip-link target and working navigation"
     expect(html).toContain('href="#main-content"');
     expect(html).toContain('id="main-content"');
     expect(html).toContain("This page is not on the map.");
+    expect(html).toContain('class="not-found-search" href="/search/"');
+    expect(html).toContain('aria-label="Explore the workspace"');
+    expect(html).toContain('href="/sitemap.xml"');
     expect(html).toContain('href="/docs/"');
   }
 });

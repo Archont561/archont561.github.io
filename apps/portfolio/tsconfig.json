@@ -11,7 +11,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "scripts/**/*.ts",
+    "tasks/**/*.ts",
     "source.config.ts",
     "uno.config.ts",
     "next-env.d.ts",

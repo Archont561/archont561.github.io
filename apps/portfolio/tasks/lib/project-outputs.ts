@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { GENERATED_MARKER } from "@/scripts/project-render";
+import { GENERATED_MARKER } from "@/tasks/lib/project-render";
 
 export type OutputChanges = { stale: string[]; orphaned: string[]; unmanaged: string[] };
 

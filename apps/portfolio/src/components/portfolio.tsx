@@ -125,7 +125,7 @@ export default function Portfolio() {
           <AboutSection />
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter showLlmsIndex />
     </div>
   );
 }
