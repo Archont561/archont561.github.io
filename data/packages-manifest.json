@@ -1,0 +1,166 @@
+{
+  "owner": "Archont561",
+  "identity": {
+    "npm": {
+      "user": "archont",
+      "scope": "@archont561"
+    },
+    "pypi": {
+      "user": "Archont561"
+    },
+    "prefix": {
+      "channel": "@archont561/archont561",
+      "install_channel": "https://prefix.dev/archont561/archont561"
+    }
+  },
+  "registries": [
+    {
+      "name": "npm",
+      "label": "npm",
+      "ecosystem": "JavaScript",
+      "url": "https://www.npmjs.com",
+      "packages": [
+        {
+          "name": "@archont561/qgis-sdk",
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk"
+        },
+        {
+          "name": "qgis-sdk",
+          "relation": "alias",
+          "alias_of": "@archont561/qgis-sdk",
+          "note": "Unscoped reservation so a bare npm install of qgis-sdk cannot pull an unrelated build."
+        },
+        {
+          "name": "@archont561/qgis-sdk-ui",
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk"
+        },
+        {
+          "name": "qgis-sdk-ui",
+          "relation": "alias",
+          "alias_of": "@archont561/qgis-sdk-ui"
+        },
+        {
+          "name": "@archont561/bun-test-utils",
+          "relation": "authored",
+          "repo": "Archont561/bun-test-utils"
+        },
+        {
+          "name": "@archont561/pathway",
+          "relation": "authored"
+        },
+        {
+          "name": "@archont561/playtest",
+          "relation": "reserved",
+          "note": "Name held for a future release; nothing is published under it."
+        },
+        {
+          "name": "playtest-ts",
+          "relation": "reserved"
+        },
+        {
+          "name": "@archont561/geoquery",
+          "relation": "reserved",
+          "note": "Trusted-publishing bootstrap; the registry is the first publisher."
+        },
+        {
+          "name": "@archont561/ferra",
+          "relation": "reserved"
+        },
+        {
+          "name": "@archont561/nadir",
+          "relation": "reserved"
+        },
+        {
+          "name": "@archont561/polybridge",
+          "relation": "reserved"
+        }
+      ]
+    },
+    {
+      "name": "pypi",
+      "label": "PyPI",
+      "ecosystem": "Python",
+      "url": "https://pypi.org",
+      "packages": [
+        {
+          "name": "qgis-sdk",
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk"
+        },
+        {
+          "name": "qgis-sdk-runtime",
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk"
+        },
+        {
+          "name": "qgis-sdk-tools",
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk"
+        },
+        {
+          "name": "pyshellforge",
+          "relation": "authored",
+          "repo": "Archont561/PyShellForge"
+        },
+        {
+          "name": "rude-clean-code",
+          "relation": "authored",
+          "repo": "Archont561/rude-clean-code"
+        }
+      ]
+    },
+    {
+      "name": "prefix",
+      "label": "Prefix.dev",
+      "ecosystem": "Conda",
+      "url": "https://prefix.dev/channels/@archont561/archont561",
+      "packages": [
+        {
+          "name": "qgis-sdk",
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk"
+        },
+        {
+          "name": "qgis-sdk-runtime",
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk"
+        },
+        {
+          "name": "qgis-sdk-tools",
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk"
+        },
+        {
+          "name": "pixi-sandbox",
+          "relation": "authored",
+          "repo": "Archont561/pixi-sandbox"
+        },
+        {
+          "name": "cloudcompare",
+          "relation": "upstream",
+          "upstream": "CloudCompare/CloudCompare",
+          "repo": "Archont561/CloudCompare-conda",
+          "note": "Conda build of software maintained elsewhere; the recipe is the contribution."
+        },
+        {
+          "name": "fastrasterfilter",
+          "relation": "unreviewed"
+        },
+        {
+          "name": "fpcfilter",
+          "relation": "unreviewed"
+        },
+        {
+          "name": "dem2points",
+          "relation": "unreviewed"
+        },
+        {
+          "name": "odm-orthophoto",
+          "relation": "unreviewed"
+        }
+      ]
+    }
+  ]
+}

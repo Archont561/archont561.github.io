@@ -19,10 +19,89 @@ rules:
     paths: docs/**/*.mdx
     level: error
 
-  - id: shared-root-contract
+  - id: required-file-01
     kind: file_exists
-    paths: ["README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSE", "pixi.toml", "pixi.lock", "pixi-sandbox.toml", "scripts/restore.sh", "bun.lock", "lefthook.yml", "biome.json", "turbo.json", "docs/index.mdx"]
-    root_only: true
+    paths: "README.md"
+    level: error
+  - id: required-file-02
+    kind: file_exists
+    paths: "AGENTS.md"
+    level: error
+  - id: required-file-03
+    kind: file_exists
+    paths: "CONTRIBUTING.md"
+    level: error
+  - id: required-file-04
+    kind: file_exists
+    paths: "LICENSE"
+    level: error
+  - id: required-file-05
+    kind: file_exists
+    paths: "package.json"
+    level: error
+  - id: required-file-06
+    kind: file_exists
+    paths: ".alint.yml"
+    level: error
+  - id: required-file-07
+    kind: file_exists
+    paths: ".lychee.toml"
+    level: error
+  - id: required-file-08
+    kind: file_exists
+    paths: ".devcontainer/devcontainer.json"
+    level: error
+  - id: required-file-09
+    kind: file_exists
+    paths: "pixi.toml"
+    level: error
+  - id: required-file-10
+    kind: file_exists
+    paths: "pixi.lock"
+    level: error
+  - id: required-file-11
+    kind: file_exists
+    paths: "pixi-sandbox.toml"
+    level: error
+  - id: required-file-12
+    kind: file_exists
+    paths: "scripts/restore.sh"
+    level: error
+  - id: required-file-13
+    kind: file_exists
+    paths: "templates/README.md.ejs"
+    level: error
+  - id: required-file-14
+    kind: file_exists
+    paths: "bun.lock"
+    level: error
+  - id: required-file-15
+    kind: file_exists
+    paths: "lefthook.yml"
+    level: error
+  - id: required-file-16
+    kind: file_exists
+    paths: "biome.json"
+    level: error
+  - id: required-file-17
+    kind: file_exists
+    paths: "turbo.json"
+    level: error
+  - id: required-file-18
+    kind: file_exists
+    paths: "docs/index.mdx"
+    level: error
+  - id: required-file-19
+    kind: file_exists
+    paths: "data/packages-manifest.json"
+    level: error
+  - id: required-file-20
+    kind: file_exists
+    paths: "data/packages.json"
+    level: error
+  - id: required-file-21
+    kind: file_exists
+    paths: "data/repositories.json"
     level: error
   - id: immutable-actions
     kind: pinned_references

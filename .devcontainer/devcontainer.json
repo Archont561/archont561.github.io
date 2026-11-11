@@ -1,6 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
   "name": "archont561.github.io",
-  "image": "ghcr.io/prefix-dev/pixi:0.81.0",
-  "postCreateCommand": "bash .devcontainer/setup.sh"
+  "image": "ghcr.io/prefix-dev/pixi:0.84.1",
+  "runArgs": ["--platform=linux/amd64"],
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "waitFor": "postCreateCommand",
+  "forwardPorts": [3000],
+  "customizations": {
+    "vscode": { "settings": { "typescript.tsdk": "node_modules/typescript/lib" } }
+  }
 }

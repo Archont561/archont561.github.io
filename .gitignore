@@ -29,6 +29,7 @@ coverage/
 .npm/
 .semgrep/
 .turbo/
+.tools-cache/
 .config/
 .local/
 .cache/

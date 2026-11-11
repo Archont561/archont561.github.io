@@ -1,4 +1,4 @@
 [test]
 preload = ["@archont561/bun-test-utils"]
-# Command discovery exercises temporary TypeScript files outside the repository.
-coveragePathIgnorePatterns = ["**/tools commands */**"]
+# Scenario and discovery fixtures exercise test-only TypeScript modules.
+coveragePathIgnorePatterns = ["**/tools commands */**", "**/bun-test-utils-tmp-*/**", "**/tools-task-unit-*/**", "**/tests/fixtures/**", "tests/fixtures/**"]

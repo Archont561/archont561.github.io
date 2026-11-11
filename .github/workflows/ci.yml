@@ -1,4 +1,4 @@
-# Quality gate: biome, typecheck, tests, actionlint, convco.
+# Quality gate: all local checks, coverage, actionlint, PCC policy, convco.
 name: CI
 
 on:
@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Lint, typecheck, test
+    name: Quality checks
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -46,12 +46,8 @@ jobs:
           install -m 755 "$stage/$asset" "$RUNNER_TEMP/pixi-sandbox"
           "$RUNNER_TEMP/pixi-sandbox" init --check --project-root . --script-path scripts/restore.sh
         # canonical arguments also live in the `sandbox-check` pixi task
-      - name: Lint
-        run: pixi run lint
-      - name: Typecheck
-        run: pixi run typecheck
-      - name: Test
-        run: pixi run test
+      - name: Workspace quality gate
+        run: pixi run check
       - name: Coverage (lcov)
         shell: bash
         run: |

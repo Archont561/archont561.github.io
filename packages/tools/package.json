@@ -8,6 +8,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./package-meta": "./src/package-meta/index.ts",
+    "./tasks": "./src/tasks/index.ts",
     "./configs/bunup": "./src/configs/bunup/base.ts",
     "./configs/unocss": "./src/configs/unocss/base.ts",
     "./configs/next": "./src/configs/next/base.mjs"
@@ -21,11 +22,13 @@
   },
   "dependencies": {
     "@types/node": "^26.6.6",
-    "citty": "^0.2.2"
+    "citty": "^0.2.2",
+    "ejs": "^7.0.2"
   },
   "devDependencies": {
     "@aboviq/bun-test-cucumber": "^0.2.0",
     "@archont561/bun-test-utils": "^0.2.0",
-    "@types/bun": "^1.4.4"
+    "@types/bun": "^1.4.4",
+    "@types/ejs": "^3.1.5"
   }
 }

@@ -3,45 +3,50 @@
 > Guidance for AI coding agents working in this repo. Read this first.
 > **Before building, changing, or debugging anything: verify live state** (read the
 > actual code, config, and deployed branch). Do not act on stale assumptions.
+>
+> `pixi run agents` refreshes marked regions. Keep repository-specific policies
+> and human notes outside those markers so future refreshes preserve them.
 
 <!-- agents-md:begin id=overview -->
 ## Overview
-archont561-workspace. Stack: bun, turbo, hono (planned), next/fumadocs (planned).
+archont561-workspace. Stack: node (typescript).
 <!-- agents-md:end id=overview -->
+
+Bun and Turbo power the workspace; Hono and Next/Fumadocs are planned.
 
 <!-- agents-md:begin id=commands -->
 ## Commands
 - Install: `bun install --frozen-lockfile`
+- Dev / run: `bun run dev`
 - Test: `bun run test`
 - Lint: `bun run lint`
 - Typecheck: `bun run typecheck`
 - Format: `bun run format`
-- Tools CLI: `pixi run tools <command>`
 <!-- agents-md:end id=commands -->
 
-<!-- agents-md:begin id=testing -->
+- Tools CLI: `pixi run tools <command>`
+
 ## Testing
 Executable Given/When/Then specs use `test.scenario` from
 `@archont561/bun-test-utils` in `packages/tools/features/*.test.ts`; unit and
 integration tests live in `packages/tools/tests/`. Run them with `bun test`.
 Shared code is tested once, in `tools` — consuming packages do not duplicate
 those suites.
-<!-- agents-md:end id=testing -->
 
 <!-- agents-md:begin id=structure -->
 ## Project structure
-Top-level: `apps/` (portfolio, github-app), `packages/` (tools, github-app-client),
-`backlog/` (tasks, docs, decisions, milestones), `docs/` (site content). Tools
-provide package metadata, CLI discovery, and shared configs; the apps and
-remaining automation are scaffolded or planned in `backlog/`.
+Top-level: `apps/`, `backlog/`, `data/`, `docs/`, `packages/`, `scripts/`, `tasks/`, `templates/`.
 <!-- agents-md:end id=structure -->
+
+Tools provide package metadata, CLI discovery, shared configs, maintenance
+commands, snapshot checks, and a task kernel. Apps and later-milestone features
+remain scaffolded or planned in `backlog/`.
 
 ## Agent skills
 `.agents/skills/` (when present) contains curated skills from related Archont561
 repositories and project-specific patterns. Treat skills as reference material;
 adopt them as project policy only through canonical docs.
 
-<!-- agents-md:begin id=conventions -->
 ## Code style & conventions
 Biome for JS/TS/JSON/CSS (root `biome.json`), Vale for prose, alint for repo
 structure. TypeScript strict, ESM only, Bun executes TypeScript natively — no
@@ -52,44 +57,38 @@ reserved for `packages/tools` tooling; cross-package via package names. Public
 source graphs consumed by another package use package self-references or local
 relative imports instead of private `@/` aliases: consumers' TypeScript, Next,
 and bunup declaration resolution use the consumer's alias context.
-<!-- agents-md:end id=conventions -->
 
-<!-- agents-md:begin id=git -->
 ## Git & PR workflow
-Conventional commits; one Backlog.md task per PR. CI runs biome, typecheck, tests,
-actionlint, convco over the PR range.
-<!-- agents-md:end id=git -->
+Conventional commits; normally one Backlog.md task per PR. CI runs the full
+workspace check, coverage, policy, actionlint, and convco over the PR range.
 
-<!-- agents-md:begin id=gotchas -->
 ## Gotchas & hard-won lessons
 _TBD: add after every incident._
-<!-- agents-md:end id=gotchas -->
 
-<!-- agents-md:begin id=security -->
 ## Security & secrets
 Never commit secrets. Cloudflare secrets (`GITHUB_APP_PRIVATE_KEY`, `DATABASE_URL`,
 `KV` bindings) live in wrangler secrets — never in `wrangler.jsonc`.
-<!-- agents-md:end id=security -->
 
-<!-- agents-md:begin id=boundaries -->
 ## Boundaries
 - ✅ **Always**: run `bun run check` before committing; assess documentation impact.
 - ⚠️ **Ask first**: adding dependencies, schema/migrations, deploy/CI changes, publishing.
 - 🚫 **Never**: commit secrets, hand-edit generated files (`scripts/restore.sh`,
   `.github/workflows/relock.yml`, `.github/workflows/publish-sandbox.yml` once
   `pixi-sandbox init` has run), force-push the default branch.
-<!-- agents-md:end id=boundaries -->
 
 ## Notes
 <!-- Human-owned. Anything here is never touched by re-runs of agents-md. -->
 
-- Install with `pixi install` and `bun install`. Pixi owns system tools; Bun owns JS.
+- Install with `pixi install --locked` and `bun install --frozen-lockfile`. Pixi
+  owns system tools; Bun owns JS. Run `bun run check` inside the Pixi environment.
 - `packages/tools` is **repo-internal** (`private: true`) — it is not published and
   not meant for other repositories.
-- Implemented tools include package metadata, CLI command discovery (`version`
-  only), and shared configs; the apps and remaining automation are still
-  scaffolds or designs in `backlog/`. Do not implement features outside a
-  milestone without asking.
+- M1 commands and the task kernel are implemented. Apps, release preparation,
+  and SEO work are still scaffolds or designs in `backlog/`; do not implement
+  features outside a milestone without asking.
+- Snapshot refreshes contact public registries and write dated `data/` captures;
+  `--check` validates committed evidence offline. Refresh the backlog index with
+  `pixi run tools task docs:index` after changing task or milestone status.
 - `pixi-sandbox init` (v0.9.0) will generate `scripts/restore.sh`,
   `.github/workflows/relock.yml`, `.github/workflows/publish-sandbox.yml`. Those
   files are generated — regenerate, never hand-edit. Gate drift with

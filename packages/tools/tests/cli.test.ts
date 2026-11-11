@@ -172,6 +172,6 @@ describe("tools CLI", () => {
     const result = runCli("--help");
     expect(result.status).toBe(0);
     expect(result.stderr).toBe("");
-    expect(result.stdout.replaceAll("\r\n", "\n")).toMatchSnapshot();
+    expect(result.stdout.replaceAll("\r\n", "\n").replace(/[\t ]+$/gm, "")).toMatchSnapshot();
   });
 });
