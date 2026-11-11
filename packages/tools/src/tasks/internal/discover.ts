@@ -2,6 +2,7 @@ import type { Dirent } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { readWorkspaces } from "../../maintenance/workspaces.ts";
 import { type Task, type Tasks, task } from "../index.ts";
 
 export interface RegisteredTask {
@@ -43,14 +44,19 @@ async function loadRegistry(file: string, source: string, root: string): Promise
   }
 }
 
-/** Merge top-level built-ins and repo registries, retaining their source files. */
+/** Merge built-in, repository, and declared-workspace registries in a stable order. */
 export async function discoverTasks(
   root: string,
   builtinDirectory = fileURLToPath(new URL("../", import.meta.url)),
 ): Promise<RegisteredTask[]> {
   const result: RegisteredTask[] = [];
   const seen = new Map<string, string>();
-  for (const directory of [builtinDirectory, join(root, "tasks")]) {
+  const directories = [
+    builtinDirectory,
+    join(root, "tasks"),
+    ...readWorkspaces(root).map(({ path }) => join(root, path, "tasks")),
+  ];
+  for (const directory of directories) {
     for (const file of await registryFiles(directory)) {
       const source = relative(root, file).replaceAll("\\", "/");
       for (const item of await loadRegistry(file, source, root)) {

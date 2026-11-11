@@ -3,9 +3,9 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { expect, test } from "@archont561/bun-test-utils";
-import { projectOutputChanges, writeProjectOutputs } from "@/scripts/project-outputs";
-import { renderProjectOutputs } from "@/scripts/project-render";
 import { loadProjectCatalog } from "@/src/lib/project-catalog";
+import { projectOutputChanges, writeProjectOutputs } from "@/tasks/lib/project-outputs";
+import { renderProjectOutputs } from "@/tasks/lib/project-render";
 
 const root = resolve(import.meta.dir, "../../..");
 const temporaryRoots: string[] = [];

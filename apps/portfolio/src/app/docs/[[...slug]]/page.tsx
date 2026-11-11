@@ -103,9 +103,6 @@ export default async function Page({ params }: Props) {
                 <FileText size={14} aria-hidden="true" /> Read as Markdown
                 <ArrowUpRight size={12} aria-hidden="true" />
               </a>
-              <a className="markdown-button secondary" href="/llms.txt">
-                llms.txt <ArrowUpRight size={12} aria-hidden="true" />
-              </a>
             </div>
             <div className="docs-prose">
               <MDX

@@ -2,15 +2,15 @@
 
 exports[`static SEO and Markdown outputs are snapshot-locked 1`] = `
 [
-  "ai-manifest.json 7b5ff07f0b66b3fd39739bc0a5f6e23e6b89e914e737c277e00296de6aeabe61",
+  "ai-manifest.json ef9f02517aae90a10f25e9fa7293f9e30e69f1c51381a22797c330b8a6524f17",
   "docs/about.md 634cac55f0c073ee8b953b6321f0efe3e08501f1b5426e6e28fdb55606423f45",
-  "docs/ai-access.md 6a8061668a4e085f3266f0cc75337a947d0099ef6824e3d8080aecd38f1a9217",
+  "docs/ai-access.md e4b60f4d83e08be0bcd0e8f48e2326877248824484516d4a44154e07d687e656",
   "docs/architecture.md 257b1126778e817069156dc2f1cc6ad038dc714631a4e54efa5c101fd9a5cae1",
   "docs/architecture/repository-alignment.md 2c005036e68c73c87aa949ae0ae66e1114307541365560094f2d2c6e50f84663",
   "docs/concepts.md 53492efd1888e067fed074bad5f7b59d0ec0ae384b858143b1ade5021a7b6295",
   "docs/development.md 230efa8eb016587c83d90d694c8020a7a0826dc436f806d3b8bea945a5c8fb95",
   "docs/development/agents.md 10c607e854c1cfb4be5eb0bcf0c3bf9962a9a44bf39d1241f0eba572def9db86",
-  "docs/development/documentation.md 5ac2a29ed91b06bdb20978f5fad4ab95ecd063a5a37dc20b160152e346bc82ec",
+  "docs/development/documentation.md 98123dfa8f782009e4d4332e4ddf219dfb2504f979652afd6c1927c7a795b271",
   "docs/guides.md d5f80e605677141a4fc217f589a3ab5f6d0f0d374a241884222e63c1189529b2",
   "docs/guides/deployment.md 29d7a603e9452741c77cd495a43d6ec74ecf38dfd71a1b9545f1ab6ce3285db1",
   "docs/guides/devcontainer.md e78fe113d3b35b9500d92474134381cbba6518d1313cd63b69499c72c95be565",
@@ -33,7 +33,7 @@ exports[`static SEO and Markdown outputs are snapshot-locked 1`] = `
   "docs/reference.md 643745c2d60ccc25bf1961b46a3d73af70d761f8e6f0754284d31b70db332b7d",
   "feed.json 28deb60b88ac526ae67092ab1014816cdfb2a477db0f5d0f9dfa17f556e9c636",
   "feed.xml 39b00c4983002c8cdd0029b86e6ed29193a8685e70d1796755d976c94c535939",
-  "llms-full.txt 818a7eb0af301bf17e8ff834cfde1d8e913a27c3e12078bb36fd42a365f56e8b",
+  "llms-full.txt c2df5a004c43819ee99edd23c20c461b6684f353a7171c92e8a233ed199d063f",
   "llms.txt 51b6272d670f6fda89db3f6df0eb39e4cbbd82c5ababbc070d06cea82866dbd9",
   "robots.txt 5d931d49b483da3d88ab61afcf0717fe76a2db239a76718242830bf6556d144d",
   "sitemap.xml 5fe010f751901c1d245c083d5b0722e20bd8e1b0bf09f51f26e6597c88806672",

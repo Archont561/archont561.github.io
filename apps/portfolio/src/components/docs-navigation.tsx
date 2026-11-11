@@ -127,10 +127,7 @@ export default function DocsNavigation({ tree, currentPath }: { tree: Root; curr
       <ul className="docs-tree">
         <TreeItems nodes={tree.children} currentPath={currentPath} />
       </ul>
-      <div className="docs-navigation-footer">
-        <span>Built in the open.</span>
-        <a href="/llms.txt">Read llms.txt ↗</a>
-      </div>
+      <div className="docs-navigation-footer">Built in the open.</div>
     </nav>
   );
 }

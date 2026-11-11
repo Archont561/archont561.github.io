@@ -3,6 +3,7 @@ import SearchProvider from "@/src/components/search-palette";
 import { ORIGIN, SITE_DESCRIPTION } from "@/src/lib/site";
 import { themeBootstrap } from "@/src/lib/theme";
 import "./uno.css";
+import "./tokens.css";
 import "./globals.css";
 
 export const metadata: Metadata = {

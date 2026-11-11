@@ -1,0 +1,208 @@
+/* Edit these palette primitives once; semantic tokens below select a theme. */
+:root {
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --radius-sm: 4px;
+  --radius-control: 5px;
+  --radius-md: 6px;
+  --radius-lg: 14px;
+  --viewport-small: 100vh;
+  --viewport-dynamic: 100vh;
+
+  /* Day and night palettes; category and illustration colors remain separate. */
+  --palette-day-background: #f8f9f6;
+  --palette-day-text: #202d27;
+  --palette-day-muted: #596b5e;
+  --palette-day-border: #dde3db;
+  --palette-day-primary: #355b42;
+  --palette-day-on-primary: #ffffff;
+  --palette-day-secondary: #526f4f;
+  --palette-day-surface: #ecf0e7;
+  --palette-day-surface-border: #dce3d6;
+  --palette-day-code-background: #edf0e7;
+  --palette-day-code-border: #d9e0d3;
+  --palette-day-code-inline: #e9eee5;
+  --palette-day-link: #476744;
+  --palette-day-filter-background: #e7ece2;
+  --palette-day-filter-text: #3e5a37;
+  --palette-day-atlas-background: #e8eee5;
+  --palette-day-atlas-text: #294936;
+  --palette-day-atlas-muted: #526d57;
+  --palette-day-atlas-border: #cbd8c8;
+  --palette-day-atlas-period: #63845f;
+  --palette-day-atlas-hover: #cadbc5;
+
+  --palette-night-background: #131d18;
+  --palette-night-text: #e4ece5;
+  --palette-night-muted: #a5b4a9;
+  --palette-night-border: #34453a;
+  --palette-night-primary: #a2c7ab;
+  --palette-night-on-primary: #131d18;
+  --palette-night-secondary: #bfd4b8;
+  --palette-night-surface: #26392a;
+  --palette-night-surface-border: #3c5140;
+  --palette-night-code-background: #1d2921;
+  --palette-night-code-border: #2c3f31;
+  --palette-night-code-inline: #243428;
+  --palette-night-link: #a2c7ab;
+  --palette-night-filter-background: #334a37;
+  --palette-night-filter-text: #d0dfc9;
+  --palette-night-atlas-background: #243b2c;
+  --palette-night-atlas-text: #e3eee0;
+  --palette-night-atlas-muted: #bfd0b9;
+  --palette-night-atlas-border: #506b52;
+  --palette-night-atlas-period: #adc7a5;
+  --palette-night-atlas-hover: #415c42;
+}
+
+/* Existing components use short aliases while new code can use semantic names. */
+:root,
+[data-terrain-theme="day"],
+[data-terrain-theme="night"],
+.portfolio.night,
+.portfolio.night-auto {
+  --paper: var(--color-background);
+  --ink: var(--color-text);
+  --muted: var(--color-muted);
+  --line: var(--color-border);
+  --green: var(--color-primary);
+  --atlas-accent: var(--color-secondary);
+  --surface: var(--color-surface);
+  --surface-line: var(--color-surface-border);
+  --code-bg: var(--color-code-background);
+  --code-line: var(--color-code-border);
+  --code-inline: var(--color-code-inline);
+  --link: var(--color-link);
+  --filter-active-bg: var(--color-filter-background);
+  --filter-active-ink: var(--color-filter-text);
+  --atlas-bg: var(--color-atlas-background);
+  --atlas-ink: var(--color-atlas-text);
+  --atlas-muted: var(--color-atlas-muted);
+  --atlas-line: var(--color-atlas-border);
+  --atlas-period: var(--color-atlas-period);
+  --atlas-hover: var(--color-atlas-hover);
+  --color-focus: var(--color-primary);
+}
+
+:root,
+[data-terrain-theme="day"] {
+  color-scheme: light;
+  --color-background: var(--palette-day-background);
+  --color-text: var(--palette-day-text);
+  --color-muted: var(--palette-day-muted);
+  --color-border: var(--palette-day-border);
+  --color-primary: var(--palette-day-primary);
+  --color-on-primary: var(--palette-day-on-primary);
+  --color-secondary: var(--palette-day-secondary);
+  --color-surface: var(--palette-day-surface);
+  --color-surface-border: var(--palette-day-surface-border);
+  --color-code-background: var(--palette-day-code-background);
+  --color-code-border: var(--palette-day-code-border);
+  --color-code-inline: var(--palette-day-code-inline);
+  --color-link: var(--palette-day-link);
+  --color-filter-background: var(--palette-day-filter-background);
+  --color-filter-text: var(--palette-day-filter-text);
+  --color-atlas-background: var(--palette-day-atlas-background);
+  --color-atlas-text: var(--palette-day-atlas-text);
+  --color-atlas-muted: var(--palette-day-atlas-muted);
+  --color-atlas-border: var(--palette-day-atlas-border);
+  --color-atlas-period: var(--palette-day-atlas-period);
+  --color-atlas-hover: var(--palette-day-atlas-hover);
+}
+
+@supports (height: 100svh) {
+  :root {
+    --viewport-small: 100svh;
+  }
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --viewport-dynamic: 100dvh;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-terrain-theme="day"]) {
+    color-scheme: dark;
+    --color-background: var(--palette-night-background);
+    --color-text: var(--palette-night-text);
+    --color-muted: var(--palette-night-muted);
+    --color-border: var(--palette-night-border);
+    --color-primary: var(--palette-night-primary);
+    --color-on-primary: var(--palette-night-on-primary);
+    --color-secondary: var(--palette-night-secondary);
+    --color-surface: var(--palette-night-surface);
+    --color-surface-border: var(--palette-night-surface-border);
+    --color-code-background: var(--palette-night-code-background);
+    --color-code-border: var(--palette-night-code-border);
+    --color-code-inline: var(--palette-night-code-inline);
+    --color-link: var(--palette-night-link);
+    --color-filter-background: var(--palette-night-filter-background);
+    --color-filter-text: var(--palette-night-filter-text);
+    --color-atlas-background: var(--palette-night-atlas-background);
+    --color-atlas-text: var(--palette-night-atlas-text);
+    --color-atlas-muted: var(--palette-night-atlas-muted);
+    --color-atlas-border: var(--palette-night-atlas-border);
+    --color-atlas-period: var(--palette-night-atlas-period);
+    --color-atlas-hover: var(--palette-night-atlas-hover);
+  }
+}
+
+.portfolio.night,
+[data-terrain-theme="night"] {
+  color-scheme: dark;
+  --color-background: var(--palette-night-background);
+  --color-text: var(--palette-night-text);
+  --color-muted: var(--palette-night-muted);
+  --color-border: var(--palette-night-border);
+  --color-primary: var(--palette-night-primary);
+  --color-on-primary: var(--palette-night-on-primary);
+  --color-secondary: var(--palette-night-secondary);
+  --color-surface: var(--palette-night-surface);
+  --color-surface-border: var(--palette-night-surface-border);
+  --color-code-background: var(--palette-night-code-background);
+  --color-code-border: var(--palette-night-code-border);
+  --color-code-inline: var(--palette-night-code-inline);
+  --color-link: var(--palette-night-link);
+  --color-filter-background: var(--palette-night-filter-background);
+  --color-filter-text: var(--palette-night-filter-text);
+  --color-atlas-background: var(--palette-night-atlas-background);
+  --color-atlas-text: var(--palette-night-atlas-text);
+  --color-atlas-muted: var(--palette-night-atlas-muted);
+  --color-atlas-border: var(--palette-night-atlas-border);
+  --color-atlas-period: var(--palette-night-atlas-period);
+  --color-atlas-hover: var(--palette-night-atlas-hover);
+}
+
+@media (prefers-color-scheme: light) {
+  .portfolio.night-auto {
+    color-scheme: light;
+    --color-background: var(--palette-day-background);
+    --color-text: var(--palette-day-text);
+    --color-muted: var(--palette-day-muted);
+    --color-border: var(--palette-day-border);
+    --color-primary: var(--palette-day-primary);
+    --color-on-primary: var(--palette-day-on-primary);
+    --color-secondary: var(--palette-day-secondary);
+    --color-surface: var(--palette-day-surface);
+    --color-surface-border: var(--palette-day-surface-border);
+    --color-code-background: var(--palette-day-code-background);
+    --color-code-border: var(--palette-day-code-border);
+    --color-code-inline: var(--palette-day-code-inline);
+    --color-link: var(--palette-day-link);
+    --color-filter-background: var(--palette-day-filter-background);
+    --color-filter-text: var(--palette-day-filter-text);
+    --color-atlas-background: var(--palette-day-atlas-background);
+    --color-atlas-text: var(--palette-day-atlas-text);
+    --color-atlas-muted: var(--palette-day-atlas-muted);
+    --color-atlas-border: var(--palette-day-atlas-border);
+    --color-atlas-period: var(--palette-day-atlas-period);
+    --color-atlas-hover: var(--palette-day-atlas-hover);
+  }
+}

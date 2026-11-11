@@ -6,9 +6,7 @@
   "description": "Archont561 portfolio and docs site (Next.js + Fumadocs, static export)",
   "license": "MIT",
   "scripts": {
-    "projects:generate": "bun run scripts/projects.ts",
-    "projects:check": "bun run scripts/projects.ts --check",
-    "source": "bun run projects:generate && fumadocs-mdx",
+    "source": "bun run --cwd ../.. --bun tools task portfolio:projects:generate && fumadocs-mdx",
     "styles": "unocss \"src/app/**/*.{tsx,ts}\" \"src/components/**/*.{tsx,ts}\" --config uno.config.ts --out-file src/app/uno.css",
     "styles:watch": "unocss \"src/app/**/*.{tsx,ts}\" \"src/components/**/*.{tsx,ts}\" --config uno.config.ts --out-file src/app/uno.css --watch",
     "dev": "bun run source && bun run styles && next dev --webpack --hostname 0.0.0.0",

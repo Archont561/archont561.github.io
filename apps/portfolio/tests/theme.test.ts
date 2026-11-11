@@ -101,21 +101,36 @@ class CustomEvent {
   }
 }
 
-function start(
-  options: {
-    dark?: boolean;
-    saved?: string | null;
-    blocked?: boolean;
-    legacyMedia?: boolean;
-    noMedia?: boolean;
-  } = {},
-) {
-  const browser = new Browser(
-    options.dark ?? false,
-    options.saved ?? null,
-    options.blocked ?? false,
-  );
+type BrowserOptions = {
+  dark?: boolean;
+  saved?: string | null;
+  blocked?: boolean;
+  blockedRead?: boolean;
+  blockedWrite?: boolean;
+  legacyMedia?: boolean;
+  noMedia?: boolean;
+  throwsMedia?: boolean;
+};
+
+function configureBrowser(browser: Browser, options: BrowserOptions): void {
   if (options.noMedia) Object.defineProperty(browser, "matchMedia", { value: undefined });
+  if (options.throwsMedia) {
+    Object.defineProperty(browser, "matchMedia", {
+      value: () => {
+        throw new Error("Media queries unavailable");
+      },
+    });
+  }
+  if (options.blockedRead) {
+    browser.storage.getItem = () => {
+      throw new Error("Storage read blocked");
+    };
+  }
+  if (options.blockedWrite) {
+    browser.storage.setItem = () => {
+      throw new Error("Storage write blocked");
+    };
+  }
   if (options.legacyMedia) {
     Object.defineProperty(browser.media, "addEventListener", { value: undefined });
     Object.assign(browser.media, {
@@ -123,6 +138,15 @@ function start(
         Events.prototype.addEventListener.call(browser.media, "change", listener),
     });
   }
+}
+
+function start(options: BrowserOptions = {}) {
+  const browser = new Browser(
+    options.dark ?? false,
+    options.saved ?? null,
+    options.blocked ?? false,
+  );
+  configureBrowser(browser, options);
   const attributes: Record<string, string> = {};
   const document = {
     documentElement: {
@@ -191,6 +215,7 @@ test("other tabs' cached choices and cleared storage synchronize without rewriti
     storageArea: browser.storage,
   });
   expect(attributes["data-terrain-theme"]).toBe("day");
+  browser.storage.value = "dark";
   browser.dispatchEvent({ type: "storage", key: "unrelated", newValue: "dark" });
   browser.dispatchEvent({
     type: "storage",
@@ -199,6 +224,8 @@ test("other tabs' cached choices and cleared storage synchronize without rewriti
     storageArea: {},
   });
   expect(attributes["data-terrain-theme"]).toBe("day");
+  browser.dispatchEvent({ type: "storage", key: THEME_STORAGE_KEY, storageArea: browser.storage });
+  expect(attributes["data-terrain-theme"]).toBe("night");
   browser.storage.value = null;
   browser.dispatchEvent({
     type: "storage",
@@ -231,6 +258,39 @@ test("unavailable storage does not prevent applying manual or browser changes", 
   expect(attributes["data-terrain-theme"]).toBe("day");
   browser.media.change(true);
   expect(attributes["data-terrain-theme"]).toBe("night");
+});
+
+test("the bootstrap survives storage reads failing independently of writes", () => {
+  const { browser, attributes } = start({ dark: true, saved: "light", blockedRead: true });
+  expect(attributes["data-terrain-theme"]).toBe("night");
+  expect(browser.storage.writes).toEqual([]);
+  browser.dispatchEvent({ type: THEME_REQUEST_EVENT, detail: "light" });
+  expect(attributes["data-terrain-theme"]).toBe("day");
+  expect(browser.storage.writes).toEqual(["light"]);
+  browser.dispatchEvent({ type: "storage", key: THEME_STORAGE_KEY, storageArea: browser.storage });
+  expect(attributes["data-terrain-theme"]).toBe("night");
+});
+
+test("blocked writes still update the document and notify listeners", () => {
+  const { browser, attributes } = start({ dark: true, saved: "light", blockedWrite: true });
+  const changes: unknown[] = [];
+  browser.addEventListener(THEME_CHANGE_EVENT, (event) => changes.push(event.detail));
+  expect(attributes["data-terrain-theme"]).toBe("day");
+  browser.dispatchEvent({ type: THEME_REQUEST_EVENT, detail: "dark" });
+  expect(attributes["data-terrain-theme"]).toBe("night");
+  expect(browser.storage.value).toBe("light");
+  browser.media.change(false);
+  expect(attributes["data-terrain-theme"]).toBe("day");
+  expect(changes).toEqual(["dark", "light"]);
+});
+
+test("the bootstrap falls back to light when matchMedia throws", () => {
+  const { browser, attributes } = start({ throwsMedia: true });
+  expect(attributes["data-terrain-theme"]).toBe("day");
+  expect(browser.storage.value).toBeNull();
+  browser.dispatchEvent({ type: THEME_REQUEST_EVENT, detail: "dark" });
+  expect(attributes["data-terrain-theme"]).toBe("night");
+  expect(browser.storage.value).toBe("dark");
 });
 
 test("missing and legacy media-query APIs degrade gracefully", () => {
