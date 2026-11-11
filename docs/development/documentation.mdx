@@ -28,8 +28,44 @@ Documentation serves both human users and AI agents. It must be accurate, action
 * `projects/`: repository summaries and source links.
 
 The root README introduces the product and directs readers to relevant documentation.
-Fumadocs builds the sidebar from each directory's `meta.json`. Project-domain separators in `projects/meta.json` group pages without moving their URLs.
-Keep the metadata and project directory aligned when adding or reclassifying a project.
+Fumadocs builds the sidebar from each directory's `meta.json`. Project-domain separators group pages without moving their URLs.
+Project metadata is generated from the catalog described below.
+
+## Project data
+
+Each `data/projects/<slug>.json` selects a repository and supplies a category ID,
+order within that category, and `featured.home` flag. The filename determines its
+`/docs/projects/<slug>/` URL, so keep existing slugs stable. Categories and their
+order live in `data/project-categories.json`. The generator validates the records
+and combines them with `data/repositories.json`; the committed snapshot supplies
+repository names, languages, topics, and, by default, descriptions. There are no
+build-time or browser requests to GitHub. The separate profile repository retains
+its own curation and featured selection.
+
+Set `directorySummary` only when the short documentation-index summary should
+be different. A `descriptionOverride` must have a matching `descriptionSource`:
+`{ "kind": "curated" }` for an editorial description, or
+`{ "kind": "github", "captured": "YYYY-MM-DD" }` for a dated attribution.
+Existing `legacy-github` attributions preserve the date recorded in older project
+pages without claiming that the older capture is present in the current snapshot.
+The optional `metadataCategory` changes the label on that project's documentation
+page only; it does not change the group or filters. If a repository is missing
+from the snapshot, a sourced description override is required and its language is
+shown as not captured.
+
+For project-specific details, add `data/projects/<slug>.mdx` alongside its JSON.
+The contents are appended to the generated project page. Write important content
+as ordinary Markdown rather than relying on JSX to supply facts: the Markdown
+twins and AI indexes use Fumadocs processed Markdown, not rendered components.
+
+After editing records, optional project notes, categories, or repository snapshots,
+run `bun run --cwd apps/portfolio projects:generate` and review the generated
+`docs/projects/` pages, navigation metadata, and
+`apps/portfolio/src/lib/projects.json`. Commit these outputs with their inputs;
+do not edit generated files directly. `projects:check` detects drift, and the
+portfolio source/build scripts also generate the files before Fumadocs runs.
+Removing a record removes its generated page, so review URL compatibility before
+doing so.
 
 ## Prevent documentation drift
 

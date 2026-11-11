@@ -1,0 +1,14 @@
+{
+  "repository": "Archont561/qgis-sdk",
+  "category": "geospatial",
+  "order": 2,
+  "descriptionOverride": "Python-first SDK and TypeScript QWebEngineView bridge for building typed, testable QGIS 4 plugins",
+  "descriptionSource": {
+    "kind": "legacy-github",
+    "captured": "2026-11-09"
+  },
+  "directorySummary": "A Python-first SDK and TypeScript bridge for QGIS plugins.",
+  "featured": {
+    "home": true
+  }
+}

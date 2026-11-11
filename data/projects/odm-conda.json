@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/ODM-conda",
+  "category": "geospatial",
+  "order": 4,
+  "directorySummary": "Unofficial Conda packaging for OpenDroneMap components.",
+  "featured": {
+    "home": false
+  }
+}

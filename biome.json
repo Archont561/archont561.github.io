@@ -38,7 +38,12 @@
       }
     },
     {
-      "includes": ["data/packages.json", "data/repositories.json", "data/repository-audit.json"],
+      "includes": [
+        "data/packages.json",
+        "data/repositories.json",
+        "data/repository-audit.json",
+        "apps/portfolio/src/lib/projects.json"
+      ],
       "formatter": {
         "enabled": false
       }

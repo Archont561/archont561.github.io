@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/CloudCompare-conda",
+  "category": "geospatial",
+  "order": 3,
+  "directorySummary": "Conda packaging for CloudCompare.",
+  "featured": {
+    "home": false
+  }
+}

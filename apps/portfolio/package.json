@@ -6,13 +6,15 @@
   "description": "Archont561 portfolio and docs site (Next.js + Fumadocs, static export)",
   "license": "MIT",
   "scripts": {
-    "source": "fumadocs-mdx",
+    "projects:generate": "bun run scripts/projects.ts",
+    "projects:check": "bun run scripts/projects.ts --check",
+    "source": "bun run projects:generate && fumadocs-mdx",
     "styles": "unocss \"src/app/**/*.{tsx,ts}\" \"src/components/**/*.{tsx,ts}\" --config uno.config.ts --out-file src/app/uno.css",
     "styles:watch": "unocss \"src/app/**/*.{tsx,ts}\" \"src/components/**/*.{tsx,ts}\" --config uno.config.ts --out-file src/app/uno.css --watch",
     "dev": "bun run source && bun run styles && next dev --webpack --hostname 0.0.0.0",
     "build": "bun run source && bun run styles && next build --webpack && bun run --cwd ../.. --bun tools export-ai && pagefind --site out",
     "typecheck": "bun run source && next typegen && tsc --noEmit",
-    "test": "bun test tests/palette-search.test.ts",
+    "test": "bun test tests/palette-search.test.ts tests/project-catalog.test.ts tests/theme.test.ts",
     "test:seo": "bun test tests/seo.test.ts"
   },
   "dependencies": {

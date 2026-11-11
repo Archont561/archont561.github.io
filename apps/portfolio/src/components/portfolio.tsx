@@ -13,8 +13,7 @@ import ProjectCard from "@/src/components/project-card";
 import SiteFooter from "@/src/components/site-footer";
 import projects from "@/src/lib/projects.json";
 
-const previewSlugs = new Set(["qgis-sdk", "pixi-sandbox", "playtest"]);
-const previewProjects = projects.filter((project) => previewSlugs.has(project.slug));
+const previewProjects = projects.filter((project) => project.featured.home);
 const domainCount = new Set(projects.map((project) => project.category)).size;
 
 function DisciplineStrip() {

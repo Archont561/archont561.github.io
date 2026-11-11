@@ -1,0 +1,7 @@
+[
+  { "id": "geospatial", "label": "Geospatial" },
+  { "id": "environments", "label": "Environments" },
+  { "id": "testing", "label": "Testing" },
+  { "id": "agents", "label": "Agents" },
+  { "id": "developer-tools", "label": "Developer tools" }
+]

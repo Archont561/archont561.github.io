@@ -13,10 +13,16 @@ project filters and Pagefind search do not need a server.
 
 `data/repositories.json` records the committed public repository capture;
 `data/repository-audit.json` preserves the historical upstream audit.
-`apps/portfolio/src/lib/projects.json` selects homepage projects. Update the
-curation and corresponding project MDX pages together when metadata changes.
+The curated records in `data/projects/` select projects, categories, homepage
+features, and editorial overrides. Build-time generation combines them with
+repository facts to produce the project directory, documentation, and navigation.
+A description sourced from the current snapshot carries its capture date; a
+legacy attribution is identified separately. Descriptions state repository
+scope, not verified maturity. See the [documentation policy](/docs/development/documentation#project-data)
+for the editing workflow.
+
 `data/packages.json` supplies the package page. Builds do not call the GitHub
-API or registries. Descriptions state repository scope, not verified maturity.
+API or registries.
 
 The intended live worker-client integration and snapshot fallback depend on
 unfinished M2 and M3 work. The current site is snapshot-only.

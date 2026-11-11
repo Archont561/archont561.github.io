@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/qgis-agent-harness",
+  "category": "geospatial",
+  "order": 1,
+  "directorySummary": "A harness for evaluating GIS agent artifacts.",
+  "featured": {
+    "home": false
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/bun-test-utils",
+  "category": "testing",
+  "order": 1,
+  "directorySummary": "Fixtures and testing utilities for Bun.",
+  "featured": {
+    "home": false
+  }
+}

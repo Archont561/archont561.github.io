@@ -2,6 +2,7 @@
   {
     "name": "qgis-agent-harness",
     "category": "Geospatial",
+    "categoryId": "geospatial",
     "description": "A harness that scores GIS-agent artefacts: one QGIS runtime, nine geoprocessing operations, three ways of exposing them, one oracle. Code for an MSc thesis in geoinformatics.",
     "language": "Python",
     "url": "https://github.com/Archont561/qgis-agent-harness",
@@ -21,11 +22,16 @@
       "reproducibility",
       "research-software",
       "spatial-data"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 1
   },
   {
     "name": "qgis-sdk",
     "category": "Geospatial",
+    "categoryId": "geospatial",
     "description": "Python-first SDK and TypeScript QWebEngineView bridge for building typed, testable QGIS 4 plugins",
     "language": "Python",
     "url": "https://github.com/Archont561/qgis-sdk",
@@ -42,11 +48,16 @@
       "qgis-plugins",
       "sdk",
       "typescript"
-    ]
+    ],
+    "featured": {
+      "home": true
+    },
+    "number": 2
   },
   {
     "name": "CloudCompare-conda",
     "category": "Geospatial",
+    "categoryId": "geospatial",
     "description": "Cross-platform Conda packaging for CloudCompare 3D point-cloud and mesh processing.",
     "language": "Python",
     "url": "https://github.com/Archont561/CloudCompare-conda",
@@ -61,12 +72,17 @@
       "point-cloud",
       "rattler-build",
       "windows"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 3
   },
   {
     "name": "ODM-conda",
     "category": "Geospatial",
-    "description": "Unofficial, modular OpenDroneMap conda packaging \u2014 Pixi-managed rattler-build recipes for ODM CPU components (dem2points, fpcfilter) targeting a prefix.dev channel.",
+    "categoryId": "geospatial",
+    "description": "Unofficial, modular OpenDroneMap conda packaging — Pixi-managed rattler-build recipes for ODM CPU components (dem2points, fpcfilter) targeting a prefix.dev channel.",
     "language": "Python",
     "url": "https://github.com/Archont561/ODM-conda",
     "slug": "odm-conda",
@@ -80,21 +96,36 @@
       "pixi",
       "point-cloud",
       "rattler-build"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 4
   },
   {
     "name": "pixi-sandbox",
     "category": "Environments",
+    "categoryId": "environments",
     "description": "Cloneable, verifiable environment packs for Pixi projects.",
     "language": "Rust",
     "url": "https://github.com/Archont561/pixi-sandbox",
     "slug": "pixi-sandbox",
-    "topics": ["offline-first", "pixi", "rust", "sandbox"]
+    "topics": [
+      "offline-first",
+      "pixi",
+      "rust",
+      "sandbox"
+    ],
+    "featured": {
+      "home": true
+    },
+    "number": 5
   },
   {
     "name": "universe",
     "category": "Environments",
-    "description": "Rust toolkit for building and publishing self-hosted universes of software, data, models, and skills\u2014with offline-ready distribution.",
+    "categoryId": "environments",
+    "description": "Rust toolkit for building and publishing self-hosted universes of software, data, models, and skills—with offline-ready distribution.",
     "language": "Rust",
     "url": "https://github.com/Archont561/universe",
     "slug": "universe",
@@ -108,11 +139,16 @@
       "self-hosted",
       "software-distribution",
       "supply-chain-security"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 6
   },
   {
     "name": "staged-recipes-submit",
     "category": "Environments",
+    "categoryId": "environments",
     "description": "Reusable GitHub Action and Python CLI to validate Conda recipes (recipe.yaml / meta.yaml) and open idempotent PRs to conda-forge/staged-recipes.",
     "language": "Python",
     "url": "https://github.com/Archont561/staged-recipes-submit",
@@ -124,12 +160,17 @@
       "github-actions",
       "rattler-build",
       "staged-recipes"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 7
   },
   {
     "name": "bun-test-utils",
     "category": "Testing",
-    "description": "General-purpose test extension for the Bun test runner covering unit, integration, and e2e tests \u2014 Playwright-style typed fixtures composed with test.extend(), with scopes and LIFO teardown, plus BDD, property-based testing, snapshots, HTTP record/replay, and browser testing.",
+    "categoryId": "testing",
+    "description": "General-purpose test extension for the Bun test runner covering unit, integration, and e2e tests — Playwright-style typed fixtures composed with test.extend(), with scopes and LIFO teardown, plus BDD, property-based testing, snapshots, HTTP record/replay, and browser testing.",
     "language": "TypeScript",
     "url": "https://github.com/Archont561/bun-test-utils",
     "slug": "bun-test-utils",
@@ -148,30 +189,58 @@
       "test-fixtures",
       "testing",
       "typescript"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 8
   },
   {
     "name": "playtest",
     "category": "Testing",
+    "categoryId": "testing",
     "description": "Playwright-style testing framework for Rust with dependency-injected fixtures, strict LIFO teardown, property-based testing, and fluent BDD scenarios",
     "language": "Python",
     "url": "https://github.com/Archont561/playtest",
     "slug": "playtest",
-    "topics": ["bdd", "fixtures", "property-based-testing", "rust", "test-framework", "testing"]
+    "topics": [
+      "bdd",
+      "fixtures",
+      "property-based-testing",
+      "rust",
+      "test-framework",
+      "testing"
+    ],
+    "featured": {
+      "home": true
+    },
+    "number": 9
   },
   {
     "name": "artifactspec",
     "category": "Agents",
+    "categoryId": "agents",
     "description": "An early-stage framework for describing and producing visual artifacts with an agent-friendly language.",
     "language": "Python",
     "url": "https://github.com/Archont561/artifactspec",
     "slug": "artifactspec",
-    "topics": ["ai-agents", "artifacts", "manim", "python", "visualization"]
+    "topics": [
+      "ai-agents",
+      "artifacts",
+      "manim",
+      "python",
+      "visualization"
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 10
   },
   {
     "name": "skills",
     "category": "Agents",
-    "description": "Plain-directory Agent Skills with a stdlib-only Python dispatcher \u2014 install with npx skills add, run via archont561.",
+    "categoryId": "agents",
+    "description": "Plain-directory Agent Skills with a stdlib-only Python dispatcher — install with npx skills add, run via archont561.",
     "language": "Python",
     "url": "https://github.com/Archont561/skills",
     "slug": "skills",
@@ -185,11 +254,16 @@
       "pixi",
       "python",
       "skills-registry"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 11
   },
   {
     "name": "PyShellForge",
     "category": "Agents",
+    "categoryId": "agents",
     "description": "A Python-native DSL and AST-based compiler for generating clean, readable, production-ready shell scripts.",
     "language": "Python",
     "url": "https://github.com/Archont561/PyShellForge",
@@ -207,11 +281,16 @@
       "shell-script",
       "shell-scripting",
       "transpiler"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 12
   },
   {
     "name": "clifacet",
     "category": "Developer tools",
+    "categoryId": "developer-tools",
     "description": "A Rust library for command-line presentation modes.",
     "language": "Rust",
     "url": "https://github.com/Archont561/clifacet",
@@ -227,6 +306,10 @@
       "rust-library",
       "terminal",
       "tui"
-    ]
+    ],
+    "featured": {
+      "home": false
+    },
+    "number": 13
   }
 ]

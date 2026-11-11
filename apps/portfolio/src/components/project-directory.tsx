@@ -5,14 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import ProjectCard from "@/src/components/project-card";
 import projects from "@/src/lib/projects.json";
 
-const categories = [
-  "All projects",
-  "Geospatial",
-  "Environments",
-  "Testing",
-  "Agents",
-  "Developer tools",
-];
+const categories = ["All projects", ...new Set(projects.map((project) => project.category))];
 
 type Filters = {
   category: string;
@@ -111,7 +104,7 @@ export default function ProjectDirectory() {
         </div>
       )}
       <p className="project-note">
-        Selected public repositories · Summaries from GitHub metadata ·{" "}
+        Selected public repositories · Curated summaries and GitHub metadata ·{" "}
         <a href="https://github.com/Archont561?tab=repositories">
           View all repositories <ArrowUpRight size={12} aria-hidden="true" />
         </a>

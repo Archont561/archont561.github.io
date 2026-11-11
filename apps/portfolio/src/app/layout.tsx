@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SearchProvider from "@/src/components/search-palette";
 import { ORIGIN, SITE_DESCRIPTION } from "@/src/lib/site";
+import { themeBootstrap } from "@/src/lib/theme";
 import "./uno.css";
 import "./globals.css";
 
@@ -15,6 +16,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static, locally defined theme bootstrap runs before paint. */}
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <link
           rel="alternate"
           type="application/rss+xml"
