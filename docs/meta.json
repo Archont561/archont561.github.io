@@ -1,5 +1,14 @@
 {
-  "title": "Docs",
-  "root": true,
-  "pages": []
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "guides",
+    "concepts",
+    "reference",
+    "architecture",
+    "development",
+    "projects",
+    "about",
+    "ai-access"
+  ]
 }

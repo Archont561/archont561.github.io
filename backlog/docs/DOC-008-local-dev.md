@@ -47,8 +47,10 @@ semantics and the ignored cache.
 | Actionlint and recommended PCC policy | `pixi run lint-actions` / `pixi run policy` | ci.yml |
 | convco | commit-msg hook | ci.yml (PR range) |
 
-Worker dev (`wrangler dev`) and portfolio dev (`next dev`) arrive with M2/M4;
-both use the same Pixi+Bun setup.
+Portfolio development is available with `pixi run bun run --cwd apps/portfolio
+dev`. Build with `pixi run bun run --cwd apps/portfolio build` and verify the
+export with `pixi run bun run --cwd apps/portfolio test:seo`. The worker remains
+scaffolded until M2.
 
 ## Dev container
 

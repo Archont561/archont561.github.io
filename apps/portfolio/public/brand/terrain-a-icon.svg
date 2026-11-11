@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="250 245 520 400" role="img" aria-labelledby="logo-title logo-desc">
+<title id="logo-title">Terrain A — full-color icon</title>
+<desc id="logo-desc">Archont561 Terrain A logo: layered terrain bands form an A monogram with a branching spatial-intelligence circuit. Clean vector redraw of the selected concept.</desc>
+<defs>
+  <mask id="circuit-cut" maskUnits="userSpaceOnUse" x="250" y="245" width="520" height="400">
+    <rect x="250" y="245" width="520" height="400" fill="white"/>
+    <path d="M694 630 623 492 588 482 572 452 M623 492 640 451 669 435" fill="none" stroke="black" stroke-width="9" stroke-linecap="square" stroke-linejoin="miter"/>
+    <circle cx="572" cy="452" r="11" fill="black"/>
+  </mask>
+</defs>
+<g mask="url(#circuit-cut)">
+  <path fill="#294B38" d="M277 618 466 271 558 271 533 314 491 314 328 618Z"/>
+  <path fill="#294B38" d="M396 510 497 324 528 324 536 340 466 470 558 470 581 510Z M338 618 390 520 585 520 607 561 418 561 387 618Z"/>
+  <path fill="#8FA17D" d="M558 271 747 618 697 618 533 314Z M541 352 686 618 637 618 518 396Z"/>
+</g>
+<path d="M644 443 670 427 683 398 M658 473 704 448" stroke="#8FA17D" stroke-width="9" fill="none" stroke-linejoin="round"/>
+<circle cx="683" cy="398" r="12.5" fill="#B9794D"/>
+<circle cx="704" cy="448" r="12.5" fill="#B9794D"/>
+</svg>

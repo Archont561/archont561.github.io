@@ -1,24 +1,27 @@
 # @archont561/portfolio
 
-Archont561 portfolio and docs site — Next.js 16 + Fumadocs, static export to
-GitHub Pages. **Scaffold only** — migration lands in M4
-(`backlog/milestones/M4-portfolio-seo.md`).
+Next.js and Fumadocs static portfolio for `https://archont561.github.io/`.
+Run commands from the repository root in the locked Pixi environment:
 
-## Responsibilities (D-008, D-011)
+```sh
+pixi run bun run --cwd apps/portfolio dev
+pixi run bun run --cwd apps/portfolio build
+pixi run bun run --cwd apps/portfolio test:seo
+pixi run tools docs-link-check --offline --site-dir apps/portfolio/out
+```
 
-- Static site with build-time SEO/LLM surface: sitemap, robots, feeds,
-  `llms.txt`, per-page `.md` twins (`backlog/docs/DOC-010-seo-llm-surface.md`).
-- Repository/package data from committed snapshots, refreshed live via
-  `@archont561/github-app-client` with snapshot fallback (build never depends
-  on the worker).
+`build` compiles the root `docs/` MDX, exports static HTML, runs
+`tools export-ai` on Fumadocs-processed Markdown, and creates the Pagefind
+index. It writes `out/` at the site root without a base path. Generated
+`.source/`, `.next/`, `out/`, `next-env.d.ts`, and `src/app/uno.css` are ignored.
+See [AI access](../../docs/ai-access.mdx) and
+[deployment](../../docs/guides/deployment.mdx) for the export contract and
+old project-site URL caveat.
 
-## Conventions
+The packages page reads the committed `data/packages.json`; project cards use
+curated `src/lib/projects.json` and matching docs. No live worker call or
+client fallback is implemented yet: M2/M3 must land first (D-011).
 
-- `@/*` → package root (use `@/src/...`). The shared Next config supplies the
-  Turbopack alias because it does not expand the shared tsconfig's
-  `${configDir}` paths. Imported source packages must not use their own `@/`
-  aliases in public entrypoints; use package self-references or relative imports
-  instead, since Next and TypeScript resolve them in the app's context.
-- `src/version.ts` reports `name`/`version` via `@archont561/tools/package-meta`.
-- `uno.config.ts` consumes the shared custom-rule preset (including `sr-only`);
-  use custom rules + handwritten styles, not Tailwind/PostCSS.
+`@/*` maps to this package root. The shared Next and TypeScript configs support
+that alias; cross-workspace imports use package names. UnoCSS consumes the
+shared preset; handwritten CSS supplies the visual identity.

@@ -21,6 +21,8 @@
       "!**/.turbo",
       "!**/.wrangler",
       "!**/*.tsbuildinfo",
+      "!apps/portfolio/src/app/uno.css",
+      "!apps/portfolio/next-env.d.ts",
       "!**/.tools-cache/**"
     ]
   },
@@ -36,7 +38,7 @@
       }
     },
     {
-      "includes": ["data/packages.json", "data/repositories.json"],
+      "includes": ["data/packages.json", "data/repositories.json", "data/repository-audit.json"],
       "formatter": {
         "enabled": false
       }

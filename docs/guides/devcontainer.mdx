@@ -1,0 +1,32 @@
+---
+title: Development container
+description: Open the locked Pixi and Bun workspace in VS Code or Codespaces.
+---
+
+## Open the workspace
+
+1. Install Docker and VS Code Dev Containers, or create a GitHub Codespace.
+2. Open the repository root and choose **Dev Containers: Reopen in Container**.
+3. Wait for setup, then run `pixi run bun run --cwd apps/portfolio dev`.
+4. Open forwarded port 3000 at `/`.
+
+The container uses `ghcr.io/prefix-dev/pixi:0.84.1` and requests `linux/amd64`.
+ARM hosts need Docker x86-64 emulation for this container; other platforms
+present in the Pixi lock are not native container images.
+
+## Setup and tools
+
+`.devcontainer/setup.sh` installs the locked Pixi environment, performs a frozen
+Bun install, and runs `tools devcontainer --setup`, which validates the
+configuration, repeats the frozen install, and syncs Vale. Git hooks are opt-in:
+set `INSTALL_HOOKS=true` before container creation or run the following after
+setup:
+
+```sh
+pixi run tools devcontainer --setup --hooks
+```
+
+Setup does not start a server or publish artifacts. It needs network access to
+the image and package registries. The editor uses the workspace TypeScript SDK;
+port 3000 is forwarded but not started automatically. Authentication remains
+manual. The setup contract is tested without claiming a Docker startup occurred.

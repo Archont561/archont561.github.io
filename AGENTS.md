@@ -12,7 +12,7 @@
 archont561-workspace. Stack: node (typescript).
 <!-- agents-md:end id=overview -->
 
-Bun and Turbo power the workspace; Hono and Next/Fumadocs are planned.
+Bun and Turbo power the workspace; Next/Fumadocs renders the static portfolio.
 
 <!-- agents-md:begin id=commands -->
 ## Commands
@@ -39,8 +39,8 @@ Top-level: `apps/`, `backlog/`, `data/`, `docs/`, `packages/`, `scripts/`, `task
 <!-- agents-md:end id=structure -->
 
 Tools provide package metadata, CLI discovery, shared configs, maintenance
-commands, snapshot checks, and a task kernel. Apps and later-milestone features
-remain scaffolded or planned in `backlog/`.
+commands, snapshot checks, and a task kernel. The portfolio is snapshot-only;
+the worker and live-client integration remain planned in `backlog/`.
 
 ## Agent skills
 `.agents/skills/` (when present) contains curated skills from related Archont561
@@ -83,9 +83,9 @@ Never commit secrets. Cloudflare secrets (`GITHUB_APP_PRIVATE_KEY`, `DATABASE_UR
   owns system tools; Bun owns JS. Run `bun run check` inside the Pixi environment.
 - `packages/tools` is **repo-internal** (`private: true`) — it is not published and
   not meant for other repositories.
-- M1 commands and the task kernel are implemented. Apps, release preparation,
-  and SEO work are still scaffolds or designs in `backlog/`; do not implement
-  features outside a milestone without asking.
+- M1 tooling and the snapshot-only portfolio are implemented. Worker, client
+  integration, and release preparation remain planned in `backlog/`; do not
+  implement features outside a milestone without asking.
 - Snapshot refreshes contact public registries and write dated `data/` captures;
   `--check` validates committed evidence offline. Refresh the backlog index with
   `pixi run tools task docs:index` after changing task or milestone status.

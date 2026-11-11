@@ -1,0 +1,43 @@
+---
+title: Architecture
+description: Workspace boundaries and the static build pipeline.
+---
+
+## Workspace boundaries
+
+The root Bun workspace includes `apps/*` and `packages/*`.
+`apps/portfolio` owns Next.js, React, Fumadocs, and Pagefind. Canonical
+documentation stays in root `docs/`, read by the site's Fumadocs configuration.
+`packages/tools` provides shared configuration and repository automation.
+
+## Data flow
+
+```text
+root docs + committed data + curated projects
+  -> Fumadocs bindings + UnoCSS generated stylesheet
+  -> Next.js static export and processed Markdown manifest
+  -> tools export-ai creates Markdown twins, LLM indexes, and feeds
+  -> Pagefind indexes exported documentation HTML
+  -> SEO contract and offline link checks
+  -> GitHub Pages artifact
+```
+
+The site uses committed snapshots; it does not yet query the planned worker or
+client. Their implementation and live-data fallback remain separate milestones.
+
+## Styling
+
+The shared UnoCSS preset and `apps/portfolio/uno.config.ts` define semantic
+custom rules. Handwritten CSS owns the visual identity and responsive layout.
+The site does not use a Tailwind preset or a custom PostCSS pipeline.
+
+## Repository tooling
+
+Bun executes repository maintenance commands in `packages/tools/src/cli/` and
+tests in `packages/tools/tests/` and `packages/tools/features/`. Pixi locks
+system tools; Bun locks JavaScript dependencies.
+
+## Licensing
+
+The repository is MIT licensed. Linked repositories remain independent
+products with their own documentation and licenses.

@@ -1,0 +1,54 @@
+---
+title: Configuration and commands
+description: Workspace scopes, commands, content contracts, and build artifacts.
+---
+
+## Commands
+
+Run these from the repository root in the locked Pixi environment.
+
+| Command | Behavior |
+| --- | --- |
+| `pixi run bun install --frozen-lockfile` | Install Bun workspaces from the lockfile. |
+| `pixi run bun run --cwd apps/portfolio dev` | Generate styles and serve the site on port 3000. |
+| `pixi run bun run --cwd apps/portfolio build` | Build HTML, Markdown, feeds, LLM indexes, and Pagefind. |
+| `pixi run bun run --cwd apps/portfolio test:seo` | Verify the generated site and snapshot its SEO artifacts. |
+| `pixi run check` | Run the repository quality gate. |
+| `pixi run tools docs-link-check --offline --site-dir apps/portfolio/out` | Check local source and exported HTML links. |
+| `pixi run tools watch-repos` | Refresh the public repository snapshot. |
+| `pixi run tools registries` | Refresh the package snapshot. |
+| `pixi run tools registries --check` | Validate the committed capture offline. |
+| `pixi run readme` / `pixi run agents` | Safely refresh generated repository documentation. |
+| `pixi run tools task --list` | List the file-aware repository tasks. |
+
+## Styling and hosting
+
+`apps/portfolio/uno.config.ts` consumes the shared custom-rule preset and
+generates `apps/portfolio/src/app/uno.css`. Do not edit generated CSS. Run
+`bun run --cwd apps/portfolio styles:watch` in a second terminal when editing
+UnoCSS rules. The deployment has no base path; the canonical origin is
+`https://archont561.github.io/`.
+
+Each MDX page needs a title and should have a description and nonempty body.
+Documentation directories use `index.mdx`; `meta.json` describes navigation.
+Route segments use lowercase letters, numbers, and hyphens; the exporter
+rejects unsafe or colliding Markdown paths.
+Optional frontmatter `date` must be an ISO calendar date (`YYYY-MM-DD`).
+The sitemap and feeds include that date when supplied; undated pages omit it.
+
+## Package capture
+
+`data/packages-manifest.json` declares account identities, package names, and
+relations. `tools registries` reconciles live registry responses into
+`data/packages.json`, read by the package page.
+The `authored`, `upstream`, and `unreviewed` relations count as published;
+`alias` and `reserved` do not. The refresh fails closed on missing, unexpected,
+or contradictory registry evidence. Use `--check` for offline validation.
+PyPI does not expose download totals in its JSON API.
+
+## Artifacts and identity
+
+Generated `apps/portfolio/out/`, `.next/`, `.source/`, `uno.css`, `.pixi/`, and
+`node_modules/` are ignored. SVG marks are in `apps/portfolio/public/brand/`.
+The palette follows `prefers-color-scheme`; the `data-terrain-theme` attribute
+is an optional manual preview override.

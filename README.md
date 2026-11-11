@@ -13,9 +13,9 @@ Monorepo for the Archont561 site and its automation. Deployed to GitHub Pages at
 
 ## Status
 
-M1 tooling is complete: package metadata, shared configs, maintenance commands,
-registry and repository snapshots, and the file-aware task kernel. The apps,
-client generation, and SEO work remain planned in the [backlog](backlog/README.md).
+M1 tooling and the static portfolio with SEO exports are implemented. The site
+uses committed snapshots; the worker and live-client fallback remain planned in
+the [backlog](backlog/README.md).
 
 ## Quickstart
 
@@ -29,6 +29,8 @@ pixi run readme-check       # verify generated README without writing
 pixi run agents-check       # verify generated AGENTS.md regions without writing
 pixi run tools task --list  # list repository tasks and their source files
 pixi run check              # full local and CI quality gate
+pixi run bun run --cwd apps/portfolio build    # static site and AI exports
+pixi run bun run --cwd apps/portfolio test:seo # exported-site contract
 ```
 
 Use `pixi run readme` and `pixi run agents` to refresh generated content. Edits

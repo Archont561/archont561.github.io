@@ -1,0 +1,232 @@
+[
+  {
+    "name": "qgis-agent-harness",
+    "category": "Geospatial",
+    "description": "A harness that scores GIS-agent artefacts: one QGIS runtime, nine geoprocessing operations, three ways of exposing them, one oracle. Code for an MSc thesis in geoinformatics.",
+    "language": "Python",
+    "url": "https://github.com/Archont561/qgis-agent-harness",
+    "slug": "qgis-agent-harness",
+    "topics": [
+      "agent-harness",
+      "artefact-scoring",
+      "evaluation-harness",
+      "geoinformatics",
+      "geoprocessing",
+      "gis",
+      "llm-agents",
+      "model-context-protocol",
+      "pixi",
+      "python",
+      "qgis",
+      "reproducibility",
+      "research-software",
+      "spatial-data"
+    ]
+  },
+  {
+    "name": "qgis-sdk",
+    "category": "Geospatial",
+    "description": "Python-first SDK and TypeScript QWebEngineView bridge for building typed, testable QGIS 4 plugins",
+    "language": "Python",
+    "url": "https://github.com/Archont561/qgis-sdk",
+    "slug": "qgis-sdk",
+    "topics": [
+      "geospatial",
+      "gis",
+      "pixi",
+      "pyqgis",
+      "pyqt6",
+      "python",
+      "qgis",
+      "qgis-plugin",
+      "qgis-plugins",
+      "sdk",
+      "typescript"
+    ]
+  },
+  {
+    "name": "CloudCompare-conda",
+    "category": "Geospatial",
+    "description": "Cross-platform Conda packaging for CloudCompare 3D point-cloud and mesh processing.",
+    "language": "Python",
+    "url": "https://github.com/Archont561/CloudCompare-conda",
+    "slug": "cloudcompare-conda",
+    "topics": [
+      "3d",
+      "cloudcompare",
+      "conda",
+      "linux",
+      "macos",
+      "pixi",
+      "point-cloud",
+      "rattler-build",
+      "windows"
+    ]
+  },
+  {
+    "name": "ODM-conda",
+    "category": "Geospatial",
+    "description": "Unofficial, modular OpenDroneMap conda packaging \u2014 Pixi-managed rattler-build recipes for ODM CPU components (dem2points, fpcfilter) targeting a prefix.dev channel.",
+    "language": "Python",
+    "url": "https://github.com/Archont561/ODM-conda",
+    "slug": "odm-conda",
+    "topics": [
+      "conda",
+      "conda-packaging",
+      "demo",
+      "gis",
+      "opendronemap",
+      "photogrammetry",
+      "pixi",
+      "point-cloud",
+      "rattler-build"
+    ]
+  },
+  {
+    "name": "pixi-sandbox",
+    "category": "Environments",
+    "description": "Cloneable, verifiable environment packs for Pixi projects.",
+    "language": "Rust",
+    "url": "https://github.com/Archont561/pixi-sandbox",
+    "slug": "pixi-sandbox",
+    "topics": ["offline-first", "pixi", "rust", "sandbox"]
+  },
+  {
+    "name": "universe",
+    "category": "Environments",
+    "description": "Rust toolkit for building and publishing self-hosted universes of software, data, models, and skills\u2014with offline-ready distribution.",
+    "language": "Rust",
+    "url": "https://github.com/Archont561/universe",
+    "slug": "universe",
+    "topics": [
+      "air-gapped",
+      "conda",
+      "developer-tools",
+      "offline-first",
+      "package-management",
+      "rust",
+      "self-hosted",
+      "software-distribution",
+      "supply-chain-security"
+    ]
+  },
+  {
+    "name": "staged-recipes-submit",
+    "category": "Environments",
+    "description": "Reusable GitHub Action and Python CLI to validate Conda recipes (recipe.yaml / meta.yaml) and open idempotent PRs to conda-forge/staged-recipes.",
+    "language": "Python",
+    "url": "https://github.com/Archont561/staged-recipes-submit",
+    "slug": "staged-recipes-submit",
+    "topics": [
+      "conda",
+      "conda-forge",
+      "conda-packaging",
+      "github-actions",
+      "rattler-build",
+      "staged-recipes"
+    ]
+  },
+  {
+    "name": "bun-test-utils",
+    "category": "Testing",
+    "description": "General-purpose test extension for the Bun test runner covering unit, integration, and e2e tests \u2014 Playwright-style typed fixtures composed with test.extend(), with scopes and LIFO teardown, plus BDD, property-based testing, snapshots, HTTP record/replay, and browser testing.",
+    "language": "TypeScript",
+    "url": "https://github.com/Archont561/bun-test-utils",
+    "slug": "bun-test-utils",
+    "topics": [
+      "bdd",
+      "browser-testing",
+      "bun",
+      "bun-test",
+      "bun-test-runner",
+      "bun-testing",
+      "cassette-testing",
+      "mocking",
+      "property-based-testing",
+      "snapshot-testing",
+      "test-fixture",
+      "test-fixtures",
+      "testing",
+      "typescript"
+    ]
+  },
+  {
+    "name": "playtest",
+    "category": "Testing",
+    "description": "Playwright-style testing framework for Rust with dependency-injected fixtures, strict LIFO teardown, property-based testing, and fluent BDD scenarios",
+    "language": "Python",
+    "url": "https://github.com/Archont561/playtest",
+    "slug": "playtest",
+    "topics": ["bdd", "fixtures", "property-based-testing", "rust", "test-framework", "testing"]
+  },
+  {
+    "name": "artifactspec",
+    "category": "Agents",
+    "description": "An early-stage framework for describing and producing visual artifacts with an agent-friendly language.",
+    "language": "Python",
+    "url": "https://github.com/Archont561/artifactspec",
+    "slug": "artifactspec",
+    "topics": ["ai-agents", "artifacts", "manim", "python", "visualization"]
+  },
+  {
+    "name": "skills",
+    "category": "Agents",
+    "description": "Plain-directory Agent Skills with a stdlib-only Python dispatcher \u2014 install with npx skills add, run via archont561.",
+    "language": "Python",
+    "url": "https://github.com/Archont561/skills",
+    "slug": "skills",
+    "topics": [
+      "agent-skills",
+      "ai-agents",
+      "claude",
+      "claude-code",
+      "conventional-commits",
+      "llm-tools",
+      "pixi",
+      "python",
+      "skills-registry"
+    ]
+  },
+  {
+    "name": "PyShellForge",
+    "category": "Agents",
+    "description": "A Python-native DSL and AST-based compiler for generating clean, readable, production-ready shell scripts.",
+    "language": "Python",
+    "url": "https://github.com/Archont561/PyShellForge",
+    "slug": "pyshellforge",
+    "topics": [
+      "astro",
+      "automation",
+      "bash",
+      "cli",
+      "code-generation",
+      "compiler",
+      "developer-tools",
+      "python",
+      "shell",
+      "shell-script",
+      "shell-scripting",
+      "transpiler"
+    ]
+  },
+  {
+    "name": "clifacet",
+    "category": "Developer tools",
+    "description": "A Rust library for command-line presentation modes.",
+    "language": "Rust",
+    "url": "https://github.com/Archont561/clifacet",
+    "slug": "clifacet",
+    "topics": [
+      "clap",
+      "cli",
+      "interactive",
+      "procedural-macros",
+      "prompt",
+      "ratatui",
+      "rust",
+      "rust-library",
+      "terminal",
+      "tui"
+    ]
+  }
+]

@@ -1,6 +1,6 @@
 # DOC-010: SEO & LLM surface
 
-**Status:** draft · **Milestone:** M4 · **Decisions:** D-008
+**Status:** implemented · **Milestone:** M4 · **Decisions:** D-008
 
 Static, build-time artifacts (GitHub Pages serves files only):
 
@@ -22,3 +22,8 @@ Static, build-time artifacts (GitHub Pages serves files only):
 - `metadataBase = https://archont561.github.io/` (domain root, no base path).
 - Contract tests (M4): every docs page has sitemap entry, llms.txt row, and a
   non-empty `.md` twin; outputs snapshot-locked.
+
+The portfolio build writes `ai-manifest.json` from Fumadocs processed Markdown,
+then invokes `tools export-ai` and Pagefind. `bun run --cwd apps/portfolio
+test:seo` checks the built files and snapshot-locks their hashes. Undated pages
+omit timestamps rather than using checkout-dependent modification times.

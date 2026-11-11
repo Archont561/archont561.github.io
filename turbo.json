@@ -26,6 +26,16 @@
     "test": {
       "dependsOn": ["generate", "^build"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/**"]
+    },
+    "@archont561/portfolio#build": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/docs/**",
+        "$TURBO_ROOT$/data/packages.json",
+        "$TURBO_ROOT$/packages/tools/src/**"
+      ],
+      "outputs": ["out/**"]
     }
   }
 }

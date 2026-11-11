@@ -10,8 +10,7 @@ serve live data once M2/M3 land.
 
 ## Decision
 
-- Committed JSON snapshots (`data/packages.json`, `portfolio/lib/*-snapshot.json`
-  when the portfolio migrates) remain the **build-time source of truth** for
+- Committed JSON snapshots (`data/packages.json`, `data/repositories.json`) remain the **build-time source of truth** for
   static export.
 - At build time the site may call the worker via `@archont561/github-app-client`
   for fresher values, **falling back to the committed snapshot** on any failure
@@ -22,3 +21,9 @@ serve live data once M2/M3 land.
 ## Consequences
 
 - Deterministic builds; snapshots are reviewed diffs like any code.
+
+## Implementation status
+
+The migrated site currently uses committed snapshots and curated project data
+only. The worker API, generated client, and live-client fallback remain blocked
+on M2/M3 and are not claimed as complete.

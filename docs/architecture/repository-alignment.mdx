@@ -1,0 +1,66 @@
+---
+title: Repository alignment audit
+description: Evidence-based conventions shared with the public Archont561 repositories.
+---
+
+## Scope and limits
+
+Scanned 19 public owner repositories on November 9, 2026. Seventeen exposed readable recursive Git trees; two returned HTTP 409 and appear empty. No private repositories or repository settings were inspected.
+The checked-in `data/repository-audit.json` records commit/tree identities, file inventories, selected files read, and retrieval errors.
+These observations describe configuration, not proof that upstream CI succeeds.
+
+## Shared baseline
+
+Across all 19 listed repositories, including the two unavailable trees:
+
+* `pixi.toml`: 13 repositories.
+* `pixi.lock`: 13 repositories.
+* `lefthook.yml`: 11 repositories.
+* `AGENTS.md`: 12 repositories.
+* `bun.lock`: 10 repositories.
+* `.alint.yml`: 6 repositories.
+* `.vale.ini`: 6 repositories.
+* `biome.json`: 5 repositories.
+
+`qgis-sdk` is the closest documentation reference: purpose-oriented docs, Bun, Pixi tasks, Biome, alint, Vale, markdownlint-cli2, lychee, actionlint, convco, Lefthook, and immutable action references.
+`rude-clean-code` also demonstrates marker-preserving agents-md maintenance. These are observed patterns, not a claim of one universal template.
+
+## Migration context
+
+This audit is historical evidence from the original profile repository, not a
+current configuration inventory for this monorepo. The site and documents
+were migrated into `apps/portfolio` and root `docs/`; repository maintenance is
+now implemented in Bun under `packages/tools`. Consult the
+[architecture](/docs/architecture) and [command reference](/docs/reference) for
+the current setup. The original evidence and pinned source links remain below.
+
+## Per-repository evidence
+
+Links below are pinned to the scanned commit/tree where available.
+
+| Repository | Observed root tooling |
+| --- | --- |
+| [Archont561](https://github.com/Archont561/Archont561) | Tree unavailable: HTTP 409, apparently empty. Not inferred as configured. |
+| [archont561.r-universe.dev](https://github.com/Archont561/archont561.r-universe.dev/tree/73c068aa393caf3146ae56f704680435aa968ca6) | Repository-specific tooling; see evidence snapshot. |
+| [artifactspec](https://github.com/Archont561/artifactspec/tree/1f5e133d902e2d4d720adfbb140bb46e6ec29bcb) | `pixi.toml`, `pixi.lock`, `bun.lock`, `lefthook.yml`, `AGENTS.md`, `.alint.yml`, `.vale.ini` |
+| [bun-test-utils](https://github.com/Archont561/bun-test-utils/tree/6dbb60a705da83bd9b5b371881261a362c57df61) | `pixi.toml`, `pixi.lock`, `bun.lock`, `lefthook.yml`, `AGENTS.md`, `biome.json` |
+| [clifacet](https://github.com/Archont561/clifacet/tree/25d741d9a6c49273e1dca892fa7c1e120b726995) | `pixi.toml`, `pixi.lock`, `bun.lock`, `lefthook.yml`, `AGENTS.md`, `.alint.yml`, `.vale.ini` |
+| [CloudCompare-conda](https://github.com/Archont561/CloudCompare-conda/tree/ee63879aad6ed0e291c6df93b9b4b0787eb92631) | `pixi.toml` |
+| [digital-terrain-hub](https://github.com/Archont561/digital-terrain-hub/tree/22ebb55faa89bb54334ab65cfb15d4d1ab03f0ff) | `bun.lock`, `biome.json` |
+| [geospatial-conda-recipes](https://github.com/Archont561/geospatial-conda-recipes) | Tree unavailable: HTTP 409, apparently empty. Not inferred as configured. |
+| [NinjaODM](https://github.com/Archont561/NinjaODM/tree/53508d2e37517ec358f1985fc8ea2d737ae877c3) | `pixi.lock` |
+| [ODM-conda](https://github.com/Archont561/ODM-conda/tree/168a91476218a138c7ddf1675e7751f842d1b0fa) | `pixi.toml`, `pixi.lock`, `bun.lock`, `AGENTS.md` |
+| [pixi-sandbox](https://github.com/Archont561/pixi-sandbox/tree/1903b088a0896126dee82e2a8b6b007942303ffc) | `pixi.toml`, `pixi.lock`, `bun.lock`, `lefthook.yml`, `AGENTS.md`, `biome.json` |
+| [playtest](https://github.com/Archont561/playtest/tree/f0648f8211c84e7c0294e36b188bcbbcd76a5a06) | `pixi.toml`, `pixi.lock`, `lefthook.yml`, `AGENTS.md` |
+| [PyShellForge](https://github.com/Archont561/PyShellForge/tree/9670c0a2695aa2d4e32cd8274e6328d994a7468e) | Repository-specific tooling; see evidence snapshot. |
+| [qgis-agent-harness](https://github.com/Archont561/qgis-agent-harness/tree/94c404083077afc6c7cde58c0ee9ebdfc59eb8a1) | `pixi.toml`, `pixi.lock`, `bun.lock`, `lefthook.yml`, `AGENTS.md`, `.alint.yml`, `.vale.ini` |
+| [qgis-sdk](https://github.com/Archont561/qgis-sdk/tree/e0acfb57250ce2299d2ed8103c0eb3d35a149fd4) | `pixi.toml`, `pixi.lock`, `bun.lock`, `lefthook.yml`, `AGENTS.md`, `.alint.yml`, `.vale.ini`, `biome.json` |
+| [rude-clean-code](https://github.com/Archont561/rude-clean-code/tree/e4edc9a8f05017bfb36c41d62282fd40111d2118) | `pixi.toml`, `pixi.lock`, `bun.lock`, `lefthook.yml`, `AGENTS.md`, `.alint.yml`, `.vale.ini` |
+| [skills](https://github.com/Archont561/skills/tree/2dbcd722074909e9e8cedf921d4df12c9dfed3ba) | `pixi.toml`, `pixi.lock`, `package-lock.json`, `lefthook.yml`, `AGENTS.md` |
+| [staged-recipes-submit](https://github.com/Archont561/staged-recipes-submit/tree/bea0a9637594eb910347d4c066104832e471ca19) | `pixi.toml`, `pixi.lock`, `lefthook.yml`, `AGENTS.md` |
+| [universe](https://github.com/Archont561/universe/tree/e49c452b841441bbb4e102478569f6f3c8770282) | `pixi.toml`, `pixi.lock`, `bun.lock`, `lefthook.yml`, `AGENTS.md`, `.alint.yml`, `.vale.ini`, `biome.json` |
+
+## Maintenance
+
+Rescan explicitly when changing shared conventions. Do not make production builds depend on GitHub API access or live metadata.
+Review lockfiles with manifest changes and update canonical instructions in the same change.
