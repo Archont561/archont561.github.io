@@ -5,6 +5,7 @@ Run commands from the repository root in the locked Pixi environment:
 
 ```sh
 pixi run bun run --cwd apps/portfolio dev
+pixi run bun run --cwd apps/portfolio test
 pixi run bun run --cwd apps/portfolio build
 pixi run bun run --cwd apps/portfolio test:seo
 pixi run tools docs-link-check --offline --site-dir apps/portfolio/out
@@ -17,6 +18,36 @@ index. It writes `out/` at the site root without a base path. Generated
 See [AI access](../../docs/ai-access.mdx) and
 [deployment](../../docs/guides/deployment.mdx) for the export contract and
 old project-site URL caveat.
+
+## Testing
+
+The portfolio uses `bun-test-utils` for component rendering, behavior scenarios,
+and Playwright browser fixtures. `bun run --cwd apps/portfolio test` includes all
+of these. Browser tests are reported as skipped when Playwright's Chromium is
+not installed; other tests still run. If a browser is present but fails to launch,
+the suite fails rather than treating that error as a skip. The browser suite
+builds a fresh static export once before exercising it, so it does not depend on
+an older `out/` directory. The workspace test task bypasses Turbo's cache so
+installing a browser takes effect on the next run. `test:seo` separately verifies
+the built export. Bun's coverage report measures code executed in the Bun test
+process, not the browser bundle or unimported routes, so it is not a measure of
+complete site coverage.
+
+To install the Playwright-managed Chromium and run just the browser suite:
+
+```sh
+cd apps/portfolio
+bunx --no-install playwright install chromium
+bun run test:browser
+```
+
+Playwright runs Chromium headlessly; no bundled Sparticuz binary is required.
+To use a separately installed Chromium, set `PORTFOLIO_CHROMIUM_EXECUTABLE` to
+its executable path. Optional `PORTFOLIO_CHROMIUM_ARGS` is a JSON array of launch
+arguments. The executable and its system libraries must already be installed.
+Mobile viewport emulation is not a substitute for testing on a physical phone.
+
+## Site experience
 
 The documentation sidebar renders the Fumadocs page tree, including generated
 project-domain separators and ordering. It uses native disclosure controls, so

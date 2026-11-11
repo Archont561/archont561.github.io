@@ -1,0 +1,3 @@
+[test]
+# Install bun-test-utils' run-wide fixture teardown hooks.
+preload = ["@archont561/bun-test-utils"]

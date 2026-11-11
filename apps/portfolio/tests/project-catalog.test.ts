@@ -1,7 +1,8 @@
-import { afterEach, expect, test } from "bun:test";
+import { afterEach } from "bun:test";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
+import { expect, test } from "@archont561/bun-test-utils";
 import { projectOutputChanges, writeProjectOutputs } from "@/scripts/project-outputs";
 import { renderProjectOutputs } from "@/scripts/project-render";
 import { loadProjectCatalog } from "@/src/lib/project-catalog";

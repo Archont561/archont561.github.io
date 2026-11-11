@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test";
 import { runInNewContext } from "node:vm";
+import { expect, test } from "@archont561/bun-test-utils";
 import {
   isTheme,
   THEME_CHANGE_EVENT,

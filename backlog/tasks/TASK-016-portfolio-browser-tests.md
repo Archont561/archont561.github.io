@@ -1,18 +1,18 @@
 # TASK-016: Portfolio browser and offline regression tests
 
-**Status:** not started · **Milestone:** M5 · **Labels:** tests, portfolio, accessibility
+**Status:** in progress · **Milestone:** M5 · **Labels:** tests, portfolio, accessibility
 
 ## Runner decision
 
-`@playwright/test` is declared for the proposed browser suite but is not
-configured. D-007 currently specifies Bun as the test runner. Before integrating
-the suite, either document a targeted Playwright Test exception in D-007 or use
-Bun with the existing `@archont561/bun-test-utils` browser fixtures and the
-`playwright` peer. Do not silently replace the existing Bun suites.
+Use the Bun runner, `@archont561/bun-test-utils` fixtures, and the `playwright`
+peer as described in D-007. The portfolio's regular test command includes browser
+cases but skips them when Chromium is not installed. Browser installation and
+custom executable instructions are in the portfolio README. No CI workflow was
+changed; the existing workspace test entry discovers these cases.
 
 ## Acceptance criteria
 
-- [ ] Record the runner decision and provide a reproducible local test command,
+- [x] Record the runner decision and provide a reproducible local test command,
       browser installation instructions, and an integration plan for the
       workspace test entry. Obtain required approval before changing CI.
 - [ ] Test the static export on desktop and mobile-sized browser contexts,
@@ -29,6 +29,9 @@ Bun with the existing `@archont561/bun-test-utils` browser fixtures and the
 - [ ] Run at least Chromium and WebKit where supported; document that mobile
       emulation is not a substitute for checking an actual phone.
 
-This is planned coverage, not a claim that browser tests or browser binaries
-are already installed. See [TASK-013](TASK-013-portfolio-atlas.md) and
+The initial Chromium suite covers theme persistence, storage failures, search,
+project and package filters, mobile navigation, and the no-JavaScript fallback.
+It rebuilds and serves the static export, but it does not install a browser.
+WebKit, a physical phone, the interactive globe, and offline behavior remain
+open. See [TASK-013](TASK-013-portfolio-atlas.md) and
 [TASK-014](TASK-014-portfolio-offline.md).

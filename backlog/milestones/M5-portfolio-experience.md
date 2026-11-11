@@ -1,6 +1,6 @@
 # M5: Portfolio atlas, documentation, and offline experience
 
-**Status:** in progress · **Depends on:** deployed M4 static foundation, not M2/M3 live integration · **Decisions:** D-008, D-011; D-007 review pending
+**Status:** in progress · **Depends on:** deployed M4 static foundation, not M2/M3 live integration · **Decisions:** D-007, D-008, D-011
 
 ## Scope
 
@@ -29,10 +29,9 @@ existing workspace audit findings and the new Workbox dependency advisories.
 `workbox-build` and `@playwright/test` as development dependencies. The site
 now has grouped Fumadocs navigation, shared page navigation, a Pagefind search
 palette, a full-viewport static globe placeholder, and a project directory at
-`/projects/`. The interactive globe, service worker, browser test suite, and
-Playwright configuration are not implemented. The proposed
-separate Playwright runner must be reconciled with the current Bun test policy
-in D-007 before it is integrated (TASK-016).
+`/projects/`. Initial browser tests use the Bun runner, test-utils fixtures, and
+Playwright's Chromium, as recorded in D-007 and TASK-016. The interactive globe,
+service worker, and their browser coverage are not implemented.
 
 Motion, Radix, Fumadocs UI, and geometry-generation packages remain optional;
 adding them requires the normal dependency approval. Three.js is a transitive

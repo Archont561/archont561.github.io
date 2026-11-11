@@ -27,6 +27,20 @@
       "dependsOn": ["generate", "^build"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/**"]
     },
+    "@archont561/portfolio#test": {
+      "dependsOn": ["generate", "^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/**"],
+      "cache": false,
+      "passThroughEnv": [
+        "PORTFOLIO_CHROMIUM_EXECUTABLE",
+        "PORTFOLIO_CHROMIUM_ARGS",
+        "PLAYWRIGHT_BROWSERS_PATH",
+        "XDG_CACHE_HOME",
+        "LOCALAPPDATA",
+        "LD_LIBRARY_PATH",
+        "DYLD_LIBRARY_PATH"
+      ]
+    },
     "@archont561/portfolio#typecheck": {
       "dependsOn": ["^build"],
       "inputs": [
