@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/playtest",
+  "category": "testing",
+  "order": 2,
+  "directorySummary": "A fixture-based testing framework for Rust.",
+  "featured": {
+    "home": true
+  }
+}

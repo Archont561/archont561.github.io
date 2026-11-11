@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/artifactspec",
+  "category": "agents",
+  "order": 1,
+  "directorySummary": "An early-stage framework for agent-friendly visual artifacts.",
+  "featured": {
+    "home": false
+  }
+}

@@ -50,5 +50,10 @@ PyPI does not expose download totals in its JSON API.
 
 Generated `apps/portfolio/out/`, `.next/`, `.source/`, `uno.css`, `.pixi/`, and
 `node_modules/` are ignored. SVG marks are in `apps/portfolio/public/brand/`.
-The palette follows `prefers-color-scheme`; the `data-terrain-theme` attribute
-is an optional manual preview override.
+The header's sun and moon button switches between light and dark themes. With no
+saved preference, the site follows the browser's color scheme. A button click
+saves the selected theme in local storage; a later browser color-scheme change
+updates both the page and the saved preference. Changes from another tab also
+synchronize. If storage is blocked, the button still works for the current page
+but cannot persist its selection. Without JavaScript, the site follows the
+browser's color scheme and the button is disabled.

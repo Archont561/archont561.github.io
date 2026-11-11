@@ -14,6 +14,9 @@ input {
   --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
   --viewport-small: 100vh;
   --viewport-dynamic: 100vh;
+}
+:root,
+[data-terrain-theme="day"] {
   color-scheme: light;
   --paper: #f8f9f6;
   --ink: #202d27;
@@ -26,6 +29,15 @@ input {
   --code-line: #d9e0d3;
   --code-inline: #e9eee5;
   --link: #648b63;
+  --filter-active-bg: #e7ece2;
+  --filter-active-ink: #3e5a37;
+  --atlas-bg: #e8eee5;
+  --atlas-ink: #294936;
+  --atlas-muted: #526d57;
+  --atlas-line: #cbd8c8;
+  --atlas-accent: #526f4f;
+  --atlas-period: #63845f;
+  --atlas-hover: #cadbc5;
 }
 @supports (height: 100svh) {
   :root {
@@ -38,7 +50,7 @@ input {
   }
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-terrain-theme="day"]) {
     color-scheme: dark;
     --paper: #131d18;
     --ink: #e4ece5;
@@ -51,6 +63,15 @@ input {
     --code-line: #2c3f31;
     --code-inline: #243428;
     --link: #a2c7ab;
+    --filter-active-bg: #334a37;
+    --filter-active-ink: #d0dfc9;
+    --atlas-bg: #243b2c;
+    --atlas-ink: #e3eee0;
+    --atlas-muted: #bfd0b9;
+    --atlas-line: #506b52;
+    --atlas-accent: #bfd4b8;
+    --atlas-period: #adc7a5;
+    --atlas-hover: #415c42;
   }
 }
 * {
@@ -91,6 +112,15 @@ body {
   --code-line: #2c3f31;
   --code-inline: #243428;
   --link: #a2c7ab;
+  --filter-active-bg: #334a37;
+  --filter-active-ink: #d0dfc9;
+  --atlas-bg: #243b2c;
+  --atlas-ink: #e3eee0;
+  --atlas-muted: #bfd0b9;
+  --atlas-line: #506b52;
+  --atlas-accent: #bfd4b8;
+  --atlas-period: #adc7a5;
+  --atlas-hover: #415c42;
 }
 @media (prefers-color-scheme: light) {
   .portfolio.night-auto {
@@ -106,6 +136,15 @@ body {
     --code-line: #d9e0d3;
     --code-inline: #e9eee5;
     --link: #648b63;
+    --filter-active-bg: #e7ece2;
+    --filter-active-ink: #3e5a37;
+    --atlas-bg: #e8eee5;
+    --atlas-ink: #294936;
+    --atlas-muted: #526d57;
+    --atlas-line: #cbd8c8;
+    --atlas-accent: #526f4f;
+    --atlas-period: #63845f;
+    --atlas-hover: #cadbc5;
   }
 }
 .portfolio a {
@@ -181,6 +220,56 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 10px;
+}
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.theme-toggle:hover:not(:disabled) {
+  background: var(--surface);
+  color: var(--green);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+.theme-toggle:disabled {
+  cursor: default;
+}
+.theme-toggle .theme-icon-sun {
+  display: none;
+}
+.theme-toggle .theme-icon-moon {
+  display: block;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-terrain-theme="day"]) .theme-toggle .theme-icon-sun {
+    display: block;
+  }
+  :root:not([data-terrain-theme="day"]) .theme-toggle .theme-icon-moon {
+    display: none;
+  }
+}
+[data-terrain-theme="night"] .theme-toggle .theme-icon-sun {
+  display: block;
+}
+[data-terrain-theme="night"] .theme-toggle .theme-icon-moon {
+  display: none;
 }
 .site-nav a,
 .site-mobile-menu a {
@@ -478,10 +567,6 @@ body {
 
 /* The atlas is a full-viewport illustration, not the future interactive globe. */
 .atlas-preview {
-  --atlas-bg: #e8eee5;
-  --atlas-ink: #294936;
-  --atlas-muted: #526d57;
-  --atlas-line: #cbd8c8;
   position: relative;
   display: grid;
   grid-template-rows: auto minmax(280px, 1fr) auto;
@@ -552,13 +637,13 @@ body {
   letter-spacing: -2px;
 }
 .atlas-intro h1 > span:not(.period) {
-  color: #526f4f;
+  color: var(--atlas-accent);
   font-family: Georgia, serif;
   font-style: italic;
   font-weight: 400;
 }
 .atlas-intro .period {
-  color: #63845f;
+  color: var(--atlas-period);
 }
 .atlas-intro-description {
   max-width: 27ch;
@@ -671,24 +756,7 @@ body {
   border-radius: 50%;
 }
 .atlas-preview-caption a:hover .atlas-scroll-icon {
-  background: #cadbc5;
-}
-@media (prefers-color-scheme: dark) {
-  .atlas-preview {
-    --atlas-bg: #243b2c;
-    --atlas-ink: #e3eee0;
-    --atlas-muted: #bfd0b9;
-    --atlas-line: #506b52;
-  }
-  .atlas-intro h1 > span:not(.period) {
-    color: #bfd4b8;
-  }
-  .atlas-intro .period {
-    color: #adc7a5;
-  }
-  .atlas-preview-caption a:hover .atlas-scroll-icon {
-    background: #415c42;
-  }
+  background: var(--atlas-hover);
 }
 .discipline-strip {
   display: flex;
@@ -857,12 +925,8 @@ body {
   white-space: nowrap;
 }
 .filters button.active {
-  background: #e7ece2;
-  color: #3e5a37;
-}
-.night .filters button.active {
-  background: #334a37;
-  color: #d0dfc9;
+  background: var(--filter-active-bg);
+  color: var(--filter-active-ink);
 }
 .filter-count {
   font-size: 8px;
@@ -1398,20 +1462,26 @@ body {
   display: block;
 }
 @media (prefers-color-scheme: dark) {
-  .terrain-logo:not([data-terrain-theme="day"]) .terrain-logo-day {
+  :where(:root:not([data-terrain-theme="day"])) .terrain-logo .terrain-logo-day {
     display: none;
   }
-  .terrain-logo:not([data-terrain-theme="day"]) .terrain-logo-night {
+  :where(:root:not([data-terrain-theme="day"])) .terrain-logo .terrain-logo-night {
     display: block;
   }
 }
-[data-terrain-theme="night"] .terrain-logo .terrain-logo-day,
-.portfolio.night .terrain-logo .terrain-logo-day {
+:where(.portfolio.night) .terrain-logo .terrain-logo-day,
+[data-terrain-theme="night"] .terrain-logo .terrain-logo-day {
   display: none;
 }
-[data-terrain-theme="night"] .terrain-logo .terrain-logo-night,
-.portfolio.night .terrain-logo .terrain-logo-night {
+:where(.portfolio.night) .terrain-logo .terrain-logo-night,
+[data-terrain-theme="night"] .terrain-logo .terrain-logo-night {
   display: block;
+}
+[data-terrain-theme="day"] .terrain-logo .terrain-logo-day {
+  display: block;
+}
+[data-terrain-theme="day"] .terrain-logo .terrain-logo-night {
+  display: none;
 }
 .footer-brand {
   display: inline-flex;
@@ -1972,13 +2042,15 @@ body {
   .site-nav {
     display: none;
   }
+  .site-header-actions {
+    margin-left: auto;
+  }
   .site-mobile-search {
     display: grid;
     place-items: center;
     flex: none;
     width: 42px;
     height: 42px;
-    margin-left: auto;
     border: 1px solid var(--line);
     border-radius: 5px;
     color: var(--muted);
@@ -2090,13 +2162,27 @@ body {
     width: 34px;
     height: 27px;
   }
-  .site-mobile-search {
+  .site-header-actions {
+    gap: 6px;
+  }
+  .site-mobile-search,
+  .theme-toggle {
     width: 40px;
     height: 40px;
   }
   .site-mobile-menu summary {
+    justify-content: center;
+    width: 40px;
+    height: 40px;
     padding: 9px;
-    font-size: 12px;
+  }
+  .site-mobile-menu summary > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 @media (max-width: 480px) {

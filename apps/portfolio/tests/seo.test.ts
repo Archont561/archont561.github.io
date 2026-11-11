@@ -3,7 +3,9 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { loadProjectCatalog } from "../src/lib/project-catalog";
 import { jsonLd } from "../src/lib/site";
+import { THEME_STORAGE_KEY } from "../src/lib/theme";
 
 interface Page {
   title: string;
@@ -241,6 +243,26 @@ test("the shared navigation, static atlas placeholder, and project fallback are 
   }
 });
 
+test("static pages initialize the theme before hydration and expose a safe fallback", () => {
+  for (const path of [
+    "index.html",
+    "projects/index.html",
+    "packages/index.html",
+    "search/index.html",
+    "docs/index.html",
+    "404.html",
+  ]) {
+    const html = file(path);
+    expect(head(html)).toContain(THEME_STORAGE_KEY);
+    expect(head(html)).toContain('setAttribute("data-terrain-theme"');
+    const button = html.match(/<button class="theme-toggle"[^>]*>/)?.[0];
+    expect(button).toContain('aria-label="Theme follows browser settings"');
+    expect(button).toContain("disabled");
+    expect(html).toContain("theme-icon-sun");
+    expect(html).toContain("theme-icon-moon");
+  }
+});
+
 test("the atlas preview, full project directory, and search fallback are exported", () => {
   const home = file("index.html");
   expect(home).toContain('<section class="atlas-preview"');
@@ -248,11 +270,11 @@ test("the atlas preview, full project directory, and search fallback are exporte
   expect(home).toContain('id="work"');
   expect(home).toContain('href="/projects/"');
   expect(home).toContain("An interactive globe is planned. For now, explore the projects below.");
-  expect((home.match(/<a class="project-card /g) ?? []).length).toBe(3);
+  const projects = loadProjectCatalog(root).projects;
+  const featured = projects.filter((project) => project.featured.home);
+  expect((home.match(/<a class="project-card /g) ?? []).length).toBe(featured.length);
+  for (const project of featured) expect(home).toContain(`href="/docs/projects/${project.slug}/"`);
   const directory = file("projects/index.html");
-  const projects = JSON.parse(readFileSync(join(app, "src/lib/projects.json"), "utf8")) as {
-    slug: string;
-  }[];
   expect((directory.match(/<a class="project-card /g) ?? []).length).toBe(projects.length);
   for (const project of projects)
     expect(directory).toContain(`href="/docs/projects/${project.slug}/"`);
@@ -415,17 +437,63 @@ test("exported CSS filters other registries and leaves All registries unfiltered
   expect(css).toContain("input:focus-visible");
 });
 
-test("project Markdown retains provenance, caveats, and source links", () => {
-  const projects = JSON.parse(readFileSync(join(app, "src/lib/projects.json"), "utf8")) as {
-    slug: string;
-    url: string;
-  }[];
-  for (const project of projects) {
+function softwareSourceJsonLd(html: string): Record<string, unknown> | undefined {
+  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .map((match) => JSON.parse(match[1] ?? "{}") as Record<string, unknown>)
+    .find((item) => item["@type"] === "SoftwareSourceCode");
+}
+
+function displayDate(date: string): string {
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+test("project exports use catalog descriptions, source links, facts, and provenance", () => {
+  const pages = new Map(manifest().map((page) => [page.url, page]));
+  for (const project of loadProjectCatalog(root).projects) {
+    const page = pages.get(`/docs/projects/${project.slug}/`);
     const markdown = file(`docs/projects/${project.slug}.md`);
+    const html = file(`docs/projects/${project.slug}/index.html`);
+    expect(page).toMatchObject({ title: project.name, description: project.description });
+    expect(markdown).toContain(project.description);
     expect(markdown).toContain(project.url);
-    expect(markdown).toContain("November 9, 2026");
     expect(markdown).toContain("not a guarantee of feature completeness");
+    if (project.descriptionSource.kind === "curated") {
+      expect(markdown).toContain("curated from public project information");
+    } else {
+      expect(markdown).toContain(displayDate(project.descriptionSource.captured));
+    }
+    if (project.descriptionSource.kind === "legacy-github") {
+      expect(markdown).toContain(
+        "That older capture is not contained in the current repository snapshot",
+      );
+    }
+    if (project.language && project.repositoryCaptured) {
+      expect(markdown).toContain(displayDate(project.repositoryCaptured));
+    }
+    const structured = softwareSourceJsonLd(html);
+    expect(structured).toMatchObject({
+      name: project.name,
+      description: project.description,
+      codeRepository: project.url,
+    });
+    expect(structured?.programmingLanguage).toBe(project.language ?? undefined);
   }
+});
+
+test("project-specific Markdown is present in HTML, Markdown twins, and the AI manifest", () => {
+  const markdown = file("docs/projects/qgis-sdk.md");
+  const html = file("docs/projects/qgis-sdk/index.html");
+  const page = manifest().find((item) => item.url === "/docs/projects/qgis-sdk/");
+  expect(html).toContain('id="upstream-guides"');
+  expect(html).toContain("a reference plugin");
+  expect(markdown).toContain("## Upstream guides");
+  expect(markdown).toContain("a reference plugin");
+  expect(page?.text).toContain("a reference plugin");
 });
 
 test("on-page table-of-contents links point to rendered headings", () => {

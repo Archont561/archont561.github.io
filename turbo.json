@@ -27,12 +27,25 @@
       "dependsOn": ["generate", "^build"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/**"]
     },
+    "@archont561/portfolio#typecheck": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/docs/**",
+        "$TURBO_ROOT$/data/project-categories.json",
+        "$TURBO_ROOT$/data/projects/**",
+        "$TURBO_ROOT$/data/repositories.json"
+      ]
+    },
     "@archont561/portfolio#build": {
       "dependsOn": ["^build"],
       "inputs": [
         "$TURBO_DEFAULT$",
         "$TURBO_ROOT$/docs/**",
         "$TURBO_ROOT$/data/packages.json",
+        "$TURBO_ROOT$/data/project-categories.json",
+        "$TURBO_ROOT$/data/projects/**",
+        "$TURBO_ROOT$/data/repositories.json",
         "$TURBO_ROOT$/packages/tools/src/**"
       ],
       "outputs": ["out/**"]

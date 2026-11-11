@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/PyShellForge",
+  "category": "agents",
+  "order": 3,
+  "directorySummary": "A Python DSL and compiler for shell scripts.",
+  "featured": {
+    "home": false
+  }
+}

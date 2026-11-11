@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/universe",
+  "category": "environments",
+  "order": 2,
+  "directorySummary": "Tools for self-hosted software and data distribution.",
+  "featured": {
+    "home": false
+  }
+}

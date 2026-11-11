@@ -13,6 +13,7 @@ import { source } from "@/src/lib/source";
 interface Props {
   params: Promise<{ slug?: string[] }>;
 }
+const projectsBySlug = new Map(projects.map((project) => [project.slug, project]));
 export const dynamicParams = false;
 export function generateStaticParams() {
   return source.generateParams();
@@ -41,7 +42,7 @@ export default async function Page({ params }: Props) {
     .filter((ancestor) => ancestor !== undefined);
   const project =
     page.slugs[0] === "projects" && page.slugs.length === 2
-      ? projects.find((item) => item.slug === page.slugs[1])
+      ? projectsBySlug.get(page.slugs[1] ?? "")
       : undefined;
   const structured = project
     ? {
@@ -50,7 +51,7 @@ export default async function Page({ params }: Props) {
         name: project.name,
         description: project.description,
         codeRepository: project.url,
-        programmingLanguage: project.language,
+        ...(project.language ? { programmingLanguage: project.language } : {}),
         url: `${ORIGIN}${docsUrl(page.slugs)}`,
       }
     : null;

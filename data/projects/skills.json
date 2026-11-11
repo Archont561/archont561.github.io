@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/skills",
+  "category": "agents",
+  "order": 2,
+  "directorySummary": "Agent Skills and a Python dispatcher.",
+  "featured": {
+    "home": false
+  }
+}

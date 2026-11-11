@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/staged-recipes-submit",
+  "category": "environments",
+  "order": 3,
+  "directorySummary": "Validate Conda recipes and submit them to conda-forge.",
+  "featured": {
+    "home": false
+  }
+}

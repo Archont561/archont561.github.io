@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import BrandMark from "@/src/components/brand-mark";
 import { SearchTrigger } from "@/src/components/search-palette";
+import ThemeToggle from "@/src/components/theme-toggle";
 
 type Section = "atlas" | "projects" | "packages" | "docs" | "search";
 
@@ -65,27 +66,30 @@ export default function SiteHeader({ active }: { active?: Section }) {
         <nav className="site-nav" aria-label="Primary navigation">
           <NavigationLinks active={active} />
         </nav>
-        <SearchTrigger className="site-mobile-search" current={active === "search"}>
-          <Search size={19} aria-hidden="true" />
-          <span className="visually-hidden">Search</span>
-        </SearchTrigger>
-        <details
-          className="site-mobile-menu"
-          ref={menu}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              closeMenu();
-              menu.current?.querySelector("summary")?.focus();
-            }
-          }}
-        >
-          <summary>
-            <Menu size={19} aria-hidden="true" /> <span>Menu</span>
-          </summary>
-          <nav aria-label="Mobile navigation">
-            <NavigationLinks active={active} onSelect={closeMenu} />
-          </nav>
-        </details>
+        <div className="site-header-actions">
+          <ThemeToggle />
+          <SearchTrigger className="site-mobile-search" current={active === "search"}>
+            <Search size={19} aria-hidden="true" />
+            <span className="visually-hidden">Search</span>
+          </SearchTrigger>
+          <details
+            className="site-mobile-menu"
+            ref={menu}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                closeMenu();
+                menu.current?.querySelector("summary")?.focus();
+              }
+            }}
+          >
+            <summary>
+              <Menu size={19} aria-hidden="true" /> <span>Menu</span>
+            </summary>
+            <nav aria-label="Mobile navigation">
+              <NavigationLinks active={active} onSelect={closeMenu} />
+            </nav>
+          </details>
+        </div>
       </div>
     </header>
   );

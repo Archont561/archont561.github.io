@@ -1,0 +1,9 @@
+{
+  "repository": "Archont561/pixi-sandbox",
+  "category": "environments",
+  "order": 1,
+  "directorySummary": "Cloneable, verifiable Pixi environment packs.",
+  "featured": {
+    "home": true
+  }
+}

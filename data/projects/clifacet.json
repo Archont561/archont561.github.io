@@ -1,0 +1,14 @@
+{
+  "repository": "Archont561/clifacet",
+  "category": "developer-tools",
+  "order": 1,
+  "descriptionOverride": "A Rust library for command-line presentation modes.",
+  "descriptionSource": {
+    "kind": "legacy-github",
+    "captured": "2026-11-09"
+  },
+  "metadataCategory": "Developer automation",
+  "featured": {
+    "home": false
+  }
+}

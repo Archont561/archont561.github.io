@@ -17,7 +17,7 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "coverage": "turbo run test --force -- --coverage --coverage-reporter=text --coverage-reporter=lcov --coverage-dir=coverage",
-    "check": "bun run lint && bun run typecheck && bun run test && bun run --bun tools check-structure && bun run --bun tools readme --check && bun run --bun tools agents --check && bun run --bun tools watch-repos --check && bun run --bun tools registries --check && bun run --bun tools devcontainer && bun run --bun tools docs-link-check --offline && bun run --bun tools task docs:index:check version:sync readme:check && vale --no-global --config=.vale.ini docs/ && bunx --no-install alint check",
+    "check": "bun run lint && bun run --cwd apps/portfolio projects:check && bun run typecheck && bun run test && bun run --bun tools check-structure && bun run --bun tools readme --check && bun run --bun tools agents --check && bun run --bun tools watch-repos --check && bun run --bun tools registries --check && bun run --bun tools devcontainer && bun run --bun tools docs-link-check --offline && bun run --bun tools task docs:index:check version:sync readme:check && vale --no-global --config=.vale.ini docs/ && bunx --no-install alint check",
     "build:portfolio": "turbo run build --filter=@archont561/portfolio"
   },
   "devDependencies": {
