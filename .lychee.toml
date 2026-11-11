@@ -1,0 +1,14 @@
+max_concurrency = 8
+max_retries = 2
+timeout = 30
+include_fragments = true
+index_files = ["index.html"]
+# Preview addresses are never reachable from CI. Registry websites rate-limit
+# automated clients; their package metadata is validated against API snapshots.
+exclude = [
+  '^https?://localhost',
+  '^https?://127\.0\.0\.1',
+  '^https?://(www\.)?npmjs\.com',
+  '^https?://pypi\.org',
+  '^https?://prefix\.dev',
+]

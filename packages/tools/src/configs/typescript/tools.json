@@ -6,5 +6,5 @@
       "@root/*": ["${configDir}/../../*", "../../../*"]
     }
   },
-  "include": ["../src", "../features", "../tests"]
+  "include": ["../src", "../features", "../tests", "../../../tasks/**/*.ts"]
 }

@@ -12,7 +12,7 @@ repository's workflows — it is not a cross-repo platform.
 ## Decision
 
 - All of it ports into `packages/tools/src/cli/commands/*.ts` as citty
-  commands (D-005). **`doit`/`dodo.py`/Python do not return.**
+  commands (D-005). **`doit`/`dodo.py`/repo-owned Python automation do not return.**
 - **Timing: M1, together with the CLI** — the automation *is* the tools
   package; there is no separate late "migration" milestone. What remains at
   M4/M5 levels is only the pieces that depend on later milestones (e.g.
@@ -21,8 +21,8 @@ repository's workflows — it is not a cross-repo platform.
   product for other `Archont561/*` repositories. Other repos may copy ideas;
   they are not consumers. This retires the earlier "rollout to other repos"
   milestone.
-- Port order (M1): `check-structure` → `version` (done) → `readme` / `agents`
-  → `watch-repos` / `registries` → `docs-link-check` / `devcontainer` →
+- Port order (M1): `check-structure` → `version` → `readme` / `agents` →
+  `watch-repos` / `registries` → `docs-link-check` / `devcontainer` (M1 done) →
   `export-ai` (M4, with the SEO pipeline).
 - **doit's *runner* layer is replaced by the task kernel** specified in
   DOC-013 (TASK-011): DAG + `file_dep`/`targets`/`uptodate` skip-if-clean

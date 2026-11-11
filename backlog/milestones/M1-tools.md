@@ -1,6 +1,9 @@
 # M1: tools — CLI, shared configs, automation port
 
-**Status:** in progress · **Depends on:** M0 · **Decisions:** D-005, D-010
+**Status:** done · **Depends on:** M0 · **Decisions:** D-005, D-010
+
+CLI discovery, shared configs, the M1 automation port, and the task kernel are
+implemented. M2–M4 application, release, and SEO work remains separate.
 
 ## Scope
 
@@ -19,10 +22,10 @@
 
 ## Exit criteria
 
-- [ ] `pixi run tools <command>` works for every ported command
-- [ ] `pixi run tools task <name>` runs the kernel: skip-if-clean proven
+- [x] `pixi run tools <command>` works for every ported command
+- [x] `pixi run tools task <name>` runs the kernel: skip-if-clean proven
       (docs:index / version:sync + `readme:check:*` preset), `--force`/`--dry-run` work
-- [ ] Old Python behaviours covered by `features/` `test.scenario` specs
-- [ ] No Python/doit left in the repo
-- [ ] `tools/dist` never exists (enforced by `check-structure`)
-- [ ] `bun run check` green including new suites
+- [x] Applicable old automation behaviours covered by `features/` `test.scenario` specs
+- [x] No repo-owned Python/doit automation; vendored PCC test fixtures and Semgrep runtime remain
+- [x] `tools/dist` never exists (enforced by `check-structure`)
+- [x] `bun run check` green including new suites

@@ -20,7 +20,8 @@
       "!**/.cache",
       "!**/.turbo",
       "!**/.wrangler",
-      "!**/*.tsbuildinfo"
+      "!**/*.tsbuildinfo",
+      "!**/.tools-cache/**"
     ]
   },
   "overrides": [
@@ -32,6 +33,12 @@
             "useBiomeIgnoreFolder": "off"
           }
         }
+      }
+    },
+    {
+      "includes": ["data/packages.json", "data/repositories.json"],
+      "formatter": {
+        "enabled": false
       }
     }
   ]

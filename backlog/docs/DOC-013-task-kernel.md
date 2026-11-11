@@ -1,13 +1,13 @@
 # DOC-013: Task kernel — doit semantics in the tools package
 
-**Status:** draft · **Milestone:** M1 · **Decisions:** D-010, D-005
+**Status:** implemented · **Milestone:** M1 · **Decisions:** D-010, D-005
 
 ## Why
 
 D-010 ports the old repo's Python automation *commands* into the citty CLI, but
 the part of `doit` that made it worth using — the **runner**: task DAG,
 `file_dep`/`targets`/`uptodate` skip-if-clean semantics, state tracking, task
-generators — has no home yet. A survey (2026-11) found no pure-TS package that
+generators — now lives in a small task kernel. A survey (2026-11) found no pure-TS package that
 provides that kernel with presets: wireit has the semantics but no presets and
 single-maintainer risk; Nx has first-class presets but replaces turbo; Vite+
 `vp run` is a whole toolchain suite; the small TS runners are one-author bets.
@@ -29,13 +29,14 @@ zero-dependency module, not a framework.
 
 ```ts
 // packages/tools/src/tasks/ — kernel API (subpath export: @archont561/tools/tasks)
+export interface TaskContext { root: string }
 export interface Task {
   name: string;
   deps?: string[];                              // task DAG
   fileDep?: string[];                           // input globs (hash-tracked)
   targets?: string[];                           // output globs (drift = dirty)
-  upToDate?: () => boolean | Promise<boolean>;  // custom predicate (doit's uptodate)
-  run: () => void | Promise<void>;
+  upToDate?: (context: TaskContext) => boolean | Promise<boolean>;
+  run: (context: TaskContext) => void | Promise<void>;
 }
 export type Tasks = Task[];                     // the collection contract
 
@@ -58,7 +59,7 @@ export default tasks(
     name: "docs:index",
     fileDep: ["backlog/**"],
     targets: ["backlog/README.md"],
-    run: () => generateBacklogIndex(),
+    run: ({ root }) => generateBacklogIndex(root),
   }),
   ...forWorkspaces((ws) => task({ name: `readme:check:${ws}`, /* ... */ })),
 );
@@ -66,7 +67,15 @@ export default tasks(
 
 CLI surface (via the existing autodiscovery, D-005/DOC-012):
 `pixi run tools task <name...>` with `--list`, `--force`, `--dry-run`.
-Execution: topo sort, parallel independent branches, state written after run.
+The runner validates the complete requested graph before actions start, executes
+independent branches concurrently, and waits for siblings even when one fails.
+A task is clean only if its definition, input and target hashes match and its
+read-only predicate succeeds; missing inputs or targets are dirty. Tasks without
+file dependencies, targets, or a predicate run every time. A rerun prerequisite
+makes its dependants dirty. State is written only after the whole graph succeeds;
+a failed action can still have its own side effects. `--force` bypasses clean
+checks; `--dry-run` evaluates read-only predicates and reports the plan without
+running actions or writing state. Cache files are local, not a cross-process lock.
 
 ## Task discovery
 
@@ -80,7 +89,9 @@ Rules: TS only; deterministic sorted order; duplicate names across files are
 a hard error naming both sources; `--list` shows each task's source file;
 discovered files must typecheck (tools' tsconfig `include` covers
 `tasks/**/*.ts`); `@archont561/tools/tasks` is a real subpath export so repo
-files import the same kernel instance the CLI runs.
+files import the same kernel instance the CLI runs. Built-in registries can also
+export `createTasks(root)` to expand against an explicitly selected `--root`;
+their default export remains a `Tasks` array.
 
 ## Division of labor
 
@@ -96,11 +107,14 @@ files import the same kernel instance the CLI runs.
 
 | Task | `fileDep` | `targets` / `upToDate` | What it does | Milestone |
 | --- | --- | --- | --- | --- |
-| `docs:index` | `backlog/**` | `backlog/README.md` | Regenerate the backlog status index from `status:` frontmatter | M1 |
-| `version:sync` | `packages/*/package.json`, `packages/*/src/version.ts` | — | Drift gate: version stubs report their package.json version (via package-meta) | M1 |
+| `docs:index` | `backlog/**/*.md`, `tasks/docs.ts` | `backlog/README.md` | Regenerate the backlog index from `status:` frontmatter or existing status lines | M1 |
+| `version:sync` | workspace manifests and version stubs | — | Drift gate: version stubs report their package.json version (via package-meta) | M1 |
 | `release:prepare` | — | `upToDate`: tag exists | Clean tree → version bump → `convco changelog` → tag (client release choreography) | M3 |
 | `snapshots:refresh` | — | `upToDate`: **TTL** (< 24h) | Portfolio data via github-app-client, committed snapshots (D-011) | M4 |
 | `seo:artifacts` | `docs/**` | `out/llms.txt`, `out/sitemap.xml` | Regenerate LLM/SEO surfaces (D-008) | M4 |
+
+`docs:index:check` verifies the generated index without writing;
+`readme:check` depends on all `readme:check:<workspace-path>` tasks.
 
 Generic machinery (`forWorkspaces`, `readme:check`) ships as built-ins in
 tools; the repo-specific rows live in root `tasks/` — the engine is the

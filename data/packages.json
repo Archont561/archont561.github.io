@@ -1,0 +1,370 @@
+{
+  "source": {
+    "npm": "https://registry.npmjs.org/<name>",
+    "pypi": "https://pypi.org/pypi/<name>/json",
+    "prefix": "https://prefix.dev/api/graphql"
+  },
+  "retrieved": "2026-11-10",
+  "owner": "Archont561",
+  "identity": {
+    "npm": {
+      "user": "archont",
+      "scope": "@archont561"
+    },
+    "pypi": {
+      "user": "Archont561"
+    },
+    "prefix": {
+      "channel": "@archont561/archont561",
+      "install_channel": "https://prefix.dev/archont561/archont561"
+    }
+  },
+  "registries": [
+    {
+      "name": "npm",
+      "label": "npm",
+      "ecosystem": "JavaScript",
+      "url": "https://www.npmjs.com",
+      "packages": [
+        {
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk",
+          "name": "@archont561/qgis-sdk",
+          "version": "0.7.0",
+          "description": "Typed QGIS plugin actions and host services for your web UI.",
+          "license": "MIT",
+          "published": "2026-11-06",
+          "repository": "git+https://github.com/Archont561/qgis-sdk.git",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/qgis-sdk",
+          "proof": "scope"
+        },
+        {
+          "relation": "alias",
+          "alias_of": "@archont561/qgis-sdk",
+          "note": "Unscoped reservation so a bare npm install of qgis-sdk cannot pull an unrelated build.",
+          "name": "qgis-sdk",
+          "version": "0.7.0",
+          "description": "Typed QGIS plugin actions for your web UI. Alias of @archont561/qgis-sdk.",
+          "license": "MIT",
+          "published": "2026-11-06",
+          "repository": "git+https://github.com/Archont561/qgis-sdk.git",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/qgis-sdk",
+          "proof": "maintainer"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk",
+          "name": "@archont561/qgis-sdk-ui",
+          "version": "0.1.0",
+          "description": "Light-DOM web components for QGIS SDK web views: form, pickers, progress and log on the @archont561/qgis-sdk store core, with React, Vue and Svelte wrappers and palette tokens.",
+          "license": "MIT",
+          "published": "2026-10-27",
+          "repository": "git+https://github.com/Archont561/qgis-sdk.git",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/qgis-sdk-ui",
+          "proof": "scope"
+        },
+        {
+          "relation": "alias",
+          "alias_of": "@archont561/qgis-sdk-ui",
+          "name": "qgis-sdk-ui",
+          "version": "0.1.0",
+          "description": "Unscoped alias of @archont561/qgis-sdk-ui, the light-DOM web components for QGIS SDK web views.",
+          "license": "MIT",
+          "published": "2026-10-27",
+          "repository": "git+https://github.com/Archont561/qgis-sdk.git",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/qgis-sdk-ui",
+          "proof": "maintainer"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/bun-test-utils",
+          "name": "@archont561/bun-test-utils",
+          "version": "0.1.0",
+          "description": "General-purpose test extension for the Bun test runner covering unit, integration, and e2e tests \u2014 Playwright-style typed fixtures composed with test.extend(), with scopes and LIFO teardown, plus BDD, property-based testing, snapshots, HTTP record/replay,",
+          "license": "MIT OR Apache-2.0",
+          "published": "2026-10-11",
+          "repository": "git+https://github.com/Archont561/bun-test-utils.git",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/bun-test-utils",
+          "proof": "scope"
+        },
+        {
+          "relation": "authored",
+          "name": "@archont561/pathway",
+          "version": "0.1.2",
+          "description": "One Path value for native, virtual and URL paths in TypeScript",
+          "published": "2026-10-17",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/pathway",
+          "proof": "scope"
+        },
+        {
+          "relation": "reserved",
+          "note": "Name held for a future release; nothing is published under it.",
+          "name": "@archont561/playtest",
+          "version": "0.0.0",
+          "description": "Reserved package name on npm for @archont561/playtest",
+          "license": "MIT OR Apache-2.0",
+          "published": "2026-10-23",
+          "repository": "git+https://github.com/Archont561/playtest.git",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/playtest",
+          "proof": "scope"
+        },
+        {
+          "relation": "reserved",
+          "name": "playtest-ts",
+          "version": "0.0.0",
+          "description": "Reserved package name on npm for playtest-ts",
+          "license": "MIT OR Apache-2.0",
+          "published": "2026-10-23",
+          "repository": "git+https://github.com/Archont561/playtest.git",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/playtest-ts",
+          "proof": "maintainer"
+        },
+        {
+          "relation": "reserved",
+          "note": "Trusted-publishing bootstrap; the registry is the first publisher.",
+          "name": "@archont561/geoquery",
+          "version": "0.0.0",
+          "description": "OIDC trusted publishing setup package for @archont561/geoquery",
+          "published": "2026-10-08",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/geoquery",
+          "proof": "scope"
+        },
+        {
+          "relation": "reserved",
+          "name": "@archont561/ferra",
+          "version": "0.0.0",
+          "description": "OIDC trusted publishing setup package for @archont561/ferra",
+          "published": "2026-10-17",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/ferra",
+          "proof": "scope"
+        },
+        {
+          "relation": "reserved",
+          "name": "@archont561/nadir",
+          "version": "0.0.0",
+          "description": "OIDC trusted publishing setup package for @archont561/nadir",
+          "published": "2026-10-08",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/nadir",
+          "proof": "scope"
+        },
+        {
+          "relation": "reserved",
+          "name": "@archont561/polybridge",
+          "version": "0.0.0",
+          "description": "OIDC trusted publishing setup package for @archont561/polybridge",
+          "published": "2026-10-15",
+          "maintainers": ["archont"],
+          "url": "https://www.npmjs.com/package/@archont561/polybridge",
+          "proof": "scope"
+        }
+      ]
+    },
+    {
+      "name": "pypi",
+      "label": "PyPI",
+      "ecosystem": "Python",
+      "url": "https://pypi.org",
+      "packages": [
+        {
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk",
+          "name": "qgis-sdk",
+          "version": "0.10.0",
+          "description": "The next-generation Python SDK for effortless QGIS plugin authoring.",
+          "license": "MIT",
+          "published": "2026-11-06",
+          "requires_python": ">=3.11",
+          "releases": 12,
+          "url": "https://pypi.org/project/qgis-sdk/",
+          "proof": "declared"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk",
+          "name": "qgis-sdk-runtime",
+          "version": "0.10.0",
+          "description": "The Python runtime for building QGIS plugins with less boilerplate.",
+          "license": "MIT",
+          "published": "2026-11-06",
+          "requires_python": ">=3.11",
+          "releases": 7,
+          "url": "https://pypi.org/project/qgis-sdk-runtime/",
+          "proof": "declared"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk",
+          "name": "qgis-sdk-tools",
+          "version": "0.10.0",
+          "description": "Scaffold, test and ship QGIS plugins from the command line.",
+          "license": "MIT",
+          "published": "2026-11-06",
+          "requires_python": ">=3.11",
+          "releases": 7,
+          "url": "https://pypi.org/project/qgis-sdk-tools/",
+          "proof": "declared"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/PyShellForge",
+          "name": "pyshellforge",
+          "version": "0.1.0",
+          "description": "A Python-native DSL for building, composing and rendering structured Bash scripts.",
+          "license": "MIT",
+          "published": "2026-11-10",
+          "repository": "https://github.com/Archont561/PyShellForge",
+          "requires_python": ">=3.11",
+          "releases": 2,
+          "url": "https://pypi.org/project/pyshellforge/",
+          "proof": "repository"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/rude-clean-code",
+          "name": "rude-clean-code",
+          "version": "0.1.0",
+          "description": "Clean Code plugin for the Rude Python linter.",
+          "published": "2026-11-10",
+          "repository": "https://github.com/Archont561/rude-clean-code",
+          "requires_python": ">=3.11",
+          "releases": 2,
+          "url": "https://pypi.org/project/rude-clean-code/",
+          "proof": "repository"
+        }
+      ]
+    },
+    {
+      "name": "prefix",
+      "label": "Prefix.dev",
+      "ecosystem": "Conda",
+      "url": "https://prefix.dev/channels/@archont561/archont561",
+      "packages": [
+        {
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk",
+          "name": "qgis-sdk",
+          "version": "0.10.0",
+          "description": "Python SDK foundations for QGIS plugin development",
+          "builds": 11,
+          "platforms": ["noarch"],
+          "size": 3182660,
+          "published": "2026-11-06",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/qgis-sdk",
+          "proof": "channel"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk",
+          "name": "qgis-sdk-runtime",
+          "version": "0.10.0",
+          "description": "The in-QGIS runtime of qgis-sdk, dependency-free",
+          "builds": 6,
+          "platforms": ["noarch"],
+          "size": 3692058,
+          "published": "2026-11-06",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/qgis-sdk-runtime",
+          "proof": "channel"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/qgis-sdk",
+          "name": "qgis-sdk-tools",
+          "version": "0.10.0",
+          "description": "The developer tooling of qgis-sdk - the `qgis-sdk` command",
+          "builds": 6,
+          "platforms": ["noarch"],
+          "size": 2469866,
+          "published": "2026-11-06",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/qgis-sdk-tools",
+          "proof": "channel"
+        },
+        {
+          "relation": "authored",
+          "repo": "Archont561/pixi-sandbox",
+          "name": "pixi-sandbox",
+          "version": "0.9.0",
+          "builds": 12,
+          "platforms": ["linux-64", "linux-aarch64", "osx-64", "osx-arm64", "win-64"],
+          "size": 117426410,
+          "published": "2026-10-25",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/pixi-sandbox",
+          "proof": "channel"
+        },
+        {
+          "relation": "upstream",
+          "upstream": "CloudCompare/CloudCompare",
+          "repo": "Archont561/CloudCompare-conda",
+          "note": "Conda build of software maintained elsewhere; the recipe is the contribution.",
+          "name": "cloudcompare",
+          "version": "2.13.2",
+          "description": "3D point cloud and mesh processing software",
+          "builds": 1,
+          "platforms": ["linux-64", "osx-64", "osx-arm64", "win-64"],
+          "size": 164775630,
+          "published": "2026-10-26",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/cloudcompare",
+          "proof": "channel"
+        },
+        {
+          "relation": "unreviewed",
+          "name": "fastrasterfilter",
+          "version": "1.0",
+          "description": "Fast median filtering of georeferenced raster DEMs",
+          "builds": 1,
+          "platforms": ["linux-64"],
+          "size": 338663,
+          "published": "2026-10-29",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/fastrasterfilter",
+          "proof": "channel"
+        },
+        {
+          "relation": "unreviewed",
+          "name": "fpcfilter",
+          "version": "0.2",
+          "description": "Fast point-cloud cropping, sampling, and outlier filtering",
+          "builds": 1,
+          "platforms": ["linux-64"],
+          "size": 231522,
+          "published": "2026-10-27",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/fpcfilter",
+          "proof": "channel"
+        },
+        {
+          "relation": "unreviewed",
+          "name": "dem2points",
+          "version": "0.0.0.dev20220721",
+          "description": "Extract 3D points from a digital elevation model",
+          "builds": 1,
+          "platforms": ["linux-64"],
+          "size": 116567,
+          "published": "2026-10-29",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/dem2points",
+          "proof": "channel"
+        },
+        {
+          "relation": "unreviewed",
+          "name": "odm-orthophoto",
+          "version": "0.0.0.dev20250225",
+          "description": "Rasterize textured 3D models into orthophotos",
+          "builds": 1,
+          "platforms": ["linux-64"],
+          "size": 236424,
+          "published": "2026-10-29",
+          "url": "https://prefix.dev/channels/@archont561/archont561/packages/odm-orthophoto",
+          "proof": "channel"
+        }
+      ]
+    }
+  ]
+}

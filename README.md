@@ -1,29 +1,38 @@
+<!-- Generated from templates/README.md.ejs. Run pixi run readme after editing the template or package metadata. -->
 # archont561.github.io
 
 Monorepo for the Archont561 site and its automation. Deployed to GitHub Pages at
-`https://archont561.github.io/`.
+`https://archont561.github.io/`. Workspace: `archont561-workspace` (`0.0.0`).
 
 | Workspace | Package | Role |
 | --- | --- | --- |
-| `apps/portfolio` | `@archont561/portfolio` | Next.js + Fumadocs static site (scaffold only) |
-| `apps/github-app` | `@archont561/github-app` | Cloudflare Worker (Hono + OpenAPI) + GitHub Action (scaffold only) |
-| `packages/tools` | `@archont561/tools` | Repo-internal toolkit: package metadata, CLI discovery and shared configs |
-| `packages/github-app-client` | `@archont561/github-app-client` | Generated OpenAPI client (bunup build, published to npm with provenance) |
+| `apps/github-app` | `@archont561/github-app` | GitHub App: Cloudflare Worker (Hono + OpenAPI) and composite GitHub Action |
+| `apps/portfolio` | `@archont561/portfolio` | Archont561 portfolio and docs site (Next.js + Fumadocs, static export) |
+| `packages/github-app-client` | `@archont561/github-app-client` | Typed client for the github-app worker API (generated from its OpenAPI document) |
+| `packages/tools` | `@archont561/tools` | Repo-internal toolkit: typed package metadata, citty CLI, shared configs |
 
 ## Status
 
-Scaffold. Package metadata, CLI command discovery (`version` only), and shared
-configs are implemented; the apps and remaining automation are still planned in
-[`backlog/`](backlog/). Milestones: `backlog/milestones/`.
+M1 tooling is complete: package metadata, shared configs, maintenance commands,
+registry and repository snapshots, and the file-aware task kernel. The apps,
+client generation, and SEO work remain planned in the [backlog](backlog/README.md).
 
 ## Quickstart
 
 ```bash
-pixi install          # system tooling (bun, actionlint, convco, vale, lefthook, ...)
-bun install           # workspace dependencies
-bun run test          # executable scenarios + unit tests (tools/features + tools/tests)
+pixi install --locked       # locked system tooling, including Vale and Lychee
+bun install --frozen-lockfile # workspace dependencies
+bun run test                # executable scenarios + unit tests
 pixi run tools version
+pixi run check-structure    # validate workspace and version contracts
+pixi run readme-check       # verify generated README without writing
+pixi run agents-check       # verify generated AGENTS.md regions without writing
+pixi run tools task --list  # list repository tasks and their source files
+pixi run check              # full local and CI quality gate
 ```
+
+Use `pixi run readme` and `pixi run agents` to refresh generated content. Edits
+outside the marked AGENTS.md regions remain human-owned.
 
 ## Conventions
 

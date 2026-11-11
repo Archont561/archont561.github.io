@@ -49,6 +49,8 @@ function assertCompilerSettings(workspace: Workspace): void {
     expect(config.files).toContain("./tests/version.test.ts");
     expect(config.files).toContain("./features/cli.test.ts");
     expect(config.files).toContain("./features/version.test.ts");
+    expect(config.files).toContain("../../tasks/docs.ts");
+    expect(config.files).toContain("../../tasks/version.ts");
   }
 }
 

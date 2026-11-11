@@ -3,15 +3,16 @@
 1. Pick a task from [`backlog/tasks/`](backlog/tasks/) — one task, one PR.
 2. Branch from `main`; write [conventional commits](https://www.conventionalcommits.org/)
    (`convco check` runs in the commit-msg hook and CI).
-3. Run `bun run check` (biome + typecheck + tests) before pushing.
+3. Run `pixi run check` (or `bun run check` inside Pixi) before pushing. It includes
+   biome, typecheck, tests, maintenance checks, offline Lychee, Vale, and alint.
    Coverage: `bun run coverage` writes lcov for the Codecov upload.
 4. Keep PRs focused; update `backlog/` docs when a decision changes.
 
 ## Development setup
 
 ```bash
-pixi install
-bun install
+pixi install --locked
+bun install --frozen-lockfile
 pixi run hooks-install   # lefthook git hooks
 ```
 
@@ -22,6 +23,11 @@ pixi run hooks-install   # lefthook git hooks
   must be regenerated via their tool, never hand-edited.
 - New shared behaviour needs an executable `test.scenario` Given/When/Then spec
   in `packages/tools/features/*.test.ts` first.
+- Edit `templates/README.md.ejs` or package metadata, then run `pixi run readme`;
+  `README.md` is generated. Run `pixi run agents` to refresh marked `AGENTS.md`
+  regions, keeping project-specific guidance outside those markers. Pre-commit
+  checks report drift without changing or staging either file. Regenerate the
+  backlog index with `pixi run tools task docs:index` after editing backlog status.
 
 ## Clean code standard
 

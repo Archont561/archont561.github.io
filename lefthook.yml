@@ -5,9 +5,12 @@ pre-commit:
     code:
       glob: '*.{ts,tsx,mjs,json,jsonc,css}'
       run: pixi run lint
-    docs:
-      glob: '*.{md,mdx}'
-      run: pixi run tools check-structure
+    structure:
+      run: pixi run check-structure
+    readme:
+      run: pixi run readme-check
+    agents:
+      run: pixi run agents-check
     workflows:
       glob: '.github/workflows/*.{yml,yaml}'
       run: pixi run lint-actions
