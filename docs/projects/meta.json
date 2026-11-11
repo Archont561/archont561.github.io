@@ -1,19 +1,25 @@
 {
   "title": "Projects",
+  "defaultOpen": true,
   "pages": [
     "index",
+    "---Geospatial---",
     "qgis-agent-harness",
     "qgis-sdk",
     "cloudcompare-conda",
     "odm-conda",
+    "---Environments---",
     "pixi-sandbox",
     "universe",
     "staged-recipes-submit",
+    "---Testing---",
     "bun-test-utils",
     "playtest",
+    "---Agents---",
     "artifactspec",
     "skills",
     "pyshellforge",
+    "---Developer tools---",
     "clifacet"
   ]
 }

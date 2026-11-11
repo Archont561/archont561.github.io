@@ -2,12 +2,12 @@
   "title": "Documentation",
   "pages": [
     "index",
+    "projects",
     "guides",
     "concepts",
     "reference",
     "architecture",
     "development",
-    "projects",
     "about",
     "ai-access"
   ]

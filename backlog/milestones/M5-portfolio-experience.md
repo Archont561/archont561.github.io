@@ -1,6 +1,6 @@
 # M5: Portfolio atlas, documentation, and offline experience
 
-**Status:** not started · **Depends on:** deployed M4 static foundation, not M2/M3 live integration · **Decisions:** D-008, D-011; D-007 review pending
+**Status:** in progress · **Depends on:** deployed M4 static foundation, not M2/M3 live integration · **Decisions:** D-008, D-011; D-007 review pending
 
 ## Scope
 
@@ -26,10 +26,13 @@ existing workspace audit findings and the new Workbox dependency advisories.
 ## Prepared dependencies
 
 `apps/portfolio` declares `react-globe.gl` for the proposed atlas and
-`workbox-build` and `@playwright/test` as development dependencies. No globe,
-service worker, browser test suite, or Playwright configuration is implemented
-by adding them. The proposed separate Playwright runner must be reconciled with
-the current Bun test policy in D-007 before it is integrated (TASK-016).
+`workbox-build` and `@playwright/test` as development dependencies. The site
+now has grouped Fumadocs navigation, shared page navigation, a Pagefind search
+palette, a full-viewport static globe placeholder, and a project directory at
+`/projects/`. The interactive globe, service worker, browser test suite, and
+Playwright configuration are not implemented. The proposed
+separate Playwright runner must be reconciled with the current Bun test policy
+in D-007 before it is integrated (TASK-016).
 
 Motion, Radix, Fumadocs UI, and geometry-generation packages remain optional;
 adding them requires the normal dependency approval. Three.js is a transitive

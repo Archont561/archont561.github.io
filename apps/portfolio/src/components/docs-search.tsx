@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 export default function DocsSearch() {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    if (root.current) root.current.textContent = "Loading the search index…";
     const css = document.createElement("link");
     css.rel = "stylesheet";
     css.href = "/pagefind/pagefind-ui.css";
@@ -15,13 +16,15 @@ export default function DocsSearch() {
           PagefindUI: new (options: object) => { destroy: () => void };
         }
       ).PagefindUI;
-      if (root.current)
+      if (root.current) {
+        root.current.replaceChildren();
         new UI({
           element: root.current,
           showSubResults: true,
           showImages: false,
           bundlePath: "/pagefind/",
         });
+      }
     };
     script.onerror = () => {
       if (root.current)

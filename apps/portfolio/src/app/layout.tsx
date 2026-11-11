@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SearchProvider from "@/src/components/search-palette";
 import { ORIGIN, SITE_DESCRIPTION } from "@/src/lib/site";
 import "./uno.css";
 import "./globals.css";
@@ -27,7 +28,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           title="Archont561 field notes"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <SearchProvider>
+          <a href="#main-content" className="skip-link">
+            Skip to content
+          </a>
+          {children}
+        </SearchProvider>
+      </body>
     </html>
   );
 }

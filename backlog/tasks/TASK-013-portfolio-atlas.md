@@ -1,6 +1,6 @@
 # TASK-013: Interactive portfolio atlas and project cards
 
-**Status:** not started · **Milestone:** M5 · **Labels:** portfolio, accessibility, 3d
+**Status:** in progress · **Milestone:** M5 · **Labels:** portfolio, accessibility, 3d
 
 ## Goal
 
@@ -30,6 +30,14 @@ Use the committed project and registry snapshots as the data source.
       performance rather than assuming a package makes rendering smooth.
 - [ ] Offline cache preparation never holds the loader open. Exercise slow-load,
       failure, reduced-motion, touch, and keyboard paths with browser tests.
+
+## Progress
+
+The homepage opens with a full-viewport, clearly labeled static globe
+placeholder. A preview remains at `/#work` and links to the complete project
+list at `/projects/`, which also works without JavaScript. The interactive globe,
+loader, project-card selection, and WebGL failure handling remain to be
+implemented.
 
 ## Notes
 
