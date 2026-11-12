@@ -73,7 +73,14 @@ documentation and project list. The not-found page offers the same search, a
 small site index, and a link to the full XML sitemap. Its decorative map honors
 reduced-motion preferences, and its navigation remains usable without JavaScript.
 The site-wide `llms.txt` is linked from the homepage footer; documentation pages
-retain links to their individual Markdown twins.
+retain links to their individual Markdown twins. The SEO menu opens `/seo/feed/`,
+`/seo/robots/`, and `/seo/sitemap/` for rendered, source, or combined views
+of those static files. The feed also switches between RSS, Atom, and JSON.
+`/seo/pages/` lets any visitor inspect this site's page metadata and an illustrative
+Open Graph card, using the actual exported HTML. It loads only same-site images.
+These views require JavaScript but link to the raw files or pages without it.
+Static GitHub Pages cannot return different content for a `?preview=true` query
+on a raw file, so those URLs always serve the machine-readable artifact.
 
 The packages page reads the committed `data/packages.json`. Choose npm, PyPI,
 or Prefix.dev to filter its directory, or choose All registries to reset it;

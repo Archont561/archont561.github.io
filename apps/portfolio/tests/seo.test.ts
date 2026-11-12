@@ -89,6 +89,7 @@ test("discovery, JSON-LD, feeds, assets and search index use root-site paths", (
     expect(head(html)).toContain(`<meta property="og:url" content="${url}"`);
     expect(head(html)).toContain('name="twitter:card"');
     expect(head(html)).toContain('href="/feed.xml"');
+    expect(head(html)).toContain('href="/feed.atom"');
     expect(head(html)).toContain('href="/feed.json"');
   }
   expect(home).toContain('"@type":"WebSite"');
@@ -96,14 +97,6 @@ test("discovery, JSON-LD, feeds, assets and search index use root-site paths", (
   expect(file("docs/projects/qgis-sdk/index.html")).toContain('"@type":"SoftwareSourceCode"');
   expect(file("robots.txt")).toContain(`Sitemap: ${origin}/sitemap.xml`);
   expect(file("robots.txt")).toContain("User-Agent: GPTBot");
-  expect(file("feed.xml")).toContain('<rss version="2.0">');
-  const feed = JSON.parse(file("feed.json")) as { version: string; items: { url: string }[] };
-  expect(feed.version).toBe("https://jsonfeed.org/version/1.1");
-  expect(feed.items.map((item) => item.url).sort()).toEqual(
-    manifest()
-      .map((page) => `${origin}${page.url}`)
-      .sort(),
-  );
   const search = JSON.parse(file("pagefind/pagefind-entry.json")) as {
     languages: { en: { page_count: number } };
   };
@@ -118,6 +111,58 @@ test("discovery, JSON-LD, feeds, assets and search index use root-site paths", (
     expect(existsSync(join(out, path))).toBe(true);
   }
   expect(head(home)).not.toContain("/Archont561/");
+});
+
+test("RSS, Atom, and JSON feeds cover the documentation", () => {
+  expect(file("feed.xml")).toContain('<rss version="2.0">');
+  expect(file("feed.rss")).toBe(file("feed.xml"));
+  const atom = file("feed.atom");
+  expect(atom).toContain('xmlns="http://www.w3.org/2005/Atom"');
+  expect(atom).toContain("<author><name>Archont561</name>");
+  expect((atom.match(/<entry>/g) ?? []).length).toBe(manifest().length);
+  for (const page of manifest()) expect(atom).toContain(`<id>${origin}${page.url}</id>`);
+  const feed = JSON.parse(file("feed.json")) as { version: string; items: { url: string }[] };
+  expect(feed.version).toBe("https://jsonfeed.org/version/1.1");
+  expect(feed.items.map((item) => item.url).sort()).toEqual(
+    manifest()
+      .map((page) => `${origin}${page.url}`)
+      .sort(),
+  );
+});
+
+test("SEO views are exported without replacing raw artifacts", () => {
+  const sitemap = file("sitemap.xml");
+  for (const kind of ["pages", "feed", "robots", "sitemap"]) {
+    const html = file(`seo/${kind}/index.html`);
+    expect(head(html)).toContain(`href="${origin}/seo/${kind}/"`);
+    expect(head(html)).toContain('name="robots" content="noindex, follow"');
+    expect(html).toContain('aria-label="Site data previews"');
+    expect(html).toContain(
+      kind === "pages" ? "This inspector needs JavaScript." : "This preview needs JavaScript.",
+    );
+    expect(sitemap).not.toContain(`${origin}/seo/${kind}/`);
+    expect(existsSync(join(out, `preview/${kind}/index.html`))).toBe(false);
+  }
+  const feed = file("seo/feed/index.html");
+  for (const path of ["/feed.rss", "/feed.atom", "/feed.json"])
+    expect(feed).toContain(`href="${path}"`);
+  expect(file("seo/robots/index.html")).toContain('href="/robots.txt"');
+  expect(file("seo/sitemap/index.html")).toContain('href="/sitemap.xml"');
+  const inspector = file("seo/pages/index.html");
+  expect(inspector).toContain('id="page-seo-select"');
+  for (const page of manifest()) expect(inspector).toContain(`value="${page.url}"`);
+  for (const path of [
+    "/",
+    "/projects/",
+    "/packages/",
+    "/search/",
+    "/404.html",
+    "/seo/pages/",
+    "/seo/feed/",
+    "/seo/robots/",
+    "/seo/sitemap/",
+  ])
+    expect(inspector).toContain(`value="${path}"`);
 });
 
 test("Pagefind can search the generated index", async () => {
@@ -148,6 +193,8 @@ test("static SEO and Markdown outputs are snapshot-locked", () => {
   const paths = [
     "ai-manifest.json",
     "feed.xml",
+    "feed.rss",
+    "feed.atom",
     "feed.json",
     "llms.txt",
     "llms-full.txt",
@@ -239,11 +286,15 @@ test("the shared navigation, static atlas placeholder, and project fallback are 
       "/packages/",
       "/docs/",
       "/search/",
+      "/seo/feed/",
+      "/seo/robots/",
+      "/seo/sitemap/",
       "https://github.com/Archont561",
     ])
       expect(header).toContain(`href="${href}"`);
     expect(header).toMatch(new RegExp(`aria-current="page"[^>]*href="${current}"`));
     expect(header).toContain('class="site-mobile-menu"');
+    expect(header).toContain('href="/seo/pages/');
     // Before hydration Search is a normal link, not a falsely advertised dialog.
     expect(header).not.toContain('aria-haspopup="dialog"');
     expect(html).toContain('id="search-palette"');

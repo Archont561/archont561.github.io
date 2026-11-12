@@ -3,6 +3,10 @@ import { dirname, join } from "node:path";
 
 const ORIGIN = "https://archont561.github.io";
 const FEED_TITLE = "Archont561 field notes";
+// Atom requires updated timestamps even for undated entries. This is the
+// publication date of the first Atom feed edition, not a document date.
+// Advance it when publishing changed undated feed entries.
+const ATOM_EDITION = "2026-11-10T00:00:00.000Z";
 
 export interface AiPage {
   title: string;
@@ -83,6 +87,21 @@ function rss(pages: AiPage[]): string {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0">\n  <channel>\n    <title>${FEED_TITLE}</title>\n    <link>${ORIGIN}/docs/</link>\n    <description>Documentation for the Archont561 portfolio.</description>\n    <language>en</language>\n${items.join("\n")}\n  </channel>\n</rss>\n`;
 }
 
+function atom(pages: AiPage[]): string {
+  const updatedAt = pages.reduce((latest, page) => {
+    const date = page.date ? `${page.date}T00:00:00.000Z` : ATOM_EDITION;
+    return Math.max(latest, Date.parse(date));
+  }, Date.parse(ATOM_EDITION));
+  const updated = new Date(updatedAt).toISOString();
+  const entries = pages.map((page) => {
+    const url = escapeXml(`${ORIGIN}${page.url}`);
+    const date = page.date ? `${page.date}T00:00:00.000Z` : ATOM_EDITION;
+    const published = page.date ? `    <published>${date}</published>\n` : "";
+    return `  <entry>\n    <title>${escapeXml(page.title)}</title>\n    <link href="${url}" />\n    <id>${url}</id>\n    <updated>${date}</updated>\n${published}    <summary type="text">${escapeXml(page.description)}</summary>\n  </entry>`;
+  });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">\n  <title>${FEED_TITLE}</title>\n  <subtitle>Documentation for the Archont561 portfolio.</subtitle>\n  <id>${ORIGIN}/feed.atom</id>\n  <author><name>Archont561</name><uri>https://github.com/Archont561</uri></author>\n  <link href="${ORIGIN}/docs/" />\n  <link href="${ORIGIN}/feed.atom" rel="self" type="application/atom+xml" />\n  <updated>${updated}</updated>\n${entries.join("\n")}\n</feed>\n`;
+}
+
 function jsonFeed(pages: AiPage[]): string {
   return `${JSON.stringify(
     {
@@ -129,7 +148,10 @@ export function exportAi(siteDir: string): AiPage[] {
     join(siteDir, "llms-full.txt"),
     `${texts.map((text) => text.trim()).join("\n\n---\n\n")}\n`,
   );
-  writeFileSync(join(siteDir, "feed.xml"), rss(pages));
+  const rssFeed = rss(pages);
+  writeFileSync(join(siteDir, "feed.xml"), rssFeed);
+  writeFileSync(join(siteDir, "feed.rss"), rssFeed);
+  writeFileSync(join(siteDir, "feed.atom"), atom(pages));
   writeFileSync(join(siteDir, "feed.json"), jsonFeed(pages));
   writeFileSync(join(siteDir, ".nojekyll"), "");
   return pages;

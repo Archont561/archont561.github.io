@@ -32,6 +32,8 @@ to work; do not assume a root-site deployment changes or replaces it.
 
 After deployment, check the homepage, a project page, search, packages,
 `llms.txt`, and a Markdown twin. Fetch `robots.txt`, `sitemap.xml`, `feed.xml`,
-and `feed.json` at the site root. A missing artifact indicates a failed export
-or deployment. Other static hosts can serve `apps/portfolio/out/` at the root,
+`feed.rss`, `feed.atom`, and `feed.json` at the site root; also check the
+`/seo/feed/`, `/seo/robots/`, `/seo/sitemap/`, and `/seo/pages/` pages. A missing
+artifact indicates a failed export or deployment. Other static hosts can serve
+`apps/portfolio/out/` at the root,
 but the canonical origin is fixed to the GitHub Pages user site.

@@ -14,10 +14,28 @@ API or rewrite service is required.
 ## Crawl and syndication artifacts
 
 Next.js generates `robots.txt` and `sitemap.xml`; `tools export-ai` writes
-`feed.xml` (RSS 2.0) and `feed.json` (JSON Feed 1.1). The sitemap lists the
-home, search, and packages routes and every documentation page. Robots allows
-all crawlers, including the named AI crawlers, and points to the sitemap.
-Undated pages omit dates in the sitemap and feeds instead of inventing them.
+`feed.xml` and `feed.rss` (identical RSS 2.0 feeds), `feed.atom` (Atom 1.0),
+and `feed.json` (JSON Feed 1.1). The sitemap lists the home, search, and
+packages routes and every documentation page. Robots allows all crawlers,
+including the named AI crawlers, and points to the sitemap.
+
+The sitemap, RSS, and JSON Feed omit unknown page dates. Atom requires an
+`updated` timestamp, so undated entries use the explicitly recorded Atom feed
+edition date; this is not a claim about when a page changed. Advance
+`ATOM_EDITION` in `packages/tools/src/maintenance/export-ai.ts` when publishing
+changed undated entries.
+
+Human-readable views live at `/seo/feed/`, `/seo/robots/`, and `/seo/sitemap/`;
+open them from the SEO menu. Choose rendered, source, or both views, and switch
+between RSS, Atom, and JSON in the feed. XML and JSON source is syntax-highlighted.
+The `/seo/pages/` inspector reads the HTML head of a selected site page and shows
+its metadata and an illustrative Open Graph card. Its source view displays the
+extracted tags in browser-normalized HTML. It loads only same-site images; if no
+`og:image` is declared, the card says so. Visitors need no account.
+
+The views need JavaScript, but the raw files and pages remain available without
+it. GitHub Pages ignores query strings when serving files, so
+`/feed.xml?preview=true` still returns the raw feed.
 
 ## Generate and verify
 

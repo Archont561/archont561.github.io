@@ -49,6 +49,10 @@ test("core token pairs provide at least 4.5 to 1 text contrast in both themes", 
       ["secondary", "surface"],
       ["link", "background"],
       ["on-primary", "primary"],
+      ["syntax-tag", "code-background"],
+      ["syntax-attribute", "code-background"],
+      ["syntax-value", "code-background"],
+      ["syntax-punctuation", "code-background"],
     ] as const) {
       expect(contrast(color(mode, foreground), color(mode, background))).toBeGreaterThanOrEqual(
         4.5,
