@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "@archont561/bun-test-utils";
+import { createTokensPreset } from "@archont561/tools/configs/unocss";
 import { createGenerator } from "unocss";
 import config from "@/uno.config";
 
@@ -59,6 +60,36 @@ test("core token pairs provide at least 4.5 to 1 text contrast in both themes", 
       );
     }
   }
+});
+
+test("every semantic color is exposed through the token preset and merged UnoCSS theme", async () => {
+  expect(config.configDeps).toContain("src/app/tokens.css");
+  const names = new Set(
+    [...tokens.matchAll(/--color-([a-zA-Z0-9_-]+)\s*:/g)].map((match) => match[1] ?? ""),
+  );
+  const colors = createTokensPreset().theme.colors;
+  expect(names.size).toBeGreaterThan(0);
+  expect(Object.keys(colors).sort()).toEqual([...names].sort());
+  for (const name of names) expect(colors[name]).toBe(`var(--color-${name})`);
+
+  const generator = await createGenerator(config);
+  for (const name of names) expect(generator.config.theme.colors?.[name]).toBe(colors[name]);
+  expect(generator.config.theme.colors?.pine).toBe("var(--color-primary)");
+  expect(generator.config.theme.colors?.sage).toBe("var(--color-secondary)");
+  expect(generator.config.theme.colors?.ivory).toBe("var(--color-background)");
+});
+
+test("terrain gap utilities use token values and retain numeric gaps", async () => {
+  const generator = await createGenerator(config);
+  const { css } = await generator.generate(
+    "terrain-gap-0 terrain-gap-1 terrain-gap-4 terrain-gap-5 terrain-gap-6 terrain-navigation",
+  );
+  expect(css).toContain(".terrain-gap-1{gap:4px;");
+  expect(css).toContain(".terrain-gap-4{gap:16px;");
+  expect(css).toContain(".terrain-gap-5{gap:calc(4px * 5);");
+  expect(css).toContain(".terrain-gap-6{gap:24px;");
+  expect(css).toContain(".terrain-navigation{");
+  expect(css).toContain("gap:16px");
 });
 
 test("UnoCSS terrain utilities use the same semantic tokens", async () => {
