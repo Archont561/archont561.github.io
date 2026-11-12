@@ -8,5 +8,8 @@ Next.js and Fumadocs static site at the GitHub Pages user-site root.
   test:seo` and the offline exported-site link check before deploying.
 - Do not edit `.source/`, `.next/`, `out/`, `next-env.d.ts`, or generated
   `src/app/uno.css`. The shared UnoCSS and Next configs are in `packages/tools`.
+- UnoCSS colors, spacing, and radii come from `src/app/tokens.css` through
+  `createTokensPreset`; `styles:watch` reloads changes to that file. Keep brand
+  aliases and other terrain rules in `uno.config.ts`.
 - SEO/Markdown contract: `backlog/decisions/D-008-seo-static.md` and
   `backlog/docs/DOC-010-seo-llm-surface.md`. URLs have no base-path prefix.
