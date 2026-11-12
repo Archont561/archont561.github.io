@@ -24,9 +24,9 @@ export default function SiteFooter({ showLlmsIndex = false }: { showLlmsIndex?: 
         <Link href="/packages">
           Packages <ArrowUpRight size={12} />
         </Link>
-        <a href="/feed.xml">
+        <Link href="/seo/feed/">
           Feed <ArrowUpRight size={12} />
-        </a>
+        </Link>
         <a href="https://github.com/Archont561/archont561.github.io">
           Source <Github size={13} />
         </a>

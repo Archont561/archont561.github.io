@@ -5,6 +5,7 @@ import { themeBootstrap } from "@/src/lib/theme";
 import "./uno.css";
 import "./tokens.css";
 import "./globals.css";
+import "./site-file.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(`${ORIGIN}/`),
@@ -23,6 +24,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           rel="alternate"
           type="application/rss+xml"
           href="/feed.xml"
+          title="Archont561 field notes"
+        />
+        <link
+          rel="alternate"
+          type="application/atom+xml"
+          href="/feed.atom"
           title="Archont561 field notes"
         />
         <link

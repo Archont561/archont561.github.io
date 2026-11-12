@@ -8,7 +8,9 @@ Static, build-time artifacts (GitHub Pages serves files only):
 | --- | --- | --- |
 | `/sitemap.xml` | all indexable pages | `app/sitemap.ts` |
 | `/robots.txt` | crawl rules + sitemap ref + AI-bot policy | `app/robots.ts` |
-| `/feed.xml`, `/feed.json` | RSS + JSON Feed | `tools export-ai` |
+| `/feed.xml`, `/feed.rss`, `/feed.atom`, `/feed.json` | RSS, Atom, and JSON Feed | `tools export-ai` |
+| `/seo/feed/`, `/seo/robots/`, `/seo/sitemap/` | human-readable views of the static files | portfolio SEO pages |
+| `/seo/pages/` | per-page metadata and illustrative Open Graph preview | portfolio SEO inspector |
 | `/llms.txt` | page outline (titles, urls, summaries) | `tools export-ai` |
 | `/llms-full.txt` | full corpus dump | `tools export-ai` |
 | `/docs/<slug>.md` | per-page Markdown twin | `tools export-ai` |
@@ -26,4 +28,6 @@ Static, build-time artifacts (GitHub Pages serves files only):
 The portfolio build writes `ai-manifest.json` from Fumadocs processed Markdown,
 then invokes `tools export-ai` and Pagefind. `bun run --cwd apps/portfolio
 test:seo` checks the built files and snapshot-locks their hashes. Undated pages
-omit timestamps rather than using checkout-dependent modification times.
+omit timestamps in the sitemap, RSS, and JSON Feed rather than using
+checkout-dependent modification times. Atom's required `updated` uses an explicit
+feed-edition date for undated pages; it is not a document modification date.

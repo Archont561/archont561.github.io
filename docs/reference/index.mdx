@@ -34,7 +34,9 @@ Documentation directories use `index.mdx`; `meta.json` describes navigation.
 Route segments use lowercase letters, numbers, and hyphens; the exporter
 rejects unsafe or colliding Markdown paths.
 Optional frontmatter `date` must be an ISO calendar date (`YYYY-MM-DD`).
-The sitemap and feeds include that date when supplied; undated pages omit it.
+The sitemap and feeds include that date when supplied. The sitemap, RSS, and
+JSON Feed omit missing dates; Atom uses the feed edition date for its required
+`updated` field. See [AI access](/docs/ai-access) for the maintenance rule.
 
 ## Package capture
 

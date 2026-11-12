@@ -27,6 +27,10 @@
   --palette-day-code-background: #edf0e7;
   --palette-day-code-border: #d9e0d3;
   --palette-day-code-inline: #e9eee5;
+  --palette-day-syntax-tag: #285b4b;
+  --palette-day-syntax-attribute: #775332;
+  --palette-day-syntax-value: #6e4e71;
+  --palette-day-syntax-punctuation: #596b5e;
   --palette-day-link: #476744;
   --palette-day-filter-background: #e7ece2;
   --palette-day-filter-text: #3e5a37;
@@ -49,6 +53,10 @@
   --palette-night-code-background: #1d2921;
   --palette-night-code-border: #2c3f31;
   --palette-night-code-inline: #243428;
+  --palette-night-syntax-tag: #a8d3b5;
+  --palette-night-syntax-attribute: #d5bf8c;
+  --palette-night-syntax-value: #c9adc9;
+  --palette-night-syntax-punctuation: #a5b4a9;
   --palette-night-link: #a2c7ab;
   --palette-night-filter-background: #334a37;
   --palette-night-filter-text: #d0dfc9;
@@ -104,6 +112,10 @@
   --color-code-background: var(--palette-day-code-background);
   --color-code-border: var(--palette-day-code-border);
   --color-code-inline: var(--palette-day-code-inline);
+  --color-syntax-tag: var(--palette-day-syntax-tag);
+  --color-syntax-attribute: var(--palette-day-syntax-attribute);
+  --color-syntax-value: var(--palette-day-syntax-value);
+  --color-syntax-punctuation: var(--palette-day-syntax-punctuation);
   --color-link: var(--palette-day-link);
   --color-filter-background: var(--palette-day-filter-background);
   --color-filter-text: var(--palette-day-filter-text);
@@ -142,6 +154,10 @@
     --color-code-background: var(--palette-night-code-background);
     --color-code-border: var(--palette-night-code-border);
     --color-code-inline: var(--palette-night-code-inline);
+    --color-syntax-tag: var(--palette-night-syntax-tag);
+    --color-syntax-attribute: var(--palette-night-syntax-attribute);
+    --color-syntax-value: var(--palette-night-syntax-value);
+    --color-syntax-punctuation: var(--palette-night-syntax-punctuation);
     --color-link: var(--palette-night-link);
     --color-filter-background: var(--palette-night-filter-background);
     --color-filter-text: var(--palette-night-filter-text);
@@ -169,6 +185,10 @@
   --color-code-background: var(--palette-night-code-background);
   --color-code-border: var(--palette-night-code-border);
   --color-code-inline: var(--palette-night-code-inline);
+  --color-syntax-tag: var(--palette-night-syntax-tag);
+  --color-syntax-attribute: var(--palette-night-syntax-attribute);
+  --color-syntax-value: var(--palette-night-syntax-value);
+  --color-syntax-punctuation: var(--palette-night-syntax-punctuation);
   --color-link: var(--palette-night-link);
   --color-filter-background: var(--palette-night-filter-background);
   --color-filter-text: var(--palette-night-filter-text);
@@ -195,6 +215,10 @@
     --color-code-background: var(--palette-day-code-background);
     --color-code-border: var(--palette-day-code-border);
     --color-code-inline: var(--palette-day-code-inline);
+    --color-syntax-tag: var(--palette-day-syntax-tag);
+    --color-syntax-attribute: var(--palette-day-syntax-attribute);
+    --color-syntax-value: var(--palette-day-syntax-value);
+    --color-syntax-punctuation: var(--palette-day-syntax-punctuation);
     --color-link: var(--palette-day-link);
     --color-filter-background: var(--palette-day-filter-background);
     --color-filter-text: var(--palette-day-filter-text);

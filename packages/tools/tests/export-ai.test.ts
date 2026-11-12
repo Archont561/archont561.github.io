@@ -34,9 +34,16 @@ function fixture(run: (dir: string) => void): void {
 
 function outputs(dir: string): Record<string, string> {
   return Object.fromEntries(
-    ["docs/index.md", "docs/other.md", "llms.txt", "llms-full.txt", "feed.xml", "feed.json"].map(
-      (path) => [path, readFileSync(join(dir, path), "utf8")],
-    ),
+    [
+      "docs/index.md",
+      "docs/other.md",
+      "llms.txt",
+      "llms-full.txt",
+      "feed.xml",
+      "feed.rss",
+      "feed.atom",
+      "feed.json",
+    ].map((path) => [path, readFileSync(join(dir, path), "utf8")]),
   );
 }
 
@@ -48,12 +55,31 @@ test("exports processed Markdown, escaped indexes and honest dates deterministic
     expect(first["feed.xml"]).toContain("A &lt;summary&gt; &amp; notes");
     expect(first["feed.xml"]).toContain("Thu, 29 Feb 2024 00:00:00 GMT");
     expect((first["feed.xml"]?.match(/<pubDate>/g) ?? []).length).toBe(1);
+    expect(first["feed.rss"]).toBe(first["feed.xml"]);
+    expect(first["feed.atom"]).toContain('xmlns="http://www.w3.org/2005/Atom"');
+    expect(first["feed.atom"]).toContain("A &lt;summary&gt; &amp; notes");
+    expect(first["feed.atom"]).toContain("<published>2024-02-29T00:00:00.000Z</published>");
+    expect((first["feed.atom"]?.match(/<published>/g) ?? []).length).toBe(1);
+    expect((first["feed.atom"]?.match(/<updated>/g) ?? []).length).toBe(3);
+    expect(first["feed.atom"]).toContain("<updated>2026-11-10T00:00:00.000Z</updated>");
     expect(existsSync(join(dir, ".nojekyll"))).toBe(true);
     // Snapshot the JSON string so multiline artifact values do not produce
     // trailing whitespace in Bun's object snapshot serializer.
     expect(JSON.stringify(first, null, 2)).toMatchSnapshot();
     exportAi(dir);
     expect(outputs(dir)).toEqual(first);
+  });
+});
+
+test("Atom uses the latest declared page date when it is newer than the feed edition", () => {
+  fixture((dir) => {
+    writeFileSync(
+      join(dir, "ai-manifest.json"),
+      JSON.stringify({ version: 1, pages: [page, { ...dated, date: "2027-04-02" }] }),
+    );
+    exportAi(dir);
+    const atom = readFileSync(join(dir, "feed.atom"), "utf8");
+    expect(atom.split("<entry>")[0]).toContain("<updated>2027-04-02T00:00:00.000Z</updated>");
   });
 });
 
