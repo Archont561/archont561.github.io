@@ -15,6 +15,10 @@ Static, build-time artifacts (GitHub Pages serves files only):
 | `/llms-full.txt` | full corpus dump | `tools export-ai` |
 | `/docs/<slug>.md` | per-page Markdown twin | `tools export-ai` |
 
+The header groups page metadata, robots, and sitemap previews under SEO. A
+separate Machine-readable menu links to the feed preview and raw LLM, manifest,
+and Markdown exports. Preview and artifact URLs remain unchanged.
+
 ## Rules
 
 - Markdown bodies come from Fumadocs processed markdown

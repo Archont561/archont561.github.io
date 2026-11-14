@@ -1,15 +1,15 @@
 "use client";
 
-import { ChevronDown, Github, Menu, ScanSearch, Search } from "lucide-react";
+import { ChevronDown, Github, Menu, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import BrandMark from "@/src/components/brand-mark";
 import { SearchTrigger } from "@/src/components/search-palette";
 import ThemeToggle from "@/src/components/theme-toggle";
-import { type SeoKind, seoKinds, seoSections } from "@/src/lib/site-file-nav";
+import { type PreviewPageKind, type ResourceGroup, resourceMenus } from "@/src/lib/site-file-nav";
 
-type Section = "atlas" | "projects" | "packages" | "docs" | "search" | "seo";
+type Section = "atlas" | "projects" | "packages" | "docs" | "search" | ResourceGroup;
 
 const links = [
   { href: "/", label: "Atlas", section: "atlas" },
@@ -19,15 +19,59 @@ const links = [
   { href: "/search/", label: "Search", section: "search" },
 ] as const;
 
-/** Native details keeps the resource links usable before or without JavaScript. */
-function SeoMenu({
+function ResourceMenuList({
+  group,
+  active,
+  current,
+  pageHref,
+  onSelect,
+}: {
+  group: ResourceGroup;
+  active: boolean;
+  current?: PreviewPageKind;
+  pageHref: string;
+  onSelect: () => void;
+}) {
+  const { ariaLabel, links: resources } = resourceMenus[group];
+  return (
+    <ul className="site-seo-menu-list" aria-label={ariaLabel}>
+      {resources.map((item) => {
+        const Anchor = item.raw ? "a" : Link;
+        return (
+          <li key={item.href}>
+            <Anchor
+              href={item.previewKind === "pages" ? pageHref : item.href}
+              aria-current={
+                active && item.previewKind && item.previewKind === current ? "page" : undefined
+              }
+              onClick={onSelect}
+            >
+              <span className="site-seo-menu-icon" aria-hidden="true">
+                <item.Icon size={17} />
+              </span>
+              <span className="site-seo-menu-copy">
+                <strong>{item.label}</strong>
+                <small>{item.menuDescription}</small>
+              </span>
+            </Anchor>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** Native details keeps both resource groups usable before or without JavaScript. */
+function ResourceMenu({
+  group,
   active,
   current,
   notFound,
   onSelect,
 }: {
+  group: ResourceGroup;
   active: boolean;
-  current?: SeoKind;
+  current?: PreviewPageKind;
   notFound: boolean;
   onSelect?: () => void;
 }) {
@@ -41,6 +85,7 @@ function SeoMenu({
     ? `/seo/pages/?page=${encodeURIComponent(currentPath)}`
     : "/seo/pages/";
   const menu = useRef<HTMLDetailsElement>(null);
+  const { label, Icon } = resourceMenus[group];
   useEffect(() => {
     function dismiss(event: PointerEvent) {
       if (menu.current && !menu.current.contains(event.target as Node)) menu.current.open = false;
@@ -52,8 +97,10 @@ function SeoMenu({
     if (menu.current) menu.current.open = false;
   };
   return (
+    // Reuse the existing disclosure styles for both groups, including old WebKit's baseline.
     <details
       className="site-seo-menu"
+      data-resource-menu={group}
       ref={menu}
       onKeyDown={(event) => {
         if (event.key === "Escape" && menu.current?.open) {
@@ -65,46 +112,31 @@ function SeoMenu({
       }}
     >
       <summary className="site-seo-menu-trigger" data-active={active ? "true" : undefined}>
-        <ScanSearch size={15} aria-hidden="true" />
-        <span>SEO</span>
+        <Icon size={15} aria-hidden="true" />
+        <span>{label}</span>
         <ChevronDown className="site-seo-chevron" size={13} aria-hidden="true" />
       </summary>
-      <ul className="site-seo-menu-list" aria-label="SEO resources">
-        {seoKinds.map((kind) => {
-          const item = seoSections[kind];
-          return (
-            <li key={kind}>
-              <Link
-                href={kind === "pages" ? pageHref : `/seo/${kind}/`}
-                aria-current={active && current === kind ? "page" : undefined}
-                onClick={() => {
-                  close();
-                  onSelect?.();
-                }}
-              >
-                <span className="site-seo-menu-icon" aria-hidden="true">
-                  <item.Icon size={17} />
-                </span>
-                <span className="site-seo-menu-copy">
-                  <strong>{item.label}</strong>
-                  <small>{item.menuDescription}</small>
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <ResourceMenuList
+        group={group}
+        active={active}
+        current={current}
+        pageHref={pageHref}
+        onSelect={() => {
+          close();
+          onSelect?.();
+        }}
+      />
     </details>
   );
 }
 
 function NavigationLinks({
   active,
-  seoKind,
+  previewKind,
   onSelect,
 }: {
   active?: Section;
-  seoKind?: SeoKind;
+  previewKind?: PreviewPageKind;
   onSelect?: () => void;
 }) {
   return (
@@ -128,12 +160,16 @@ function NavigationLinks({
           </Link>
         ),
       )}
-      <SeoMenu
-        active={active === "seo"}
-        current={seoKind}
-        notFound={active === undefined}
-        onSelect={onSelect}
-      />
+      {(["seo", "machine"] as const).map((group) => (
+        <ResourceMenu
+          key={group}
+          group={group}
+          active={active === group}
+          current={previewKind}
+          notFound={active === undefined}
+          onSelect={onSelect}
+        />
+      ))}
       <a href="https://github.com/Archont561" onClick={onSelect}>
         <Github size={15} aria-hidden="true" /> GitHub
       </a>
@@ -142,7 +178,13 @@ function NavigationLinks({
 }
 
 /** Native details keeps the mobile navigation usable before or without JavaScript. */
-export default function SiteHeader({ active, seoKind }: { active?: Section; seoKind?: SeoKind }) {
+export default function SiteHeader({
+  active,
+  previewKind,
+}: {
+  active?: Section;
+  previewKind?: PreviewPageKind;
+}) {
   const menu = useRef<HTMLDetailsElement>(null);
   const closeMenu = () => {
     if (menu.current) menu.current.open = false;
@@ -159,7 +201,7 @@ export default function SiteHeader({ active, seoKind }: { active?: Section; seoK
         <span className="site-header-divider" aria-hidden="true" />
         <span className="site-header-caption">THE OPEN WORKSPACE</span>
         <nav className="site-nav" aria-label="Primary navigation">
-          <NavigationLinks active={active} seoKind={seoKind} />
+          <NavigationLinks active={active} previewKind={previewKind} />
         </nav>
         <div className="site-header-actions">
           <ThemeToggle />
@@ -181,7 +223,7 @@ export default function SiteHeader({ active, seoKind }: { active?: Section; seoK
               <Menu size={19} aria-hidden="true" /> <span>Menu</span>
             </summary>
             <nav aria-label="Mobile navigation">
-              <NavigationLinks active={active} seoKind={seoKind} onSelect={closeMenu} />
+              <NavigationLinks active={active} previewKind={previewKind} onSelect={closeMenu} />
             </nav>
           </details>
         </div>

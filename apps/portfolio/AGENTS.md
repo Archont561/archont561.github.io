@@ -19,6 +19,9 @@ Next.js and Fumadocs static site at the GitHub Pages user-site root.
   export probe, set
   `PORTFOLIO_LEGACY_WEBKIT_EXECUTABLE` to a PhantomJS 2.1.1 binary and run
   `bun run --cwd apps/portfolio test:browser`. This is not a Tizen device test.
+- The SEO and machine-readable header menus share the `.site-seo-menu-*` styles.
+  `src/app/resource-nav.css` switches to mobile navigation at 1250px and retains
+  an old-WebKit fallback; keep its Autoprefixer directive intact.
 - `public/favicon.ico` is a multi-size raster fallback for
   `public/brand/terrain-a-favicon.svg`; regenerate it when the SVG changes. Keep
   a 64×64 BMP frame first so older WebKit can decode it, followed by the smaller

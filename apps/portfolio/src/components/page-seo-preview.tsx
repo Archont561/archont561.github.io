@@ -133,7 +133,7 @@ export default function PageSeoPreview({ pages }: { pages: InspectablePage[] }) 
               if (path) update("page", path);
             }}
           >
-            {(["Site", "Documentation", "SEO"] as const).map((group) => (
+            {(["Site", "Documentation", "SEO", "Machine-readable"] as const).map((group) => (
               <optgroup key={group} label={group}>
                 {pages
                   .filter((page) => page.group === group)

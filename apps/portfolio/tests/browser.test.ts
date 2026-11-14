@@ -76,7 +76,7 @@ legacyWebkitTest(
       throw new Error(
         `Old WebKit probe ${timedOut ? "timed out" : "failed"}:\n${stdout}\n${stderr}`,
       );
-    expect(stdout).toContain("Old WebKit passed 19 exported-page checks");
+    expect(stdout).toContain("Old WebKit passed 25 exported-page checks");
   },
   timeout,
 );
@@ -179,7 +179,8 @@ async function expectNotFoundAnimations(page: Page, reducedMotion: boolean) {
 
 async function expectResponsiveWidths(page: Page) {
   for (const width of [
-    320, 360, 361, 375, 390, 400, 410, 411, 480, 768, 1000, 1001, 1100, 1101, 1200, 1201,
+    320, 360, 361, 375, 390, 400, 410, 411, 480, 768, 1000, 1001, 1100, 1200, 1201, 1250, 1251,
+    1400, 1401,
   ]) {
     await page.setViewportSize({ width, height: 800 });
     expect(
@@ -484,46 +485,81 @@ browserTest(
 );
 
 browserTest(
-  "the SEO menu exposes icon links and supports keyboard and pointer navigation",
+  "SEO and machine-readable menus expose separate resources with keyboard and pointer navigation",
+  // biome-ignore lint/complexity/noExcessiveLinesPerFunction: this checks both groups, dismissal, navigation, and active states together.
   async ({ browserPage, portfolioUrl }) => {
     const page: Page = browserPage;
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${portfolioUrl}/`);
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
-    const menu = navigation.locator(".site-seo-menu");
-    const trigger = menu.locator(".site-seo-menu-trigger");
-    const resources = menu.getByRole("list", { name: "SEO resources" });
-    await trigger.focus();
+    const seo = navigation.locator('[data-resource-menu="seo"]');
+    const machine = navigation.locator('[data-resource-menu="machine"]');
+    const seoTrigger = seo.locator(".site-seo-menu-trigger");
+    const machineTrigger = machine.locator(".site-seo-menu-trigger");
+    const seoResources = seo.getByRole("list", { name: "SEO resources" });
+    const machineResources = machine.getByRole("list", { name: "Machine-readable resources" });
+    await seoTrigger.focus();
     await page.keyboard.press("Enter");
-    expect(await resources.isVisible()).toBe(true);
+    expect(await seoResources.isVisible()).toBe(true);
     for (const [label, href] of [
       ["Page SEO", "/seo/pages/?page=%2F"],
-      ["Feed", "/seo/feed/"],
       ["Robots", "/seo/robots/"],
       ["Sitemap", "/seo/sitemap/"],
     ] as const) {
-      const link = resources.getByRole("link", { name: new RegExp(`^${label}`) });
+      const link = seoResources.getByRole("link", { name: new RegExp(`^${label}`) });
       expect(await link.getAttribute("href")).toBe(href);
       expect(await link.locator(".site-seo-menu-icon svg").count()).toBe(1);
     }
+    expect(await seoResources.getByRole("link").count()).toBe(3);
     await page.keyboard.press("Escape");
-    expect(await menu.getAttribute("open")).toBeNull();
-    expect(await trigger.evaluate((node) => document.activeElement === node)).toBe(true);
-    await trigger.click();
+    expect(await seo.getAttribute("open")).toBeNull();
+    expect(await seoTrigger.evaluate((node) => document.activeElement === node)).toBe(true);
+    await seoTrigger.click();
+    await machineTrigger.click();
+    expect(await seo.getAttribute("open")).toBeNull();
+    expect(await machineResources.isVisible()).toBe(true);
+    for (const [label, href] of [
+      ["Feed", "/seo/feed/"],
+      ["LLM index", "/llms.txt"],
+      ["Full documentation", "/llms-full.txt"],
+      ["AI manifest", "/ai-manifest.json"],
+      ["Markdown overview", "/docs/index.md"],
+    ] as const) {
+      const link = machineResources.getByRole("link", { name: new RegExp(`^${label}`) });
+      expect(await link.getAttribute("href")).toBe(href);
+      expect(await link.locator(".site-seo-menu-icon svg").count()).toBe(1);
+      expect((await page.request.get(`${portfolioUrl}${href}`)).status()).toBe(200);
+    }
+    expect(await machineResources.getByRole("link").count()).toBe(5);
+    await page.keyboard.press("Escape");
+    expect(await machine.getAttribute("open")).toBeNull();
+    expect(await machineTrigger.evaluate((node) => document.activeElement === node)).toBe(true);
+    await machineTrigger.click();
     await page.locator(".site-header-caption").click();
-    expect(await menu.getAttribute("open")).toBeNull();
-    await trigger.click();
-    await resources.getByRole("link", { name: /^Feed/ }).click();
+    expect(await machine.getAttribute("open")).toBeNull();
+    await machineTrigger.click();
+    await machineResources.getByRole("link", { name: /^Feed/ }).click();
     await page.waitForURL("**/seo/feed/");
-    expect(await trigger.getAttribute("data-active")).toBe("true");
-    await trigger.click();
-    expect(await resources.getByRole("link", { name: /^Feed/ }).getAttribute("aria-current")).toBe(
+    expect(await machineTrigger.getAttribute("data-active")).toBe("true");
+    expect(await seoTrigger.getAttribute("data-active")).toBeNull();
+    const machineTabs = page.getByRole("navigation", { name: "Machine-readable resources" });
+    expect(await machineTabs.getByRole("link", { name: "Feed" }).getAttribute("aria-current")).toBe(
       "page",
     );
-    await resources.getByRole("link", { name: /^Robots/ }).click();
+    expect(await machineTabs.getByRole("link", { name: "Robots" }).count()).toBe(0);
+    await machineTrigger.click();
+    expect(
+      await machineResources.getByRole("link", { name: /^Feed/ }).getAttribute("aria-current"),
+    ).toBe("page");
+    await seoTrigger.click();
+    await seoResources.getByRole("link", { name: /^Robots/ }).click();
     await page.waitForURL("**/seo/robots/");
-    await trigger.click();
-    await resources.getByRole("link", { name: /^Sitemap/ }).click();
+    expect(await seoTrigger.getAttribute("data-active")).toBe("true");
+    expect(await machineTrigger.getAttribute("data-active")).toBeNull();
+    const seoTabs = page.getByRole("navigation", { name: "SEO resources" });
+    expect(await seoTabs.getByRole("link", { name: "Feed" }).count()).toBe(0);
+    await seoTrigger.click();
+    await seoResources.getByRole("link", { name: /^Sitemap/ }).click();
     await page.waitForURL("**/seo/sitemap/");
     for (const kind of ["feed", "robots", "sitemap"])
       expect((await page.request.get(`${portfolioUrl}/preview/${kind}/`)).status()).toBe(404);
@@ -540,7 +576,7 @@ browserTest(
     await page.goto(`${portfolioUrl}/docs/projects/qgis-sdk/`);
     const menu = page
       .getByRole("navigation", { name: "Primary navigation" })
-      .locator(".site-seo-menu");
+      .locator('[data-resource-menu="seo"]');
     await menu.locator(".site-seo-menu-trigger").click();
     const link = menu.getByRole("link", { name: /^Page SEO/ });
     const href = await link.getAttribute("href");
@@ -583,7 +619,7 @@ browserTest(
     expect(await select.inputValue()).toBe("/docs/projects/qgis-sdk/");
     await expectResponsiveWidths(page);
     await page
-      .getByRole("navigation", { name: "Site data previews" })
+      .getByRole("navigation", { name: "SEO resources" })
       .getByRole("link", { name: "Page SEO" })
       .click();
     await page.waitForFunction(
@@ -702,7 +738,7 @@ browserTest(
     await page.goto(`${portfolioUrl}/not-a-real-page/`);
     const menu = page
       .getByRole("navigation", { name: "Primary navigation" })
-      .locator(".site-seo-menu");
+      .locator('[data-resource-menu="seo"]');
     await menu.locator(".site-seo-menu-trigger").click();
     const link = menu.getByRole("link", { name: /^Page SEO/ });
     expect(
@@ -717,7 +753,62 @@ browserTest(
 );
 
 browserTest(
+  "both resource menus fit at desktop and mobile navigation breakpoints",
+  // biome-ignore lint/complexity/noExcessiveLinesPerFunction: the flow compares menu and header geometry at every breakpoint.
+  async ({ browserPage, portfolioUrl }) => {
+    const page: Page = browserPage;
+    await page.goto(`${portfolioUrl}/`);
+    for (const width of [320, 375, 1001, 1200, 1250, 1251, 1280, 1400, 1401, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      const mobile = width <= 1250;
+      const navigation = page.getByRole("navigation", {
+        name: mobile ? "Mobile navigation" : "Primary navigation",
+      });
+      if (mobile) await page.locator(".site-mobile-menu > summary").click();
+      expect(await navigation.isVisible()).toBe(true);
+      const menu = navigation.locator('[data-resource-menu="machine"]');
+      await menu.locator(".site-seo-menu-trigger").click();
+      const bounds = await page.evaluate(() => {
+        const element = document.querySelector<HTMLElement>(
+          '.site-seo-menu[open][data-resource-menu="machine"] .site-seo-menu-list',
+        );
+        if (!element) throw new Error("Machine-readable menu is not open");
+        const rect = element.getBoundingClientRect();
+        const header = document.querySelector<HTMLElement>(".site-header-inner");
+        const brand = document.querySelector<HTMLElement>(".site-brand");
+        const desktop = document.querySelector<HTMLElement>(".site-nav");
+        const actions = document.querySelector<HTMLElement>(".site-header-actions");
+        if (!header || !brand || !desktop || !actions) throw new Error("Missing header elements");
+        return {
+          scrollWidth: document.documentElement.scrollWidth,
+          menuLeft: rect.left,
+          menuRight: rect.right,
+          brandRight: brand.getBoundingClientRect().right,
+          navLeft: desktop.getBoundingClientRect().left,
+          navRight: desktop.getBoundingClientRect().right,
+          actionsLeft: actions.getBoundingClientRect().left,
+          actionsRight: actions.getBoundingClientRect().right,
+          headerRight: header.getBoundingClientRect().right,
+        };
+      });
+      expect(bounds.scrollWidth).toBeLessThanOrEqual(width);
+      expect(bounds.menuLeft).toBeGreaterThanOrEqual(0);
+      expect(bounds.menuRight).toBeLessThanOrEqual(width);
+      expect(bounds.actionsRight).toBeLessThanOrEqual(bounds.headerRight);
+      if (!mobile) {
+        expect(bounds.brandRight).toBeLessThanOrEqual(bounds.navLeft);
+        expect(bounds.navRight).toBeLessThanOrEqual(bounds.actionsLeft);
+      }
+      await menu.locator(".site-seo-menu-trigger").click();
+      if (mobile) await page.locator(".site-mobile-menu > summary").click();
+    }
+  },
+  timeout,
+);
+
+browserTest(
   "mobile navigation and theme control remain accessible at 320 pixels",
+  // biome-ignore lint/complexity/noExcessiveLinesPerFunction: this checks nested keyboard behavior and theme persistence together.
   async ({ browserPage, portfolioUrl }) => {
     const page: Page = browserPage;
     await page.setViewportSize({ width: 320, height: 800 });
@@ -734,13 +825,24 @@ browserTest(
     await menu.click();
     const navigation = page.getByRole("navigation", { name: "Mobile navigation" });
     await navigation.waitFor();
-    const seo = navigation.locator(".site-seo-menu");
+    const seo = navigation.locator('[data-resource-menu="seo"]');
     const seoTrigger = seo.locator(".site-seo-menu-trigger");
     await seoTrigger.click();
     expect(await seo.getByRole("list", { name: "SEO resources" }).isVisible()).toBe(true);
     await page.keyboard.press("Escape");
     expect(await seo.getAttribute("open")).toBeNull();
     expect(await seoTrigger.evaluate((node) => document.activeElement === node)).toBe(true);
+    expect(await navigation.isVisible()).toBe(true);
+    const machine = navigation.locator('[data-resource-menu="machine"]');
+    const machineTrigger = machine.locator(".site-seo-menu-trigger");
+    await machineTrigger.focus();
+    await page.keyboard.press("Enter");
+    expect(
+      await machine.getByRole("list", { name: "Machine-readable resources" }).isVisible(),
+    ).toBe(true);
+    await page.keyboard.press("Escape");
+    expect(await machine.getAttribute("open")).toBeNull();
+    expect(await machineTrigger.evaluate((node) => document.activeElement === node)).toBe(true);
     expect(await navigation.isVisible()).toBe(true);
     await page.keyboard.press("Escape");
     expect(await navigation.isVisible()).toBe(false);
@@ -1107,7 +1209,7 @@ browserTest(
       .click();
     expect(await page.getByText("GPTBot", { exact: true }).isVisible()).toBe(true);
     expect(await page.getByRole("region", { name: "robots.txt source" }).isVisible()).toBe(true);
-    const nav = page.getByRole("navigation", { name: "Site data previews" });
+    const nav = page.getByRole("navigation", { name: "SEO resources" });
     await nav.getByRole("link", { name: "Sitemap" }).click();
     await page.waitForURL("**/seo/sitemap/");
     await page.getByRole("heading", { name: "Pages on the map" }).waitFor();
@@ -1176,7 +1278,8 @@ browserTest(
 );
 
 browserTest(
-  "the mobile SEO menu works without JavaScript",
+  "both mobile resource menus work without JavaScript",
+  // biome-ignore lint/complexity/noExcessiveLinesPerFunction: the flow follows both resource groups in the static export.
   async ({ browser, portfolioUrl }) => {
     const instance: Browser = browser;
     const context = await instance.newContext({
@@ -1188,10 +1291,30 @@ browserTest(
       await page.goto(`${portfolioUrl}/`);
       const mobileMenu = page.locator(".site-mobile-menu");
       await mobileMenu.locator(":scope > summary").click();
-      const seoMenu = mobileMenu.locator(".site-seo-menu");
+      const seoMenu = mobileMenu.locator('[data-resource-menu="seo"]');
       await seoMenu.locator(".site-seo-menu-trigger").click();
       const resources = seoMenu.getByRole("list", { name: "SEO resources" });
-      expect(await resources.getByRole("link").count()).toBe(4);
+      expect(await resources.getByRole("link").count()).toBe(3);
+      expect(await resources.getByRole("link", { name: /^Feed/ }).count()).toBe(0);
+      const machineMenu = mobileMenu.locator('[data-resource-menu="machine"]');
+      await machineMenu.locator(".site-seo-menu-trigger").click();
+      const machine = machineMenu.getByRole("list", { name: "Machine-readable resources" });
+      expect(await machine.getByRole("link").count()).toBe(5);
+      for (const [label, href] of [
+        ["LLM index", "/llms.txt"],
+        ["Full documentation", "/llms-full.txt"],
+        ["AI manifest", "/ai-manifest.json"],
+        ["Markdown overview", "/docs/index.md"],
+      ] as const)
+        expect(
+          await machine.getByRole("link", { name: new RegExp(`^${label}`) }).getAttribute("href"),
+        ).toBe(href);
+      await machine.getByRole("link", { name: /^Feed/ }).click();
+      await page.waitForURL("**/seo/feed/");
+      expect(await page.locator(".site-file-fallback").isVisible()).toBe(true);
+      await page.goto(`${portfolioUrl}/`);
+      await mobileMenu.locator(":scope > summary").click();
+      await seoMenu.locator(".site-seo-menu-trigger").click();
       await resources.getByRole("link", { name: /^Robots/ }).click();
       await page.waitForURL("**/seo/robots/");
       expect(
@@ -1235,10 +1358,11 @@ browserTest(
       }
       await expectResponsiveWidths(page);
       await page.setViewportSize({ width: 320, height: 800 });
-      await page
-        .getByRole("navigation", { name: "Site data previews" })
-        .getByRole("link", { name: "Sitemap" })
-        .click();
+      const mobileMenu = page.locator(".site-mobile-menu");
+      await mobileMenu.locator(":scope > summary").click();
+      const seoMenu = mobileMenu.locator('[data-resource-menu="seo"]');
+      await seoMenu.locator(".site-seo-menu-trigger").click();
+      await seoMenu.getByRole("link", { name: /^Sitemap/ }).click();
       await page.waitForURL("**/seo/sitemap/");
       expect(
         await page

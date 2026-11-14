@@ -58,9 +58,21 @@ test("the shared header exposes navigation and marks the active page", () => {
   expect(html).toContain('aria-current="page"');
   expect(html).toContain('class="theme-toggle"');
   expect(html).toContain('href="/search"');
-  expect(html).toContain('aria-label="SEO resources"');
-  for (const kind of ["pages", "feed", "robots", "sitemap"])
-    expect(html).toMatch(new RegExp(`href="/seo/${kind}/?(?:\\?[^"]*)?"`));
+  const seo = html.match(
+    /<ul class="site-seo-menu-list" aria-label="SEO resources">[\s\S]*?<\/ul>/,
+  )?.[0];
+  const machine = html.match(
+    /<ul class="site-seo-menu-list" aria-label="Machine-readable resources">[\s\S]*?<\/ul>/,
+  )?.[0];
+  expect(seo).toBeDefined();
+  expect(machine).toBeDefined();
+  for (const kind of ["pages", "robots", "sitemap"])
+    expect(seo).toMatch(new RegExp(`href="/seo/${kind}/?(?:\\?[^"]*)?"`));
+  expect(seo).not.toMatch(/href="\/seo\/feed\/?"/);
+  expect(machine).toMatch(/href="\/seo\/feed\/?"/);
+  for (const path of ["/llms.txt", "/llms-full.txt", "/ai-manifest.json", "/docs/index.md"])
+    expect(machine).toContain(`href="${path}"`);
+  expect(machine).not.toMatch(/href="\/seo\/robots\/?"/);
 });
 
 test("the brand supplies decorative light and dark assets", () => {
@@ -86,7 +98,7 @@ test("the homepage preview contains only featured projects", () => {
   expect(html).toContain('id="work"');
 });
 
-test("the site-wide LLM index is only offered by the homepage footer", () => {
+test("the homepage footer offers a shortcut to the site-wide LLM index", () => {
   const home = renderToStaticMarkup(createElement(SiteFooter, { showLlmsIndex: true }));
   const other = renderToStaticMarkup(createElement(SiteFooter, {}));
   expect(home).toContain('href="/llms.txt"');
@@ -109,7 +121,7 @@ test("the not-found page provides search and a navigable site index", () => {
 
 test("the site-file preview exposes navigation and raw no-JavaScript fallbacks", () => {
   const html = renderToStaticMarkup(createElement(SiteFilePage, { kind: "feed" }));
-  expect(html).toContain('aria-label="Site data previews"');
+  expect(html).toContain('<nav class="site-file-nav" aria-label="Machine-readable resources">');
   expect(html).toContain('aria-label="Feed format"');
   for (const path of ["/feed.rss", "/feed.atom", "/feed.json"])
     expect(html).toContain(`href="${path}"`);
