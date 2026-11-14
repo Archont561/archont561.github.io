@@ -25,11 +25,6 @@ export default function Page() {
         </p>
         <div className="search-panel">
           <DocsSearch />
-          <noscript>
-            Search requires JavaScript. You can still browse the{" "}
-            <Link href="/docs/">documentation</Link> or the{" "}
-            <Link href="/projects/">project list</Link>.
-          </noscript>
         </div>
       </main>
     </>

@@ -1,0 +1,705 @@
+/*
+ * A readable, static baseline for engines without CSS variables or Grid (such as
+ * the WebKit used by early Tizen TVs). Keep this before the modern stylesheets:
+ * old WebKit does not understand @supports, so the baseline must be unconditional.
+ * Literal colors below mirror the day palette in tokens.css; modern declarations
+ * replace them, including when the night theme is selected. Do not remove the
+ * Autoprefixer directive: the export otherwise drops the old flex directions.
+ */
+/* autoprefixer: off */
+html,
+.portfolio {
+  background: #f8f9f6;
+  color: #202d27;
+  font-family: Arial, sans-serif;
+}
+
+.skip-link,
+.site-mobile-menu > nav,
+.site-seo-menu-list {
+  border: 1px solid #dde3db;
+  background: #f8f9f6;
+}
+.site-header {
+  position: relative;
+  border-bottom: 1px solid #dde3db;
+  background: #f8f9f6;
+}
+.skip-link {
+  -webkit-transform: translateY(-160%);
+}
+.skip-link:focus {
+  -webkit-transform: translateY(0);
+}
+.site-header-divider {
+  background: #dde3db;
+}
+.site-header-caption,
+.site-nav a,
+.site-mobile-menu a,
+.site-seo-menu-trigger,
+.site-seo-menu-copy small,
+.theme-toggle {
+  color: #596b5e;
+}
+.site-nav a[aria-current="page"],
+.site-mobile-menu a[aria-current="page"] {
+  background: #ecf0e7;
+  color: #355b42;
+}
+.theme-toggle,
+.site-mobile-search,
+.site-mobile-menu > summary,
+.site-search-shortcut {
+  border: 1px solid #dde3db;
+}
+.site-mobile-search {
+  color: #596b5e;
+}
+.site-mobile-menu > nav {
+  width: 280px;
+  max-height: 80vh;
+}
+.site-seo-menu-icon {
+  display: -webkit-flex;
+  -webkit-align-items: center;
+  -webkit-justify-content: center;
+  border: 1px solid #dde3db;
+  background: #ecf0e7;
+  color: #355b42;
+}
+
+/* WebKit's old summary renderer does not lay out flex children horizontally. */
+.site-seo-menu-trigger,
+.site-mobile-menu > summary {
+  display: block;
+}
+.site-seo-menu-trigger > span,
+.site-seo-menu-trigger > .site-seo-chevron,
+.site-mobile-menu > summary > span {
+  margin-left: 7px;
+}
+.site-mobile-menu .site-seo-menu .site-seo-chevron {
+  float: right;
+}
+.site-seo-menu-copy {
+  display: block;
+  margin-left: 11px;
+}
+.site-seo-menu-copy strong,
+.site-seo-menu-copy small {
+  display: block;
+}
+.site-seo-menu-copy small {
+  margin-top: 3px;
+}
+
+/* Unknown dialog elements must not appear as an open search palette. */
+.search-palette:not([open]) {
+  display: none;
+}
+.terrain-logo {
+  display: inline-block;
+}
+
+/* The unprefixed flex declarations in the modern styles win where supported. */
+.site-header-inner,
+.site-header-actions,
+.site-nav,
+.site-seo-menu-list a,
+.atlas-preview-topline,
+.atlas-preview-caption,
+.discipline-strip,
+.discipline-strip > div,
+.section-heading,
+.project-preview-action,
+.project-page-intro,
+.card-top,
+.card-bottom,
+.notes-banner,
+.portfolio footer,
+.registry-section-heading,
+.not-found-actions,
+.not-found-index-heading,
+.site-file-nav,
+.site-file-toolbar {
+  display: -webkit-flex;
+}
+.site-header-inner,
+.site-header-actions,
+.site-nav,
+.site-seo-menu-trigger,
+.site-mobile-menu > summary,
+.site-seo-menu-list a,
+.atlas-preview-caption,
+.discipline-strip,
+.discipline-strip > div,
+.project-preview-action,
+.card-top,
+.card-bottom,
+.notes-banner,
+.portfolio footer,
+.site-file-toolbar {
+  -webkit-align-items: center;
+}
+.site-nav a,
+.site-mobile-menu a,
+.site-brand,
+.button,
+.markdown-button,
+.portfolio .project-page-back,
+.portfolio .project-index-link {
+  display: -webkit-inline-flex;
+  -webkit-align-items: center;
+}
+.site-seo-menu-list a {
+  display: -webkit-flex;
+  color: #202d27;
+}
+.site-mobile-menu > nav {
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+}
+.atlas-preview-topline,
+.atlas-preview-caption,
+.discipline-strip,
+.section-heading,
+.project-preview-action,
+.project-page-intro,
+.card-bottom,
+.portfolio footer,
+.registry-section-heading {
+  -webkit-justify-content: space-between;
+}
+.site-file-nav,
+.not-found-actions,
+.portfolio footer,
+.registry-section-heading {
+  -webkit-flex-wrap: wrap;
+}
+
+.eyebrow,
+.portfolio .project-page-back,
+.portfolio .project-index-link,
+.utility-back,
+.utility-kicker,
+.docs-article-kicker,
+.site-file-kicker,
+.site-file-label,
+.site-file-raw {
+  color: #355b42;
+}
+.button.primary,
+.markdown-button.primary {
+  border: 1px solid #355b42;
+  background: #355b42;
+  color: #fff;
+}
+.button.secondary {
+  border: 1px solid #dde3db;
+  color: #202d27;
+}
+
+/* Grid falls back to wrapping prefixed flexboxes, not a single tangled row. */
+.atlas-preview {
+  background: #e8eee5;
+  color: #294936;
+}
+.atlas-preview-topline {
+  padding: 24px 48px 0;
+}
+.atlas-preview-stage {
+  display: -webkit-flex;
+  -webkit-align-items: center;
+  width: 100%;
+  padding: 18px 48px;
+}
+.atlas-intro {
+  -webkit-flex: 1 1 240px;
+}
+.atlas-intro h1 {
+  font-size: 48px;
+}
+.atlas-intro h1 > span:not(.period) {
+  color: #526f4f;
+}
+.atlas-intro .period {
+  color: #63845f;
+}
+.atlas-preview-art {
+  display: -webkit-flex;
+  -webkit-flex: 2 1 450px;
+  -webkit-align-items: center;
+  -webkit-justify-content: center;
+}
+.atlas-preview-art svg {
+  max-height: 500px;
+}
+.atlas-domain-index {
+  -webkit-flex: 0 1 180px;
+}
+.atlas-preview-topline,
+.atlas-intro-label,
+.atlas-domain-index > p,
+.atlas-caption-label,
+.atlas-intro-description,
+.atlas-coordinate,
+.atlas-preview-caption p,
+.atlas-scroll-text small {
+  color: #526d57;
+}
+.atlas-domain-index ol {
+  border-top: 1px solid #cbd8c8;
+}
+.atlas-domain-index li {
+  border-bottom: 1px solid #cbd8c8;
+}
+.atlas-scroll-icon {
+  border: 1px solid #cbd8c8;
+}
+.atlas-preview-caption {
+  padding: 18px 48px 22px;
+  border-top: 1px solid #cbd8c8;
+  background: #e8eee5;
+}
+.discipline-strip {
+  border-top: 1px solid #dde3db;
+  border-bottom: 1px solid #dde3db;
+  color: #596b5e;
+}
+.section-heading > p,
+.project-preview-action p,
+.project-page-title > p:not(.eyebrow),
+.card-category,
+.project-number,
+.project-card > p,
+.card-bottom,
+.project-note,
+.notes-banner p,
+.about-section > div:last-child,
+.portfolio footer {
+  color: #596b5e;
+}
+.project-page-title h1 {
+  font-size: 56px;
+}
+.project-page-intro {
+  border-bottom: 1px solid #dde3db;
+}
+.portfolio footer {
+  border-top: 1px solid #dde3db;
+}
+.project-page-facts > div,
+.notes-banner {
+  border: 1px solid #dce3d6;
+  background: #ecf0e7;
+}
+.project-page-facts dt {
+  color: #596b5e;
+}
+.project-page-facts dd {
+  color: #355b42;
+}
+.project-grid {
+  display: -webkit-flex;
+  -webkit-flex-wrap: wrap;
+}
+.project-card {
+  display: -webkit-flex;
+  -webkit-flex: 1 1 300px;
+  -webkit-flex-direction: column;
+  margin: 8px;
+  padding: 24px 24px 0;
+  border: 1px solid #dde3db;
+  border-radius: 6px;
+  background: #f8f9f6;
+}
+.project-icon {
+  display: -webkit-flex;
+  background: #ecf0e7;
+  color: #526f4f;
+}
+.card-bottom {
+  border-top: 1px solid #dde3db;
+}
+
+.docs-workspace,
+.docs-main {
+  display: -webkit-flex;
+  -webkit-align-items: flex-start;
+}
+.docs-sidebar {
+  -webkit-flex: 0 0 255px;
+  border-right: 1px solid #dde3db;
+}
+.docs-page-shell {
+  -webkit-flex: 1 1 auto;
+  padding-left: 48px;
+}
+.docs-article {
+  -webkit-flex: 1 1 auto;
+  min-width: 0;
+}
+.docs-toc {
+  -webkit-flex: 0 0 185px;
+  margin-left: 34px;
+}
+.docs-navigation-heading,
+.docs-navigation-search {
+  display: -webkit-flex;
+  -webkit-align-items: center;
+}
+.docs-navigation-heading,
+.docs-tree-folder summary,
+.docs-tree-group summary,
+.docs-prose {
+  color: #202d27;
+}
+.docs-navigation-caption,
+.docs-navigation-search,
+.docs-navigation-label,
+.docs-tree-link,
+.docs-tree-group summary,
+.docs-navigation-footer,
+.docs-breadcrumbs ol,
+.docs-description,
+.docs-toc p,
+.docs-toc a,
+.utility-description,
+.registry-option-detail {
+  color: #596b5e;
+}
+.docs-navigation-search,
+.docs-mobile-nav,
+.docs-home .docs-prose > ul:first-of-type > li,
+.registry-option,
+.search-panel {
+  border: 1px solid #dde3db;
+}
+.docs-prose h2 {
+  border-top: 1px solid #dde3db;
+}
+.docs-prose a,
+.registry-section-heading a {
+  color: #355b42;
+}
+.docs-prose pre,
+.docs-prose th,
+.docs-prose td {
+  border: 1px solid #d9e0d3;
+}
+.docs-prose pre {
+  background: #edf0e7;
+}
+.docs-prose :not(pre) > code {
+  background: #e9eee5;
+}
+.docs-home .docs-prose > ul:first-of-type > li,
+.search-panel {
+  background: #f8f9f6;
+}
+.docs-home .docs-prose > ul:first-of-type {
+  display: -webkit-flex;
+  -webkit-flex-wrap: wrap;
+}
+.docs-home .docs-prose > ul:first-of-type > li {
+  -webkit-flex: 1 1 240px;
+}
+.docs-home .docs-prose > ul:first-of-type > li:first-child,
+.docs-home .docs-prose > ul:first-of-type > li + li {
+  margin: 0 12px 12px 0;
+}
+.docs-mobile-nav {
+  background: #f8f9f6;
+}
+.search-fallback {
+  margin-top: 12px;
+  color: #596b5e;
+  /* biome-ignore lint/suspicious/noDuplicateProperties: Keep the literal color for old WebKit. */
+  color: var(--muted);
+  line-height: 1.7;
+}
+.registry-grid {
+  display: -webkit-flex;
+  -webkit-flex-wrap: wrap;
+}
+.registry-option {
+  display: -webkit-flex;
+  -webkit-flex: 1 1 190px;
+  -webkit-flex-direction: column;
+  margin: 0 8px 8px 0;
+}
+.registry-sections {
+  -webkit-flex: 1 0 100%;
+  min-width: 0;
+}
+/* :where() is unavailable in older WebKit, but the radio filter is CSS-only. */
+#registry-filter-npm:checked ~ .registry-sections .registry-section:not([data-registry="npm"]),
+#registry-filter-pypi:checked ~ .registry-sections .registry-section:not([data-registry="pypi"]),
+#registry-filter-prefix:checked
+  ~ .registry-sections
+  .registry-section:not([data-registry="prefix"]) {
+  display: none;
+}
+.registry-grid > input:checked + .registry-option {
+  border-color: #355b42;
+  /* biome-ignore lint/suspicious/noDuplicateProperties: Keep the literal color for old WebKit. */
+  border-color: var(--green);
+  background: #ecf0e7;
+  background: var(--surface);
+}
+
+.site-file-title,
+.site-file-item-title {
+  color: #202d27;
+}
+.site-file-nav {
+  border-bottom: 1px solid #dde3db;
+}
+.site-file-panel {
+  border: 1px solid #dde3db;
+  background: #f8f9f6;
+}
+.site-file-toolbar {
+  border-bottom: 1px solid #dde3db;
+  background: #ecf0e7;
+}
+.site-file-nav-link,
+.site-file-format,
+.site-file-fallback,
+.site-file-status {
+  color: #596b5e;
+}
+.site-file-title {
+  font-size: 48px;
+}
+.search-page h1,
+.docs-article h1 {
+  font-size: 42px;
+}
+
+.not-found-hero {
+  display: -webkit-flex;
+  -webkit-align-items: center;
+}
+.not-found-copy,
+.not-found-map {
+  -webkit-flex: 1 1 50%;
+}
+.not-found-copy h1 {
+  font-size: 60px;
+}
+.not-found-home {
+  background: #355b42;
+  color: #fff;
+}
+.not-found-search {
+  border: 1px solid #dde3db;
+  background: #ecf0e7;
+  color: #355b42;
+}
+.not-found-map {
+  height: 360px;
+  border: 1px solid #cbd8c8;
+  background: #e8eee5;
+  color: #355b42;
+}
+.not-found-links a {
+  display: block;
+  border: 1px solid #dde3db;
+  color: #202d27;
+}
+
+/* These margins stand in for flex gap, which older WebKit does not implement. */
+.site-header-actions > * + *,
+.site-header-actions > .site-mobile-menu {
+  margin-left: 10px;
+}
+.site-header-inner > .site-header-divider,
+.site-header-inner > .site-header-caption {
+  margin-left: 20px;
+}
+.site-seo-menu-trigger > *,
+.site-mobile-menu > summary > * {
+  vertical-align: middle;
+}
+.site-brand .terrain-logo {
+  margin-right: 7px;
+}
+.footer-brand .terrain-logo {
+  margin-right: 8px;
+}
+.docs-navigation-heading > svg,
+.docs-navigation-search > svg {
+  margin-right: 9px;
+}
+.docs-tree-folder summary > svg,
+.docs-tree-group summary > svg {
+  float: right;
+}
+.site-nav a > svg,
+.site-mobile-menu a > svg {
+  margin-right: 7px;
+}
+.site-nav a > .site-search-shortcut {
+  margin-left: 7px;
+}
+.discipline-strip > div {
+  margin: 6px 7px;
+}
+.discipline-strip > div > svg {
+  margin-right: 8px;
+}
+.notes-banner > .notes-icon {
+  margin-right: 28px;
+}
+.portfolio footer > div {
+  display: -webkit-flex;
+  -webkit-flex-wrap: wrap;
+}
+.portfolio footer > div > a {
+  margin: 0 16px 8px 0;
+}
+
+@media (max-width: 1000px) {
+  .site-header .site-mobile-search {
+    display: -webkit-flex;
+    -webkit-align-items: center;
+    -webkit-justify-content: center;
+  }
+  .discipline-strip {
+    -webkit-flex-wrap: wrap;
+    -webkit-justify-content: center;
+  }
+}
+@media (max-width: 900px) {
+  .docs-page-shell {
+    padding-left: 0;
+  }
+  .not-found-hero {
+    -webkit-flex-direction: column;
+  }
+  .not-found-copy,
+  .not-found-map {
+    -webkit-flex: 0 0 auto;
+  }
+  .not-found-map {
+    width: 100%;
+    margin-top: 30px;
+  }
+}
+@media (max-width: 700px) {
+  .atlas-preview-stage {
+    -webkit-flex-direction: column;
+  }
+  .atlas-intro,
+  .atlas-preview-art {
+    -webkit-flex: 0 0 auto;
+  }
+  .atlas-intro h1 {
+    font-size: 36px;
+  }
+  .section-heading,
+  .project-preview-action,
+  .project-page-intro,
+  .notes-banner {
+    -webkit-align-items: flex-start;
+    -webkit-flex-direction: column;
+  }
+  .notes-banner > .notes-icon {
+    margin: 0 0 20px;
+  }
+  .notes-banner > .button {
+    margin-top: 20px;
+  }
+}
+@media (max-width: 410px) {
+  .site-header-actions > * + *,
+  .site-header-actions > .site-mobile-menu {
+    margin-left: 6px;
+  }
+}
+
+/* Remove the spacing needed by wrapping flexboxes once real Grid is available. */
+@supports (display: grid) {
+  .project-card,
+  .registry-option,
+  .discipline-strip > div,
+  .portfolio footer > div > a,
+  .docs-home .docs-prose > ul:first-of-type > li:first-child,
+  .docs-home .docs-prose > ul:first-of-type > li + li {
+    margin: 0;
+  }
+  .site-header-actions > * + *,
+  .site-header-actions > .site-mobile-menu,
+  .site-header-inner > .site-header-divider,
+  .site-header-inner > .site-header-caption,
+  .site-nav a > .site-search-shortcut,
+  .site-seo-menu-trigger > span,
+  .site-seo-menu-trigger > .site-seo-chevron,
+  .site-mobile-menu > summary > span,
+  .site-seo-menu-copy {
+    margin-left: 0;
+  }
+  .site-brand .terrain-logo,
+  .footer-brand .terrain-logo,
+  .docs-navigation-heading > svg,
+  .docs-navigation-search > svg,
+  .site-nav a > svg,
+  .site-mobile-menu a > svg,
+  .discipline-strip > div > svg,
+  .notes-banner > .notes-icon {
+    margin-right: 0;
+  }
+  .site-seo-menu-copy small,
+  .notes-banner > .button {
+    margin-top: 0;
+  }
+  .notes-banner > .notes-icon {
+    margin-bottom: 0;
+  }
+  .site-seo-menu-trigger > *,
+  .site-mobile-menu > summary > * {
+    vertical-align: baseline;
+  }
+  .site-mobile-menu .site-seo-menu .site-seo-chevron,
+  .docs-tree-folder summary > svg,
+  .docs-tree-group summary > svg {
+    float: none;
+  }
+  .site-seo-menu-icon {
+    -webkit-justify-content: normal;
+  }
+  .portfolio footer > div {
+    -webkit-flex-wrap: nowrap;
+  }
+  .docs-workspace {
+    align-items: normal;
+  }
+  .docs-toc {
+    margin-left: 0;
+  }
+  .project-grid,
+  .registry-grid,
+  .docs-home .docs-prose > ul:first-of-type {
+    -webkit-flex-wrap: nowrap;
+  }
+  .atlas-preview-stage,
+  .not-found-hero {
+    -webkit-flex-direction: row;
+  }
+  .portfolio footer {
+    -webkit-flex-wrap: nowrap;
+  }
+  .not-found-map {
+    width: auto;
+    margin-top: 0;
+  }
+  @media (max-width: 1000px) {
+    .site-header .site-mobile-search {
+      display: grid;
+      -webkit-justify-content: normal;
+    }
+  }
+}
+/* autoprefixer: on */
