@@ -441,14 +441,42 @@ html,
   .registry-section:not([data-registry="prefix"]) {
   display: none;
 }
-.registry-grid > input:checked + .registry-option {
+.package-filter-option,
+.package-filter-reset {
+  border: 1px solid #dde3db;
+}
+.package-filter-count,
+.package-filter-hint,
+.package-explanation,
+.registry-summary {
+  color: #596b5e;
+}
+.registry-grid > input:checked + .registry-option,
+.package-filter-grid > input:checked + .package-filter-option {
   border-color: #355b42;
   /* biome-ignore lint/suspicious/noDuplicateProperties: Keep the literal color for old WebKit. */
   border-color: var(--green);
   background: #ecf0e7;
   background: var(--surface);
 }
-
+.registry-grid > input:focus + .registry-option,
+.package-filter-grid > input:focus + .package-filter-option,
+.package-filter-reset:focus,
+.registry-table-scroll:focus {
+  outline: 3px solid #355b42;
+  /* biome-ignore lint/suspicious/noDuplicateProperties: Keep the literal color for old WebKit. */
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+.package-filter-grid {
+  display: -webkit-flex;
+  -webkit-flex-wrap: wrap;
+}
+.family-results,
+.relation-results {
+  -webkit-flex: 1 0 100%;
+  min-width: 0;
+}
 .site-file-title,
 .site-file-item-title {
   color: #202d27;

@@ -318,6 +318,44 @@ function interact(task, page, done) {
         getComputedStyle(document.querySelector('[data-registry="prefix"]')).display === "none";
     });
     check(task, selected, "CSS-only registry filter did not work");
+    var family = page.evaluate(function () {
+      return document.querySelector('tr[data-package="@archont561/qgis-sdk"]').getAttribute("data-family");
+    });
+    check(task, click(page, 'label[for="family-filter-' + family + '"]'), "family filter is missing");
+    check(task, click(page, 'label[for="relation-filter-alias"]'), "relation filter is missing");
+    var filtered = page.evaluate(function () {
+      var rows = document.querySelectorAll("tr.package-row");
+      var visible = 0;
+      for (var index = 0; index < rows.length; index++) {
+        if (rows[index].getBoundingClientRect().height > 0) visible++;
+      }
+      var focused = document.querySelector("#relation-filter-alias");
+      focused.focus();
+      return {
+        count: visible,
+        checked: focused.checked,
+        focus: document.activeElement === focused
+      };
+    });
+    check(task, filtered.checked && filtered.count === 2 && filtered.focus,
+      "combined CSS-only filters or keyboard focus failed", filtered);
+    check(task, click(page, 'label[for="relation-filter-reserved"]'), "reserved filter is missing");
+    var empty = page.evaluate(function () {
+      return getComputedStyle(document.querySelector(".package-empty")).display !== "none";
+    });
+    check(task, empty, "no-match message is missing");
+    check(task, click(page, ".package-filter-reset"), "filter reset is missing");
+    var reset = page.evaluate(function () {
+      var rows = document.querySelectorAll("tr.package-row");
+      var visible = 0;
+      for (var index = 0; index < rows.length; index++) {
+        if (rows[index].getBoundingClientRect().height > 0) visible++;
+      }
+      return document.querySelector("#registry-filter-all").checked &&
+        document.querySelector("#family-filter-all").checked &&
+        document.querySelector("#relation-filter-all").checked && visible === rows.length;
+    });
+    check(task, reset, "native filter reset did not restore all entries");
   }
   done();
 }

@@ -81,10 +81,12 @@ The curated `data/packages-manifest.json` declares account identities, names,
 relations and aliases. A full registry refresh fetches npm package records and
 maintainer inventory, PyPI records and all Prefix.dev channel pages. Missing or
 undeclared packages, aliases without a target, or a release/reservation mismatch
-fail before the committed capture is atomically replaced. `--check` requires a
-complete dated capture consistent with the current manifest and works offline.
-Both snapshots were seeded from the previous profile repository's captures dated
-2026-11-10. They refresh independently; check each file's `retrieved` date and
+fail before the committed capture is atomically replaced. A reserved `0.0.0`
+placeholder can still be a published registry artifact. The CLI's `published`
+figure counts the authored, upstream, and unreviewed relations, not all
+artifacts or distinct authored projects. `--check` requires a complete dated
+capture consistent with the current manifest and works offline. Both snapshots
+were seeded from the previous profile repository's captures dated 2026-11-10. They refresh independently; check each file's `retrieved` date and
 refresh explicitly when live data is needed. The old mirrored profile
 README is not present here, so the monorepo README is not modified by watchers.
 
