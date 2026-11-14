@@ -2,7 +2,7 @@ import PageSeoPreview from "@/src/components/page-seo-preview";
 import SeoPageShell, { seoPageMetadata } from "@/src/components/seo-page-shell";
 import type { InspectablePage } from "@/src/lib/page-seo";
 import { docsUrl } from "@/src/lib/site";
-import { seoKinds, seoSections } from "@/src/lib/site-file-nav";
+import { previewGroup, previewKinds, previewSections } from "@/src/lib/site-file-nav";
 import { source } from "@/src/lib/source";
 
 export const metadata = seoPageMetadata("pages");
@@ -22,12 +22,12 @@ function inspectablePages(): InspectablePage[] {
     group: "Documentation",
   }));
   docs.sort((a, b) => a.path.localeCompare(b.path, "en"));
-  const seo: InspectablePage[] = seoKinds.map((kind) => ({
+  const previews: InspectablePage[] = previewKinds.map((kind) => ({
     path: `/seo/${kind}/`,
-    label: seoSections[kind].label,
-    group: "SEO",
+    label: previewSections[kind].label,
+    group: previewGroup(kind) === "seo" ? "SEO" : "Machine-readable",
   }));
-  return [...site, ...docs, ...seo];
+  return [...site, ...docs, ...previews];
 }
 
 export default function Page() {

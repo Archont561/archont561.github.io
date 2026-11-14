@@ -2,9 +2,9 @@
 
 exports[`static SEO and Markdown outputs are snapshot-locked 1`] = `
 [
-  "ai-manifest.json 472af66aedeb65339259791491213f884606b42e70c5ec74230d77f844855b7b",
+  "ai-manifest.json a2cffea4564a8e5041725de905ea46e6098427e77302f7e22709513c806d422b",
   "docs/about.md 634cac55f0c073ee8b953b6321f0efe3e08501f1b5426e6e28fdb55606423f45",
-  "docs/ai-access.md 017820dbce24f73d0250fe90476f5fc5eeb6d9e2ae53863e9fc36385ebfd2d0b",
+  "docs/ai-access.md 9ae442c650b38eed9c11dd842604ce8574c71eb7942717ada4eac15eb24cb124",
   "docs/architecture.md 257b1126778e817069156dc2f1cc6ad038dc714631a4e54efa5c101fd9a5cae1",
   "docs/architecture/repository-alignment.md 2c005036e68c73c87aa949ae0ae66e1114307541365560094f2d2c6e50f84663",
   "docs/concepts.md 53492efd1888e067fed074bad5f7b59d0ec0ae384b858143b1ade5021a7b6295",
@@ -35,7 +35,7 @@ exports[`static SEO and Markdown outputs are snapshot-locked 1`] = `
   "feed.json 28deb60b88ac526ae67092ab1014816cdfb2a477db0f5d0f9dfa17f556e9c636",
   "feed.rss 39b00c4983002c8cdd0029b86e6ed29193a8685e70d1796755d976c94c535939",
   "feed.xml 39b00c4983002c8cdd0029b86e6ed29193a8685e70d1796755d976c94c535939",
-  "llms-full.txt aa7639388cb11cbe7d79248ec6f8f48fa3a2519f5154cd77fec8f6c6db030dd7",
+  "llms-full.txt ccdc77210575965369705cfcfc790a0507bdc088c486880d7e078997984e1d2b",
   "llms.txt 51b6272d670f6fda89db3f6df0eb39e4cbbd82c5ababbc070d06cea82866dbd9",
   "robots.txt 5d931d49b483da3d88ab61afcf0717fe76a2db239a76718242830bf6556d144d",
   "sitemap.xml 5fe010f751901c1d245c083d5b0722e20bd8e1b0bf09f51f26e6597c88806672",

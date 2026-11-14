@@ -65,13 +65,34 @@ test("every documentation source has a sitemap entry, LLM row, Markdown twin and
     expect(sitemap).toContain(`<loc>${origin}${path}</loc>`);
 });
 
-test("the site-wide LLM index is linked only from the homepage", () => {
-  expect(file("index.html")).toContain('href="/llms.txt"');
-  const otherPages = [...new Bun.Glob("**/*.html").scanSync({ cwd: out, onlyFiles: true })].filter(
-    (path) => path !== "index.html",
-  );
-  expect(otherPages.length).toBeGreaterThan(0);
-  for (const path of otherPages) expect(file(path)).not.toContain('href="/llms.txt"');
+test("every exported header separates SEO from machine-readable resources", () => {
+  const paths = [...new Bun.Glob("**/*.html").scanSync({ cwd: out, onlyFiles: true })];
+  expect(paths.length).toBeGreaterThan(1);
+  for (const path of paths) {
+    const header = file(path).match(/<header class="site-header">[\s\S]*?<\/header>/)?.[0];
+    if (!header) throw new Error(`Missing shared header on ${path}`);
+    const seo = header.match(
+      /<ul class="site-seo-menu-list" aria-label="SEO resources">[\s\S]*?<\/ul>/,
+    )?.[0];
+    const machine = header.match(
+      /<ul class="site-seo-menu-list" aria-label="Machine-readable resources">[\s\S]*?<\/ul>/,
+    )?.[0];
+    if (!seo || !machine) throw new Error(`Missing resource menu on ${path}`);
+    for (const href of ["/seo/pages/", "/seo/robots/", "/seo/sitemap/"])
+      expect(seo).toContain(`href="${href}`);
+    expect(seo).not.toContain('href="/seo/feed/"');
+    for (const href of [
+      "/seo/feed/",
+      "/llms.txt",
+      "/llms-full.txt",
+      "/ai-manifest.json",
+      "/docs/index.md",
+    ])
+      expect(machine).toContain(`href="${href}"`);
+    expect(machine).not.toContain('href="/seo/robots/"');
+  }
+  for (const path of ["llms.txt", "llms-full.txt", "ai-manifest.json", "docs/index.md"])
+    expect(file(path).trim().length).toBeGreaterThan(0);
 });
 
 test("discovery, JSON-LD, feeds, assets and search index use root-site paths", () => {
@@ -209,7 +230,17 @@ test("SEO views are exported without replacing raw artifacts", () => {
     const html = file(`seo/${kind}/index.html`);
     expect(head(html)).toContain(`href="${origin}/seo/${kind}/"`);
     expect(head(html)).toContain('name="robots" content="noindex, follow"');
-    expect(html).toContain('aria-label="Site data previews"');
+    const nav = html.match(/<nav class="site-file-nav"[^>]*>[\s\S]*?<\/nav>/)?.[0];
+    if (!nav) throw new Error(`Missing preview navigation for ${kind}`);
+    if (kind === "feed") {
+      expect(nav).toContain('aria-label="Machine-readable resources"');
+      expect(nav).toContain('href="/llms.txt"');
+      expect(nav).not.toContain('href="/seo/robots/"');
+    } else {
+      expect(nav).toContain('aria-label="SEO resources"');
+      expect(nav).toContain('href="/seo/robots/"');
+      expect(nav).not.toContain('href="/seo/feed/"');
+    }
     expect(html).toContain(
       kind === "pages" ? "This inspector needs JavaScript." : "This preview needs JavaScript.",
     );
@@ -236,6 +267,17 @@ test("SEO views are exported without replacing raw artifacts", () => {
     "/seo/sitemap/",
   ])
     expect(inspector).toContain(`value="${path}"`);
+});
+
+test("the page inspector groups SEO and machine-readable previews separately", () => {
+  const inspector = file("seo/pages/index.html");
+  const seoGroup = inspector.match(/<optgroup label="SEO">[\s\S]*?<\/optgroup>/)?.[0];
+  const machineGroup = inspector.match(
+    /<optgroup label="Machine-readable">[\s\S]*?<\/optgroup>/,
+  )?.[0];
+  expect(seoGroup).toContain('value="/seo/robots/"');
+  expect(seoGroup).not.toContain('value="/seo/feed/"');
+  expect(machineGroup).toContain('value="/seo/feed/"');
 });
 
 test("Pagefind can search the generated index", async () => {
@@ -362,6 +404,10 @@ test("the shared navigation, static atlas placeholder, and project fallback are 
       "/seo/feed/",
       "/seo/robots/",
       "/seo/sitemap/",
+      "/llms.txt",
+      "/llms-full.txt",
+      "/ai-manifest.json",
+      "/docs/index.md",
       "https://github.com/Archont561",
     ])
       expect(header).toContain(`href="${href}"`);

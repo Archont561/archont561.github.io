@@ -24,6 +24,9 @@ All artifacts are generated **at build time** into the static export:
 | `docs/<slug>.md` twins | physical files written into the export by `tools export-ai` |
 | per-page SEO | `generateMetadata`: canonical, OG/Twitter card (page-level `openGraph` replaces the inherited one), markdown alternate links |
 
+- The header separates SEO tools (page metadata, robots, sitemap) from
+  machine-readable resources (feeds and AI/Markdown exports). The existing
+  `/seo/feed/` preview URL remains stable.
 - `metadataBase` = `https://archont561.github.io/` (user site at domain root;
   no base-path prefix).
 - Runtime rewrites (`proxy.ts`, `beforeFiles`) are **not** used — they do not

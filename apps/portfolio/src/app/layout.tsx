@@ -7,6 +7,7 @@ import "./uno.css";
 import "./tokens.css";
 import "./globals.css";
 import "./site-file.css";
+import "./resource-nav.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(`${ORIGIN}/`),

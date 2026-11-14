@@ -11,10 +11,16 @@ var tasks = [
   { path: "/", width: 375, interaction: "mobile-navigation" },
   { path: "/", width: 375, interaction: "mobile-keyboard" },
   { path: "/", width: 375, interaction: "mobile-seo-navigation" },
+  { path: "/", width: 375, interaction: "mobile-machine-navigation" },
   { path: "/", width: 768 },
   { path: "/", width: 1024 },
+  { path: "/", width: 1250 },
+  { path: "/", width: 1251 },
   { path: "/", width: 1280, interaction: "favicon" },
   { path: "/", width: 1280, interaction: "seo-navigation" },
+  { path: "/", width: 1280, interaction: "machine-navigation" },
+  { path: "/", width: 1400 },
+  { path: "/", width: 1401 },
   { path: "/", width: 1920 },
   { path: "/projects/", width: 320 },
   { path: "/projects/", width: 1280 },
@@ -78,6 +84,8 @@ function inspect(page) {
       supportsVariables: probe.style.color !== "",
       html: box("html"),
       header: box(".site-header"),
+      brand: box(".site-brand"),
+      actions: box(".site-header-actions"),
       desktopNav: box(".site-nav"),
       mobileNav: box(".site-mobile-menu"),
       mobileSummary: box(".site-mobile-menu > summary"),
@@ -109,7 +117,7 @@ function verify(task, result) {
   check(task, result.html.color === "rgb(32, 45, 39)", "missing day text color", result.html);
   check(task, result.skip.bottom < 0, "skip link covers the header before focus", result.skip);
   if (result.dialog) check(task, result.dialog.display === "none", "closed search dialog is visible", result.dialog);
-  if (task.width <= 1000) {
+  if (task.width <= 1250) {
     check(task, result.mobileNav.display !== "none", "mobile menu is hidden", result.mobileNav);
     check(task, result.mobileSearch.display !== "none", "mobile search is hidden", result.mobileSearch);
     check(task, result.mobileSearch.left - result.theme.right >= 4, "mobile controls touch", result);
@@ -117,6 +125,9 @@ function verify(task, result) {
   } else {
     check(task, result.desktopNav.display !== "none", "desktop navigation is hidden", result.desktopNav);
     check(task, result.desktopNav.bottom <= result.header.bottom, "navigation overlaps the content", result.desktopNav);
+    check(task, result.brand.right <= result.desktopNav.left && result.desktopNav.right <= result.actions.left,
+      "desktop header items overlap", result);
+    check(task, result.actions.right <= task.width, "desktop header actions are clipped", result.actions);
   }
   if (result.atlas) {
     check(task, result.atlas.background === "rgb(232, 238, 229)", "atlas background is missing", result.atlas);
@@ -248,13 +259,18 @@ function interact(task, page, done) {
     }
     return;
   }
-  if (task.interaction === "seo-navigation" || task.interaction === "mobile-seo-navigation") {
-    var mobile = task.interaction === "mobile-seo-navigation";
+  if (task.interaction === "seo-navigation" || task.interaction === "mobile-seo-navigation" ||
+      task.interaction === "machine-navigation" || task.interaction === "mobile-machine-navigation") {
+    var mobile = task.interaction.indexOf("mobile-") === 0;
+    var machine = task.interaction.indexOf("machine-navigation") !== -1;
+    var group = machine ? "machine" : "seo";
+    var target = machine ? "/seo/feed/" : "/seo/robots/";
     var parent = mobile ? ".site-mobile-menu" : ".site-nav";
+    var selector = parent + ' [data-resource-menu="' + group + '"]';
     if (mobile) check(task, click(page, ".site-mobile-menu > summary"), "mobile menu trigger is missing");
-    check(task, click(page, parent + " .site-seo-menu-trigger"), "SEO menu trigger is missing");
-    var seo = page.evaluate(function (query) {
-      var menu = document.querySelector(query + " .site-seo-menu");
+    check(task, click(page, selector + " .site-seo-menu-trigger"), group + " menu trigger is missing");
+    var resource = page.evaluate(function (query) {
+      var menu = document.querySelector(query);
       var trigger = menu.querySelector("summary");
       var label = menu.querySelector(".site-seo-menu-copy strong");
       var description = menu.querySelector(".site-seo-menu-copy small");
@@ -273,17 +289,20 @@ function interact(task, page, done) {
         descriptionTop: rect(description).top,
         iconAlignment: Math.abs((frame.left + frame.right - art.left - art.right) / 2),
         labelColor: getComputedStyle(label).color,
+        llmsLink: !!menu.querySelector('a[href="/llms.txt"]'),
+        robotsLink: !!menu.querySelector('a[href="/seo/robots/"]'),
       };
-    }, parent);
-    check(task, seo.open && seo.triggerHeight < 50 && seo.triggerAlignment < 3, "SEO trigger is misaligned", seo);
-    check(task, seo.labelBottom <= seo.descriptionTop && seo.iconAlignment < 3, "SEO menu items overlap", seo);
-    check(task, seo.labelColor === "rgb(32, 45, 39)", "SEO menu text is unreadable", seo);
+    }, selector);
+    check(task, resource.open && resource.triggerHeight < 50 && resource.triggerAlignment < 3, group + " trigger is misaligned", resource);
+    check(task, resource.labelBottom <= resource.descriptionTop && resource.iconAlignment < 3, group + " menu items overlap", resource);
+    check(task, resource.labelColor === "rgb(32, 45, 39)", group + " menu text is unreadable", resource);
+    check(task, resource.llmsLink === machine && resource.robotsLink !== machine, "resource groups are mixed", resource);
     page.onLoadFinished = function (status) {
       page.onLoadFinished = null;
-      check(task, status === "success" && /\/seo\/feed\/$/.test(page.url), "SEO feed link did not navigate", page.url);
+      check(task, status === "success" && page.url.indexOf(target) !== -1, group + " link did not navigate", page.url);
       done();
     };
-    check(task, click(page, parent + ' .site-seo-menu-list a[href="/seo/feed/"]'), "SEO feed link is missing");
+    check(task, click(page, selector + ' .site-seo-menu-list a[href="' + target + '"]'), group + " link is missing");
     return;
   }
   if (task.interaction === "docs-navigation") {

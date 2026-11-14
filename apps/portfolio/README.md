@@ -72,15 +72,17 @@ and the search links lead there without JavaScript; its fallback links to the
 documentation and project list. The not-found page offers the same search, a
 small site index, and a link to the full XML sitemap. Its decorative map honors
 reduced-motion preferences, and its navigation remains usable without JavaScript.
-The site-wide `llms.txt` is linked from the homepage footer; documentation pages
-retain links to their individual Markdown twins. The SEO menu opens `/seo/feed/`,
-`/seo/robots/`, and `/seo/sitemap/` for rendered, source, or combined views
-of those static files. The feed also switches between RSS, Atom, and JSON.
-`/seo/pages/` lets any visitor inspect this site's page metadata and an illustrative
-Open Graph card, using the actual exported HTML. It loads only same-site images.
-These views require JavaScript but link to the raw files or pages without it.
-Static GitHub Pages cannot return different content for a `?preview=true` query
-on a raw file, so those URLs always serve the machine-readable artifact.
+The header separates SEO tools from machine-readable resources on desktop and
+mobile. The SEO menu opens `/seo/pages/`, `/seo/robots/`, and `/seo/sitemap/`.
+The Machine-readable menu links to the existing `/seo/feed/` preview and the raw
+LLM index, full text, AI manifest, and documentation overview in Markdown. The
+homepage footer also links to `llms.txt`; documentation pages retain links to
+their individual Markdown twins. Preview pages offer rendered, source, or combined
+views; the feed also switches between RSS, Atom, and JSON. The page inspector
+uses the actual exported HTML and loads only same-site images. These views require
+JavaScript but link to the raw files or pages without it. Static GitHub Pages
+cannot return different content for a `?preview=true` query on a raw file, so
+those URLs always serve the machine-readable artifact.
 
 The packages page reads the committed `data/packages.json`. Choose npm, PyPI,
 or Prefix.dev to filter its directory, or choose All registries to reset it;

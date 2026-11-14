@@ -1,0 +1,51 @@
+/* Preserve the prefixed flex fallback for old WebKit at the wider breakpoint. */
+/* autoprefixer: off */
+
+/* Leave enough room for the two resource menus without wrapping the header. */
+.site-seo-menu-trigger {
+  white-space: nowrap;
+}
+
+@media (max-width: 1400px) {
+  .site-header-caption,
+  .site-header-divider {
+    display: none;
+  }
+}
+
+/* The expanded navigation needs the existing mobile controls at a wider breakpoint. */
+@media (min-width: 1001px) and (max-width: 1250px) {
+  .site-nav {
+    display: none;
+  }
+  .site-header-actions {
+    margin-left: auto;
+  }
+  .site-mobile-search {
+    display: -webkit-flex;
+    -webkit-align-items: center;
+    -webkit-justify-content: center;
+    flex: none;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  @supports (display: grid) {
+    .site-mobile-search {
+      display: grid;
+      place-items: center;
+    }
+  }
+  .site-mobile-search:hover,
+  .site-mobile-search[aria-current="page"] {
+    background: var(--surface);
+    color: var(--green);
+  }
+  .site-mobile-menu {
+    display: block;
+    margin-left: 0;
+  }
+}

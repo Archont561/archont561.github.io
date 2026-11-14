@@ -4,7 +4,7 @@ import { sitePath } from "@/src/lib/site-file-preview";
 export type InspectablePage = {
   path: string;
   label: string;
-  group: "Site" | "Documentation" | "SEO";
+  group: "Site" | "Documentation" | "SEO" | "Machine-readable";
 };
 export type SeoTag = { name: string; value: string; source: string };
 export type PageSeo = { tags: SeoTag[]; source: string };
