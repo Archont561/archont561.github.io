@@ -48,7 +48,10 @@ offline exported-site link check passed with Lychee 0.24.2 and a temporary
 configuration compatibility shim, not the Pixi-pinned 0.23.0. `bun run check`
 passed locally using the same Lychee shim, a scripts-disabled frozen install,
 and a staged alint 0.22.0 binary; browser tests were run separately with the
-executables above. The Pixi-locked CI environment has not been run for this task.
+executables above. [PR #22's quality checks](https://github.com/Archont561/archont561.github.io/actions/runs/43645924085)
+then passed the normal frozen install, Pixi-locked workspace gate, coverage, and
+policy checks. Its [Pages checks](https://github.com/Archont561/archont561.github.io/actions/runs/43645924112)
+passed the locked install, static build, SEO tests, and offline export links.
 
 This task changes the presentation of existing data only. Package-name checking,
 registration, and reservation automation remain discussion only.
