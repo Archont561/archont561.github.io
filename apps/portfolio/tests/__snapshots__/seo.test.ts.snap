@@ -2,7 +2,7 @@
 
 exports[`static SEO and Markdown outputs are snapshot-locked 1`] = `
 [
-  "ai-manifest.json a2cffea4564a8e5041725de905ea46e6098427e77302f7e22709513c806d422b",
+  "ai-manifest.json 62f55858ec1b82fd4caff9d314b6385dea4cbe5e28ce4ba14a20114815d9664f",
   "docs/about.md 634cac55f0c073ee8b953b6321f0efe3e08501f1b5426e6e28fdb55606423f45",
   "docs/ai-access.md 9ae442c650b38eed9c11dd842604ce8574c71eb7942717ada4eac15eb24cb124",
   "docs/architecture.md 257b1126778e817069156dc2f1cc6ad038dc714631a4e54efa5c101fd9a5cae1",
@@ -30,12 +30,12 @@ exports[`static SEO and Markdown outputs are snapshot-locked 1`] = `
   "docs/projects/skills.md 5bc931aa00260aa204b4828cf1ad7e0ad8ab60702d4dbdbabd926c0c980bb280",
   "docs/projects/staged-recipes-submit.md ffe41014858e89ce44b5a176048f5aa085cc1746fa32dab6da3043fa7fb54bc6",
   "docs/projects/universe.md a495dca8b23a089ea600dbb611420e1318e6629fb2634464aa6e5b56e8ec0d22",
-  "docs/reference.md 68b2781db3c136a6a7b824e4e5a6244e9dc0171f499903577e9e5978d86711cf",
+  "docs/reference.md f5ca5370e387e6c70b5b63e8e8a73186dd219bc592286d3230ef24641e1f7798",
   "feed.atom d55e538a53b9263f9cf8963393a6598ed0f659c01d74db1010d99f1bcd40ac06",
   "feed.json 28deb60b88ac526ae67092ab1014816cdfb2a477db0f5d0f9dfa17f556e9c636",
   "feed.rss 39b00c4983002c8cdd0029b86e6ed29193a8685e70d1796755d976c94c535939",
   "feed.xml 39b00c4983002c8cdd0029b86e6ed29193a8685e70d1796755d976c94c535939",
-  "llms-full.txt ccdc77210575965369705cfcfc790a0507bdc088c486880d7e078997984e1d2b",
+  "llms-full.txt 4f314d05a823fa1471b3cdd772454851bec17c00df3a866aeef8c8191be926ac",
   "llms.txt 51b6272d670f6fda89db3f6df0eb39e4cbbd82c5ababbc070d06cea82866dbd9",
   "robots.txt 5d931d49b483da3d88ab61afcf0717fe76a2db239a76718242830bf6556d144d",
   "sitemap.xml 5fe010f751901c1d245c083d5b0722e20bd8e1b0bf09f51f26e6597c88806672",

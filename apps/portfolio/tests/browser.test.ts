@@ -467,19 +467,177 @@ browserTest(
   timeout,
 );
 
+async function qgisFamilyId(page: Page): Promise<string> {
+  const id = await page
+    .locator('[data-registry="npm"] [data-package="@archont561/qgis-sdk"]')
+    .getAttribute("data-family");
+  if (!id) throw new Error("Missing curated qgis family");
+  return id;
+}
+
+function watchRegistryRequests(page: Page): string[] {
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (
+      /^https?:\/\/(?:[^/]+\.)?(?:npmjs\.org|npmjs\.com|pypi\.org|prefix\.dev)(?:\/|$)/i.test(
+        request.url(),
+      )
+    )
+      requests.push(request.url());
+  });
+  return requests;
+}
+
 browserTest(
-  "package registry filters work in the exported page",
+  "package filters combine and reset with native keyboard controls",
   async ({ browserPage, portfolioUrl }) => {
     const page: Page = browserPage;
+    const registryRequests = watchRegistryRequests(page);
     await page.goto(`${portfolioUrl}/packages/`);
-    await page.locator('label[for="registry-filter-npm"]').click();
+    expect(await page.locator("tr.package-row:visible").count()).toBe(26);
+    await page.locator("#registry-filter-all").focus();
+    expect(
+      await page
+        .locator('label[for="registry-filter-all"]')
+        .evaluate((label) => getComputedStyle(label).outlineStyle),
+    ).not.toBe("none");
+    await page.keyboard.press("ArrowRight");
     expect(await page.locator("#registry-filter-npm").isChecked()).toBe(true);
-    expect(await page.locator('[data-registry="npm"]').isVisible()).toBe(true);
-    expect(await page.locator('[data-registry="pypi"]').isVisible()).toBe(false);
-    expect(await page.locator('[data-registry="prefix"]').isVisible()).toBe(false);
-    await page.locator('label[for="registry-filter-all"]').click();
-    expect(await page.locator('[data-registry="pypi"]').isVisible()).toBe(true);
-    expect(await page.locator('[data-registry="prefix"]').isVisible()).toBe(true);
+    expect(await page.locator("tr.package-row:visible").count()).toBe(12);
+    await page.keyboard.press("Tab");
+    expect(await page.evaluate(() => document.activeElement?.id)).toBe("family-filter-all");
+    const qgis = await qgisFamilyId(page);
+    await page.locator(`#family-filter-${qgis}`).focus();
+    await page.keyboard.press("Space");
+    expect(await page.locator("tr.package-row:visible").count()).toBe(4);
+    await page.locator("#relation-filter-alias").focus();
+    await page.keyboard.press("Space");
+    expect(await page.locator("tr.package-row:visible").count()).toBe(2);
+    await page.locator("#registry-filter-pypi").focus();
+    await page.keyboard.press("Space");
+    expect(await page.locator("tr.package-row:visible").count()).toBe(0);
+    expect(await page.locator(".package-empty").isVisible()).toBe(true);
+    await page.getByRole("button", { name: "Reset all filters" }).focus();
+    await page.keyboard.press("Enter");
+    for (const group of ["registry", "family", "relation"])
+      expect(await page.locator(`#${group}-filter-all`).isChecked()).toBe(true);
+    expect(await page.locator(".package-empty").isVisible()).toBe(false);
+    expect(await page.locator("tr.package-row:visible").count()).toBe(26);
+    expect(registryRequests).toEqual([]);
+  },
+  timeout,
+);
+
+async function checkPackageFilterMatrix(page: Page) {
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Exercise every registry, family, and relation combination in the browser.
+  return page.evaluate(() => {
+    const inputs = (name: string) => [
+      ...document.querySelectorAll<HTMLInputElement>(`input[name="${name}"]`),
+    ];
+    const rows = [...document.querySelectorAll<HTMLElement>("tr.package-row")];
+    const sections = [...document.querySelectorAll<HTMLElement>(".registry-section")];
+    const status = document.querySelector<HTMLElement>(".package-empty");
+    if (!status) throw new Error("Missing empty-results status");
+    const failures: string[] = [];
+    let checked = 0;
+    for (const registry of inputs("registry")) {
+      for (const family of inputs("family")) {
+        for (const relation of inputs("relation")) {
+          registry.checked = family.checked = relation.checked = true;
+          const matches = (row: HTMLElement) => {
+            const name = row.closest<HTMLElement>(".registry-section")?.dataset.registry;
+            return (
+              (registry.value === "all" || registry.value === name) &&
+              (family.value === "all" || family.value === row.dataset.family) &&
+              (relation.value === "all" || relation.value === row.dataset.relation)
+            );
+          };
+          const expected = rows.filter(matches);
+          const visible = rows.filter((row) => row.getBoundingClientRect().height > 0);
+          const missing = expected.filter((row) => !visible.includes(row));
+          const extra = visible.filter((row) => !expected.includes(row));
+          const empty = getComputedStyle(status).display !== "none";
+          const wrongSection = sections.some((section) => {
+            const shouldShow = expected.some((row) => section.contains(row));
+            return section.getBoundingClientRect().height > 0 !== shouldShow;
+          });
+          if (missing.length || extra.length || empty !== (expected.length === 0) || wrongSection)
+            failures.push(`${registry.value}/${family.value}/${relation.value}`);
+          checked++;
+        }
+      }
+    }
+    return { checked, failures };
+  });
+}
+
+browserTest(
+  "all package filter combinations work in the static page without JavaScript",
+  async ({ browser, portfolioUrl }) => {
+    const instance: Browser = browser;
+    const context = await instance.newContext({ javaScriptEnabled: false });
+    try {
+      const page = await context.newPage();
+      await page.goto(`${portfolioUrl}/packages/`);
+      const matrix = await checkPackageFilterMatrix(page);
+      expect(matrix.checked).toBe(192);
+      expect(matrix.failures).toEqual([]);
+      await page.getByRole("button", { name: "Reset all filters" }).click();
+      expect(await page.locator("tr.package-row:visible").count()).toBe(26);
+    } finally {
+      await context.close();
+    }
+  },
+  timeout,
+);
+
+browserTest(
+  "mobile package results, scrolling, and filters work without JavaScript or registry requests",
+  async ({ browser, portfolioUrl }) => {
+    const instance: Browser = browser;
+    const context = await instance.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 320, height: 800 },
+    });
+    try {
+      const page = await context.newPage();
+      const registryRequests = watchRegistryRequests(page);
+      await page.goto(`${portfolioUrl}/packages/`);
+      expect(await page.locator("tr.package-row:visible").count()).toBe(26);
+      expect(await page.locator(".registry-section:visible").count()).toBe(3);
+      for (const width of [320, 360, 375, 480, 768, 1000, 1280]) {
+        await page.setViewportSize({ width, height: 800 });
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+        ).toBe(true);
+      }
+      await page.setViewportSize({ width: 320, height: 800 });
+      const qgis = await qgisFamilyId(page);
+      await page.locator(`label[for="family-filter-${qgis}"]`).click();
+      await page.locator('label[for="relation-filter-alias"]').click();
+      expect(await page.locator("tr.package-row:visible").count()).toBe(2);
+      await page.locator('label[for="registry-filter-prefix"]').click();
+      expect(await page.locator(".package-empty").isVisible()).toBe(true);
+      await page.getByRole("button", { name: "Reset all filters" }).click();
+      expect(await page.locator("tr.package-row:visible").count()).toBe(26);
+      const scroll = page.locator('[data-registry="npm"] .registry-table-scroll');
+      expect(await scroll.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(
+        true,
+      );
+      await scroll.focus();
+      await page.keyboard.press("ArrowRight");
+      // Native scrolling is animated; wait outside the page because its JavaScript is disabled.
+      await page.waitForTimeout(300);
+      expect(await scroll.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+      expect(
+        await page
+          .locator('[data-registry="npm"] [data-package="@archont561/playtest"]')
+          .textContent(),
+      ).toContain("0.0.0");
+      expect(registryRequests).toEqual([]);
+    } finally {
+      await context.close();
+    }
   },
   timeout,
 );
@@ -1030,15 +1188,18 @@ browserTest(
 
 browserTest(
   "legacy styles do not override the modern dark palette without JavaScript",
+  // biome-ignore lint/complexity/noExcessiveLinesPerFunction: Compare filter focus and static preview colors in one dark-mode flow.
   async ({ browser, portfolioUrl }) => {
     const instance: Browser = browser;
     const context = await instance.newContext({ javaScriptEnabled: false, colorScheme: "dark" });
     try {
       const page = await context.newPage();
       await page.goto(`${portfolioUrl}/packages/`);
+      await page.locator("#family-filter-all").focus();
       const colors = await page.evaluate(() => {
         const selected = document.querySelector<HTMLElement>('label[for="registry-filter-all"]');
-        if (!selected) throw new Error("Missing registry filter");
+        const family = document.querySelector<HTMLElement>('label[for="family-filter-all"]');
+        if (!selected || !family) throw new Error("Missing package filters");
         const probe = document.createElement("span");
         probe.style.background = "var(--color-surface)";
         probe.style.color = "var(--color-primary)";
@@ -1046,6 +1207,9 @@ browserTest(
         const result = {
           background: getComputedStyle(selected).backgroundColor,
           border: getComputedStyle(selected).borderColor,
+          familyBackground: getComputedStyle(family).backgroundColor,
+          familyBorder: getComputedStyle(family).borderColor,
+          familyOutline: getComputedStyle(family).outlineColor,
           surface: getComputedStyle(probe).backgroundColor,
           primary: getComputedStyle(probe).color,
         };
@@ -1054,6 +1218,9 @@ browserTest(
       });
       expect(colors.background).toBe(colors.surface);
       expect(colors.border).toBe(colors.primary);
+      expect(colors.familyBackground).toBe(colors.surface);
+      expect(colors.familyBorder).toBe(colors.primary);
+      expect(colors.familyOutline).toBe(colors.primary);
 
       await page.goto(`${portfolioUrl}/seo/feed/`);
       const text = await page.evaluate(() => ({

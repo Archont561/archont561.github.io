@@ -41,12 +41,33 @@ JSON Feed omit missing dates; Atom uses the feed edition date for its required
 ## Package capture
 
 `data/packages-manifest.json` declares account identities, package names, and
-relations. `tools registries` reconciles live registry responses into
-`data/packages.json`, read by the package page.
-The `authored`, `upstream`, and `unreviewed` relations count as published;
-`alias` and `reserved` do not. The refresh fails closed on missing, unexpected,
-or contradictory registry evidence. Use `--check` for offline validation.
-PyPI does not expose download totals in its JSON API.
+curated relations. `tools registries` reconciles live registry responses into
+`data/packages.json`. The static
+[package directory](https://archont561.github.io/packages/) reads both committed
+files; it makes no registry requests when a visitor opens it. Filters
+by registry, project family, and relation work without JavaScript. Their counts
+refer to registry entries in the full capture, not distinct projects.
+
+Families come only from a curated repository or an explicit alias target in the
+same registry. Entries without that evidence remain unmapped. A family links to
+a project overview only when a matching project page exists. Aliases are not
+separate authored projects; an upstream recipe is a contribution to packaging,
+not authorship of the upstream software. Channel entries marked unreviewed
+have no reviewed authorship.
+
+Reservation is curated intent, not proof that a registry has no artifact. The
+2026-11-10 capture includes published `0.0.0` placeholders for six reserved npm
+names, with publication dates. The directory shows these facts, omits install
+commands for reservations, and does not repeat stale reservation notes that
+contradict the capture. Its dates are npm version publication dates, the first
+listed PyPI file upload, and the last Prefix.dev channel build date.
+
+The registry CLI's `published` count is a relation-based metric: it includes
+`authored`, `upstream`, and `unreviewed` entries, but excludes `alias` and
+`reserved`. It is neither a count of authored projects nor a count of every
+published registry artifact. Refresh fails closed on missing, unexpected, or
+contradictory registry evidence. Use `--check` for offline validation. PyPI
+does not expose download totals in its JSON API.
 
 ## Artifacts and identity
 

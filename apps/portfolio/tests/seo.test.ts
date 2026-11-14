@@ -3,6 +3,14 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { expect, test } from "@archont561/bun-test-utils";
+import {
+  buildPackageDirectory,
+  type DirectoryPackage,
+  familyId,
+  RELATIONS,
+  type RegistryCapture,
+  type RegistryManifest,
+} from "../src/lib/package-directory";
 import { loadProjectCatalog } from "../src/lib/project-catalog";
 import { jsonLd } from "../src/lib/site";
 import { THEME_STORAGE_KEY } from "../src/lib/theme";
@@ -466,18 +474,18 @@ test("the atlas preview, full project directory, and search fallback are exporte
   expect(fallback).toContain('href="/projects/"');
 });
 
-interface RegistrySnapshot {
-  retrieved: string;
-  registries: {
-    name: string;
-    label: string;
-    url: string;
-    packages: { name: string; relation?: string; url: string }[];
-  }[];
+function registrySnapshot(): RegistryCapture {
+  return JSON.parse(readFileSync(join(root, "data/packages.json"), "utf8")) as RegistryCapture;
 }
 
-function registrySnapshot(): RegistrySnapshot {
-  return JSON.parse(readFileSync(join(root, "data/packages.json"), "utf8")) as RegistrySnapshot;
+function packageDirectory() {
+  const curated = JSON.parse(
+    readFileSync(join(root, "data/packages-manifest.json"), "utf8"),
+  ) as RegistryManifest;
+  return buildPackageDirectory(registrySnapshot(), curated, {
+    projects: loadProjectCatalog(root).projects,
+    hasProjectPage: (slug) => existsSync(join(root, "docs/projects", `${slug}.mdx`)),
+  });
 }
 
 async function exportedRegistryControls(html: string) {
@@ -517,15 +525,25 @@ async function exportedRegistryControls(html: string) {
   return { inputs, labels, sectionNames };
 }
 
+type ExportedPackageRow = {
+  name: string | null;
+  family: string | null;
+  relation: string | null;
+  text: string;
+  links: string[];
+};
+
+// biome-ignore lint/complexity/noExcessiveLinesPerFunction: Collect the section and each row's exported content in one HTML pass.
 async function exportedRegistrySection(html: string, name: string) {
   const section = {
     heading: "",
     links: [] as string[],
-    rows: 0,
+    rows: [] as ExportedPackageRow[],
     hidden: false,
     scrollLabel: null as string | null,
     tabIndex: null as string | null,
   };
+  let currentRow: (typeof section.rows)[number] | undefined;
   const selector = `section.registry-section[data-registry="${name}"]`;
   const response = new HTMLRewriter()
     .on(selector, {
@@ -539,8 +557,27 @@ async function exportedRegistrySection(html: string, name: string) {
       },
     })
     .on(`${selector} tbody tr`, {
-      element() {
-        section.rows++;
+      element(element) {
+        currentRow = {
+          name: element.getAttribute("data-package"),
+          family: element.getAttribute("data-family"),
+          relation: element.getAttribute("data-relation"),
+          text: "",
+          links: [],
+        };
+        section.rows.push(currentRow);
+        element.onEndTag(() => {
+          currentRow = undefined;
+        });
+      },
+      text(chunk) {
+        if (currentRow) currentRow.text += chunk.text;
+      },
+    })
+    .on(`${selector} tbody tr a[href]`, {
+      element(element) {
+        const href = element.getAttribute("href");
+        if (href && currentRow) currentRow.links.push(href);
       },
     })
     .on(`${selector} a[href]`, {
@@ -560,10 +597,41 @@ async function exportedRegistrySection(html: string, name: string) {
   return section;
 }
 
+function expectPackageRow(row: ExportedPackageRow | undefined, item: DirectoryPackage) {
+  if (!row) throw new Error(`Missing exported row: ${item.evidence.name}`);
+  expect(row.name).toBe(item.evidence.name);
+  expect(row.relation).toBe(item.curated.relation);
+  expect(row.family).toBe(familyId(item));
+  expect(row.links).toContain(item.evidence.url);
+  if (item.evidence.version) expect(row.text).toContain(item.evidence.version);
+  if (item.evidence.published) expect(row.text).toContain(item.evidence.published);
+  if (item.family?.projectPage) {
+    expect(row.links).toContain(item.family.projectPage);
+    expect(existsSync(join(out, item.family.projectPage.slice(1), "index.html"))).toBe(true);
+    expect(row.text).toContain("project overview");
+  } else {
+    expect(row.links.some((link) => link.startsWith("/docs/projects/"))).toBe(false);
+  }
+  if (item.curated.relation === "reserved") {
+    expect(row.text).toContain("Reserved name");
+    expect(row.text).toContain("No installation guidance");
+    expect(row.text).not.toContain(`npm install ${item.evidence.name}`);
+    if (item.evidence.version === "0.0.0") expect(row.text).toContain("Placeholder artifact");
+  }
+  if (item.curated.relation === "alias") {
+    expect(row.text).toContain("Alias, not a separate project");
+    expect(row.text).toContain(item.curated.alias_of ?? "");
+  }
+  if (item.curated.relation === "upstream")
+    expect(row.text).toContain("Recipe for upstream software");
+  if (item.curated.relation === "unreviewed") expect(row.text).toContain("authorship unreviewed");
+}
+
 test("package filters export the complete snapshot, controls, and registry links", async () => {
   const data = registrySnapshot();
   const html = file("packages/index.html");
   const { inputs, labels, sectionNames } = await exportedRegistryControls(html);
+  const directory = packageDirectory();
   const names = ["all", ...data.registries.map((registry) => registry.name)];
   expect(html).toContain("<legend>Filter by registry</legend>");
   expect(inputs).toEqual(
@@ -579,20 +647,80 @@ test("package filters export the complete snapshot, controls, and registry links
   for (const registry of data.registries) {
     const section = await exportedRegistrySection(html, registry.name);
     const label = labels.find((item) => item.id === `registry-filter-${registry.name}`);
-    const published = registry.packages.filter((item) =>
-      ["authored", "upstream", "unreviewed"].includes(item.relation ?? ""),
-    ).length;
+    const curated = directory.registries.find((item) => item.name === registry.name);
+    if (!curated) throw new Error(`Missing registry ${registry.name}`);
     expect(label?.text).toContain(registry.label);
-    expect(label?.text).toContain(`${published} published`);
+    expect(label?.text).toContain(`${registry.packages.length} entries`);
     expect(section.hidden).toBe(false);
     expect(section.heading).toContain(registry.label);
     expect(section.heading).toContain(data.retrieved);
-    expect(section.rows).toBe(registry.packages.length);
+    expect(section.rows).toHaveLength(registry.packages.length);
     expect(section.scrollLabel).toBe(`${registry.label} package table`);
     expect(section.tabIndex).toBe("0");
     expect(section.links).toContain(registry.url);
-    for (const item of registry.packages) expect(section.links).toContain(item.url);
+    for (const item of curated.packages)
+      expectPackageRow(
+        section.rows.find((row) => row.name === item.evidence.name),
+        item,
+      );
   }
+  expect(html).not.toContain("nothing is published under it");
+  expect(html).not.toContain("no release");
+  expect(html).toContain("not a count of distinct authored projects");
+});
+
+async function exportedFilterInputs(html: string, name: string) {
+  const result: { id: string | null; value: string | null; checked: boolean }[] = [];
+  const labels: (string | null)[] = [];
+  const response = new HTMLRewriter()
+    .on(`input[type="radio"][name="${name}"]`, {
+      element(element) {
+        result.push({
+          id: element.getAttribute("id"),
+          value: element.getAttribute("value"),
+          checked: element.hasAttribute("checked"),
+        });
+      },
+    })
+    .on(`label[for^="${name}-filter-"]`, {
+      element(element) {
+        labels.push(element.getAttribute("for"));
+      },
+    })
+    .transform(new Response(html));
+  await response.text();
+  return { result, labels };
+}
+
+test("family and relation controls are labelled, static, and default to all entries", async () => {
+  const html = file("packages/index.html");
+  const family = await exportedFilterInputs(html, "family");
+  const relation = await exportedFilterInputs(html, "relation");
+  const families = ["all", ...packageDirectory().families.map((item) => item.id), "unmapped"];
+  const relations = ["all", ...RELATIONS];
+  for (const [kind, controls, values] of [
+    ["family", family, families],
+    ["relation", relation, relations],
+  ] as const) {
+    expect(controls.result).toEqual(
+      values.map((value) => ({
+        id: `${kind}-filter-${value}`,
+        value,
+        checked: value === "all",
+      })),
+    );
+    expect(controls.labels).toEqual(values.map((value) => `${kind}-filter-${value}`));
+  }
+  expect(html).toContain("<legend>Filter by project family</legend>");
+  expect(html).toContain("<legend>Filter by relation</legend>");
+  expect(html).toContain('type="reset"');
+  expect(html).toContain('role="status"');
+  expect(html).toContain('scope="row"');
+  const inlineCss = html.match(/<style>([\s\S]*?)<\/style>/)?.[1] ?? "";
+  expect(inlineCss).toContain("#family-filter-unmapped:checked");
+  expect(inlineCss).toContain("#relation-filter-reserved:checked");
+  expect(inlineCss).toContain(".package-empty { display: block; }");
+  expect(inlineCss).not.toContain(":has(");
 });
 
 test("exported CSS filters other registries and leaves All registries unfiltered", () => {
