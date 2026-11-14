@@ -42,11 +42,11 @@ test("a project with no recorded language has an honest fallback", () => {
   expect(html).toContain("Language not captured");
 });
 
-test("the directory initially exposes all cards and its no-JavaScript explanation", () => {
+test("the directory initially exposes all cards and its static explanation", () => {
   const html = renderToStaticMarkup(createElement(ProjectDirectory));
   expect((html.match(/<a class="project-card /g) ?? []).length).toBe(projects.length);
   expect(html).toContain('aria-live="polite"');
-  expect(html).toContain("Filters require JavaScript.");
+  expect(html).toContain("Filters require JavaScript and a supported browser.");
   expect(html).not.toContain('aria-label="Search projects"');
 });
 

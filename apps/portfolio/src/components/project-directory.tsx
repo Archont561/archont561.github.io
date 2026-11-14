@@ -79,11 +79,11 @@ export default function ProjectDirectory() {
           setQuery={setQuery}
         />
       )}
-      <noscript>
+      {!canFilter && (
         <p className="project-note project-directory-noscript">
-          Browse all projects below. Filters require JavaScript.
+          Browse all projects below. Filters require JavaScript and a supported browser.
         </p>
-      </noscript>
+      )}
       <div className="project-grid" aria-live="polite">
         {filtered.map((project) => (
           <ProjectCard key={project.slug} project={project} />

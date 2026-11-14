@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { test as base, expect } from "@archont561/bun-test-utils";
 import { type Browser, type BrowserContext, chromium, type Page } from "playwright";
 import projects from "@/src/lib/projects.json";
@@ -49,7 +50,71 @@ const test = base.extend({
 });
 
 const browserTest = test.skipIf(!launchOptions);
+const legacyExecutable = process.env.PORTFOLIO_LEGACY_WEBKIT_EXECUTABLE;
+const legacyWebkitTest = test.skipIf(!legacyExecutable);
 const timeout = { timeout: 180_000 };
+
+legacyWebkitTest(
+  "old WebKit renders and navigates the production export",
+  async ({ portfolioUrl }) => {
+    if (!legacyExecutable) throw new Error("PORTFOLIO_LEGACY_WEBKIT_EXECUTABLE is not set");
+    const child = Bun.spawn(
+      [legacyExecutable, resolve(import.meta.dir, "support/legacy-webkit.js"), portfolioUrl],
+      { stdout: "pipe", stderr: "pipe" },
+    );
+    let timedOut = false;
+    const watchdog = setTimeout(() => {
+      timedOut = true;
+      child.kill();
+    }, 100_000);
+    const [stdout, stderr, exitCode] = await Promise.all([
+      new Response(child.stdout).text(),
+      new Response(child.stderr).text(),
+      child.exited,
+    ]).finally(() => clearTimeout(watchdog));
+    if (timedOut || exitCode !== 0)
+      throw new Error(
+        `Old WebKit probe ${timedOut ? "timed out" : "failed"}:\n${stdout}\n${stderr}`,
+      );
+    expect(stdout).toContain("Old WebKit passed 19 exported-page checks");
+  },
+  timeout,
+);
+
+browserTest(
+  "the exported ICO loads and renders with transparency",
+  async ({ browserPage, portfolioUrl }) => {
+    const page: Page = browserPage;
+    await page.goto(`${portfolioUrl}/`);
+    const response = await page.request.get(`${portfolioUrl}/favicon.ico`);
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toMatch(/image\/(?:x-icon|vnd\.microsoft\.icon)/);
+    const icon = await page.evaluate(async () => {
+      const image = new Image();
+      image.src = "/favicon.ico";
+      await image.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Canvas is unavailable");
+      context.drawImage(image, 0, 0);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let transparent = 0;
+      let visible = 0;
+      for (let index = 3; index < pixels.length; index += 4) {
+        if (pixels[index] === 0) transparent++;
+        else visible++;
+      }
+      return { width: canvas.width, height: canvas.height, transparent, visible };
+    });
+    expect(icon.width).toBeGreaterThan(48);
+    expect(icon.height).toBe(icon.width);
+    expect(icon.transparent).toBeGreaterThan(0);
+    expect(icon.visible).toBeGreaterThan(0);
+  },
+  timeout,
+);
 
 async function expectTheme(page: Page, theme: "day" | "night") {
   await page.waitForFunction(
@@ -124,9 +189,11 @@ async function expectResponsiveWidths(page: Page) {
 }
 
 async function expectSearchFallback(page: Page) {
-  const fallback = page.locator(".search-panel noscript");
+  const fallback = page.locator(".search-panel .search-fallback");
   expect(await fallback.isVisible()).toBe(true);
-  expect(await fallback.textContent()).toContain("Search requires JavaScript.");
+  expect(await fallback.textContent()).toContain(
+    "Search requires JavaScript and a supported browser.",
+  );
   expect(await fallback.getByRole("link", { name: "documentation" }).getAttribute("href")).toBe(
     "/docs/",
   );
@@ -794,7 +861,116 @@ browserTest(
       expect(await page.locator(".project-directory .project-card").count()).toBe(projects.length);
       const fallback = page.locator(".project-directory-noscript");
       expect(await fallback.isVisible()).toBe(true);
-      expect(await fallback.textContent()).toContain("Filters require JavaScript.");
+      expect(await fallback.textContent()).toContain(
+        "Filters require JavaScript and a supported browser.",
+      );
+    } finally {
+      await context.close();
+    }
+  },
+  timeout,
+);
+
+browserTest(
+  "static fallbacks remain visible when JavaScript is enabled but hydration cannot start",
+  async ({ browser, portfolioUrl }) => {
+    const instance: Browser = browser;
+    const context = await instance.newContext({ viewport: { width: 375, height: 800 } });
+    await context.route("**/_next/static/**/*.js*", (route) => route.abort());
+    try {
+      const page = await context.newPage();
+      await page.goto(`${portfolioUrl}/projects/`);
+      expect(await page.locator(".project-directory-noscript").isVisible()).toBe(true);
+      expect(await page.locator(".project-directory .project-card").count()).toBe(projects.length);
+      expect(await page.locator(".project-toolbar").count()).toBe(0);
+
+      await page.goto(`${portfolioUrl}/search/`);
+      await expectSearchFallback(page);
+      await page.getByRole("link", { name: "documentation", exact: true }).click();
+      await page.waitForURL("**/docs/");
+      expect(await page.locator(".docs-article").isVisible()).toBe(true);
+
+      await page.goto(`${portfolioUrl}/seo/feed/`);
+      const feedFallback = page.locator(".site-file-fallback");
+      expect(await feedFallback.isVisible()).toBe(true);
+      expect(
+        await feedFallback.getByRole("link", { name: "RSS", exact: true }).getAttribute("href"),
+      ).toBe("/feed.rss");
+      await page.goto(`${portfolioUrl}/seo/pages/`);
+      expect(await page.locator(".site-file-fallback").isVisible()).toBe(true);
+    } finally {
+      await context.close();
+    }
+  },
+  timeout,
+);
+
+browserTest(
+  "standalone search replaces the fallback only after Pagefind initializes",
+  async ({ browserPage, portfolioUrl }) => {
+    const page: Page = browserPage;
+    await page.goto(`${portfolioUrl}/search/`);
+    const input = page.locator(".pagefind-ui__search-input");
+    await input.waitFor();
+    await page.waitForFunction(() => !document.querySelector(".search-fallback"));
+    await input.fill("qgis-sdk");
+    const result = page.locator('.pagefind-ui__result a[href="/docs/projects/qgis-sdk/"]').first();
+    await result.waitFor();
+    expect(await result.textContent()).toContain("qgis-sdk");
+
+    await page.route("**/pagefind/pagefind-ui.js", (route) => route.abort());
+    await page.reload();
+    await page.getByText("The search index could not be loaded.").waitFor();
+    await expectSearchFallback(page);
+  },
+  timeout,
+);
+
+browserTest(
+  "legacy styles do not override the modern dark palette without JavaScript",
+  async ({ browser, portfolioUrl }) => {
+    const instance: Browser = browser;
+    const context = await instance.newContext({ javaScriptEnabled: false, colorScheme: "dark" });
+    try {
+      const page = await context.newPage();
+      await page.goto(`${portfolioUrl}/packages/`);
+      const colors = await page.evaluate(() => {
+        const selected = document.querySelector<HTMLElement>('label[for="registry-filter-all"]');
+        if (!selected) throw new Error("Missing registry filter");
+        const probe = document.createElement("span");
+        probe.style.background = "var(--color-surface)";
+        probe.style.color = "var(--color-primary)";
+        document.body.append(probe);
+        const result = {
+          background: getComputedStyle(selected).backgroundColor,
+          border: getComputedStyle(selected).borderColor,
+          surface: getComputedStyle(probe).backgroundColor,
+          primary: getComputedStyle(probe).color,
+        };
+        probe.remove();
+        return result;
+      });
+      expect(colors.background).toBe(colors.surface);
+      expect(colors.border).toBe(colors.primary);
+
+      await page.goto(`${portfolioUrl}/seo/feed/`);
+      const text = await page.evaluate(() => ({
+        root: getComputedStyle(document.documentElement).color,
+        panel: getComputedStyle(
+          document.querySelector<HTMLElement>(".site-file-panel") as HTMLElement,
+        ).color,
+        menu: getComputedStyle(
+          document.querySelector<HTMLElement>(".site-seo-menu-list") as HTMLElement,
+        ).color,
+        menuLabel: getComputedStyle(
+          document.querySelector<HTMLElement>(
+            ".site-nav .site-seo-menu-copy strong",
+          ) as HTMLElement,
+        ).color,
+      }));
+      expect(text.panel).toBe(text.root);
+      expect(text.menu).toBe(text.root);
+      expect(text.menuLabel).toBe(text.root);
     } finally {
       await context.close();
     }
@@ -989,7 +1165,9 @@ browserTest(
       route.fulfill({ status: 200, body: "<rss><unclosed>" }),
     );
     await page.reload();
-    await page.getByRole("alert").waitFor();
+    const alert = page.getByRole("region", { name: "feed preview" }).getByRole("alert");
+    await alert.waitFor();
+    expect(await alert.textContent()).toContain("The preview could not load this file.");
     expect(await page.getByRole("link", { name: "Open raw RSS" }).getAttribute("href")).toBe(
       "/feed.rss",
     );
@@ -1018,13 +1196,13 @@ browserTest(
       await page.waitForURL("**/seo/robots/");
       expect(
         await page
-          .locator(".site-file-noscript")
+          .locator(".site-file-fallback")
           .getByRole("link", { name: "robots.txt" })
           .getAttribute("href"),
       ).toBe("/robots.txt");
       await page.goto(`${portfolioUrl}/seo/pages/`);
       expect(await page.getByLabel("PAGE TO INSPECT").isDisabled()).toBe(true);
-      expect(await page.locator(".site-file-noscript").isVisible()).toBe(true);
+      expect(await page.locator(".site-file-fallback").isVisible()).toBe(true);
     } finally {
       await context.close();
     }
@@ -1044,7 +1222,7 @@ browserTest(
     try {
       const page = await context.newPage();
       await page.goto(`${portfolioUrl}/seo/feed/`);
-      const fallback = page.locator(".site-file-noscript");
+      const fallback = page.locator(".site-file-fallback");
       expect(await fallback.isVisible()).toBe(true);
       for (const [label, path] of [
         ["RSS", "/feed.rss"],
@@ -1064,7 +1242,7 @@ browserTest(
       await page.waitForURL("**/seo/sitemap/");
       expect(
         await page
-          .locator(".site-file-noscript")
+          .locator(".site-file-fallback")
           .getByRole("link", { name: "sitemap.xml" })
           .getAttribute("href"),
       ).toBe("/sitemap.xml");

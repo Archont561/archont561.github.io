@@ -1,7 +1,10 @@
 "use client";
-import { useEffect, useRef } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+
 export default function DocsSearch() {
   const root = useRef<HTMLDivElement>(null);
+  const [ready, setReady] = useState(false);
   useEffect(() => {
     if (root.current) root.current.textContent = "Loading the search index…";
     const css = document.createElement("link");
@@ -24,12 +27,11 @@ export default function DocsSearch() {
           showImages: false,
           bundlePath: "/pagefind/",
         });
+        setReady(true);
       }
     };
     script.onerror = () => {
-      if (root.current)
-        root.current.textContent =
-          "Search becomes available after a production build. Use the homepage project filter during development.";
+      if (root.current) root.current.textContent = "The search index could not be loaded.";
     };
     document.body.append(script);
     return () => {
@@ -38,5 +40,16 @@ export default function DocsSearch() {
       if (root.current) root.current.innerHTML = "";
     };
   }, []);
-  return <div ref={root} />;
+  return (
+    <>
+      <div ref={root} />
+      {!ready && (
+        <p className="search-fallback">
+          Search requires JavaScript and a supported browser. You can still browse the{" "}
+          <Link href="/docs/">documentation</Link> or the{" "}
+          <Link href="/projects/">project list</Link>.
+        </p>
+      )}
+    </>
+  );
 }

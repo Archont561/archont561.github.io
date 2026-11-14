@@ -119,10 +119,10 @@ function FormatLinks({ settings, select }: { settings: Settings; select: SelectS
   );
 }
 
-function NoScriptFallback({ kind, resource }: { kind: PreviewKind; resource: Resource }) {
+function StaticFallback({ kind, resource }: { kind: PreviewKind; resource: Resource }) {
   return (
-    <noscript className="site-file-noscript">
-      This preview needs JavaScript. Open the raw file instead:{" "}
+    <p className="site-file-fallback">
+      This preview needs JavaScript. If your browser cannot run it, open the raw file instead:{" "}
       {kind === "feed" ? (
         <>
           <a href="/feed.rss">RSS</a>, <a href="/feed.atom">Atom</a>, or{" "}
@@ -131,7 +131,7 @@ function NoScriptFallback({ kind, resource }: { kind: PreviewKind; resource: Res
       ) : (
         <a href={resource.path}>{resource.label}</a>
       )}
-    </noscript>
+    </p>
   );
 }
 
@@ -153,7 +153,7 @@ export default function SiteFilePreview({ kind }: { kind: PreviewKind }) {
           Open raw {resource.label} <ArrowUpRight size={14} aria-hidden="true" />
         </a>
       </div>
-      <NoScriptFallback kind={kind} resource={resource} />
+      {state.status === "idle" && <StaticFallback kind={kind} resource={resource} />}
       {state.status !== "idle" && !ready && !failed && (
         <p className="site-file-status" role="status">
           Loading the file…

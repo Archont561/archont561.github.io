@@ -106,11 +106,84 @@ test("discovery, JSON-LD, feeds, assets and search index use root-site paths", (
     "pagefind/pagefind-ui.css",
     "pagefind/pagefind-ui.js",
     "pagefind/pagefind.js",
+    "favicon.ico",
     "brand/terrain-a-favicon.svg",
   ]) {
     expect(existsSync(join(out, path))).toBe(true);
   }
   expect(head(home)).not.toContain("/Archont561/");
+});
+
+function icoFrameSizes(ico: Buffer): number[] {
+  expect(ico.readUInt16LE(0)).toBe(0);
+  expect(ico.readUInt16LE(2)).toBe(1);
+  const count = ico.readUInt16LE(4);
+  expect(count).toBeGreaterThan(0);
+  expect(ico.length).toBeGreaterThanOrEqual(6 + count * 16);
+  const sizes: number[] = [];
+  for (let index = 0; index < count; index++) {
+    const entry = 6 + index * 16;
+    const width = ico[entry] || 256;
+    const height = ico[entry + 1] || 256;
+    const length = ico.readUInt32LE(entry + 8);
+    const offset = ico.readUInt32LE(entry + 12);
+    expect(width).toBe(height);
+    expect(length).toBeGreaterThanOrEqual(24);
+    expect(offset).toBeGreaterThanOrEqual(6 + count * 16);
+    expect(offset + length).toBeLessThanOrEqual(ico.length);
+    sizes.push(width);
+    const isPng = ico.subarray(offset, offset + 8).equals(Buffer.from("89504e470d0a1a0a", "hex"));
+    if (isPng) {
+      expect(ico.readUInt32BE(offset + 16)).toBe(width);
+      expect(ico.readUInt32BE(offset + 20)).toBe(height);
+    } else {
+      expect(length).toBeGreaterThanOrEqual(40);
+      expect(ico.readUInt32LE(offset)).toBe(40);
+      expect(ico.readInt32LE(offset + 4)).toBe(width);
+      expect(ico.readInt32LE(offset + 8)).toBe(height * 2);
+    }
+    // QtWebKit cannot decode an ICO whose first frame is PNG-encoded.
+    if (index === 0) {
+      expect(isPng).toBe(false);
+      expect(width).toBeGreaterThan(48);
+    }
+  }
+  return sizes;
+}
+
+test("the homepage advertises an exported multi-size ICO before the SVG favicon", () => {
+  const home = head(file("index.html"));
+  const icoLink = home.match(/<link rel="icon" href="\/favicon\.ico"[^>]*>/)?.[0] ?? "";
+  const svgLink =
+    home.match(/<link rel="icon" href="\/brand\/terrain-a-favicon\.svg"[^>]*>/)?.[0] ?? "";
+  expect(icoLink).toContain('type="image/x-icon"');
+  expect(svgLink).toContain('type="image/svg+xml"');
+  expect(home.indexOf(icoLink)).toBeLessThan(home.indexOf(svgLink));
+  expect(file("robots.txt")).toContain("User-Agent: *\nAllow: /");
+
+  const ico = readFileSync(join(out, "favicon.ico"));
+  expect(ico.equals(readFileSync(join(app, "public/favicon.ico")))).toBe(true);
+  const sizes = icoFrameSizes(ico);
+  for (const size of [16, 32, 48, 64, 256]) expect(sizes).toContain(size);
+  const declaredSizes = sizes.sort((a, b) => a - b).map((size) => `${size}x${size}`);
+  expect(icoLink).toContain(`sizes="${declaredSizes.join(" ")}"`);
+});
+
+test("the production CSS keeps the legacy baseline before modern Grid", () => {
+  const stylesheets = [
+    ...head(file("index.html")).matchAll(/<link rel="stylesheet" href="([^"]+)"/g),
+  ]
+    .map((match) => match[1])
+    .filter((href): href is string => Boolean(href));
+  expect(stylesheets.length).toBeGreaterThan(0);
+  const css = stylesheets.map((href) => file(href.replace(/^\//, ""))).join("\n");
+  expect(css).toMatch(/\.project-grid\{display:-webkit-flex;-webkit-flex-wrap:wrap/);
+  expect(css).toMatch(/\.project-card\{[^}]*-webkit-flex-direction:column/);
+  expect(css).toMatch(/\.atlas-preview-stage\{-webkit-flex-direction:column/);
+  expect(css).toMatch(/\.skip-link\{-webkit-transform:translateY\(-160%\)/);
+  expect(css.indexOf(".project-grid{display:-webkit-flex")).toBeLessThan(
+    css.indexOf(".project-grid{display:grid"),
+  );
 });
 
 test("RSS, Atom, and JSON feeds cover the documentation", () => {
@@ -338,10 +411,13 @@ test("the atlas preview, full project directory, and search fallback are exporte
   expect((directory.match(/<a class="project-card /g) ?? []).length).toBe(projects.length);
   for (const project of projects)
     expect(directory).toContain(`href="/docs/projects/${project.slug}/"`);
-  expect(directory).toContain("Browse all projects below. Filters require JavaScript.");
-  const noScript = file("search/index.html").match(/<noscript>[\s\S]*?<\/noscript>/)?.[0];
-  expect(noScript).toContain("Search requires JavaScript.");
-  expect(noScript).toContain('href="/projects/"');
+  expect(directory).toContain(
+    "Browse all projects below. Filters require JavaScript and a supported browser.",
+  );
+  const fallback = file("search/index.html").match(/<p class="search-fallback">[\s\S]*?<\/p>/)?.[0];
+  expect(fallback).toContain("Search requires JavaScript and a supported browser.");
+  expect(fallback).toContain('href="/docs/"');
+  expect(fallback).toContain('href="/projects/"');
 });
 
 interface RegistrySnapshot {

@@ -150,10 +150,12 @@ export default function PageSeoPreview({ pages }: { pages: InspectablePage[] }) 
           Open page <ArrowUpRight size={14} aria-hidden="true" />
         </a>
       </div>
-      <noscript className="site-file-noscript">
-        This inspector needs JavaScript. You can still open the page and inspect its HTML in your
-        browser.
-      </noscript>
+      {!hydrated && (
+        <p className="site-file-fallback">
+          This inspector needs JavaScript. If your browser cannot run it, you can still open the
+          page and inspect its HTML in your browser.
+        </p>
+      )}
       {settings.invalid && (
         <p className="site-file-status" role="status">
           That page is not in this site's list. Showing the homepage instead.

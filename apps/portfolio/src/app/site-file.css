@@ -109,7 +109,7 @@
   text-decoration: underline;
 }
 .site-file-status,
-.site-file-noscript {
+.site-file-fallback {
   display: block;
   margin: 0;
   padding: 26px 28px;

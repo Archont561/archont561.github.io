@@ -40,6 +40,18 @@ test("day and night palettes define matching, non-duplicated semantic colors", (
   }
 });
 
+test("legacy literal colors stay within the day palette", () => {
+  const legacy = readFileSync(new URL("../src/app/legacy.css", import.meta.url), "utf8");
+  const day = new Set(
+    [...palette.entries()].filter(([name]) => name.startsWith("day-")).map(([, value]) => value),
+  );
+  const literals = [...legacy.matchAll(/#[0-9a-f]{3}(?:[0-9a-f]{3})?\b/gi)].map(([value]) =>
+    value.length === 4 ? `#${[...value.slice(1)].map((digit) => digit.repeat(2)).join("")}` : value,
+  );
+  expect(literals.length).toBeGreaterThan(0);
+  for (const literal of literals) expect(day.has(literal.toLowerCase())).toBe(true);
+});
+
 test("core token pairs provide at least 4.5 to 1 text contrast in both themes", () => {
   for (const mode of ["day", "night"] as const) {
     for (const [foreground, background] of [

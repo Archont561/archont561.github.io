@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SearchProvider from "@/src/components/search-palette";
 import { ORIGIN, SITE_DESCRIPTION } from "@/src/lib/site";
 import { themeBootstrap } from "@/src/lib/theme";
+import "./legacy.css";
 import "./uno.css";
 import "./tokens.css";
 import "./globals.css";
@@ -11,7 +12,16 @@ export const metadata: Metadata = {
   metadataBase: new URL(`${ORIGIN}/`),
   title: { default: "Archont561 — Tools for a reproducible world", template: "%s · Archont561" },
   description: SITE_DESCRIPTION,
-  icons: { icon: [{ url: "/brand/terrain-a-favicon.svg", type: "image/svg+xml" }] },
+  icons: {
+    icon: [
+      {
+        url: "/favicon.ico",
+        sizes: "16x16 32x32 48x48 64x64 256x256",
+        type: "image/x-icon",
+      },
+      { url: "/brand/terrain-a-favicon.svg", sizes: "any", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
