@@ -98,9 +98,12 @@ owner acceptance, and audit a fresh external consumer as required by
   offline source/export link check passed with the adapted Lychee `0.24.2`.
   A separate fresh-export browser run passed 31 tests with Chromium and the
   optional PhantomJS old-WebKit proxy; this is not a Tizen hardware test.
-- Repeat the clean frozen install and workspace checks in the unmodified,
-  Pixi-locked environment when its tools and certificate chain are available.
-  The substituted Lychee run is not equivalent to that final check.
+- [PR #21's quality checks](https://github.com/Archont561/archont561.github.io/actions/runs/43637478984)
+  passed the normal frozen install, `pixi run check`, coverage, actionlint,
+  and policy checks in the Pixi-locked CI environment. Its
+  [Pages checks](https://github.com/Archont561/archont561.github.io/actions/runs/43637479033)
+  also passed the locked frozen install, static build, SEO tests, and offline
+  source/export link check. These CI results cover the local tool limitations.
 
 ## Unsafe automatic fix
 
@@ -129,9 +132,9 @@ findings; no automatic fixes or unapproved major overrides were applied.
 - [x] Review the existing high-severity `js-yaml` and `zod` findings and the
       moderate findings separately, including whether patched upstream versions
       are available and whether affected code runs in production.
-- [ ] Update manifests and lockfiles only after required dependency approval,
+- [x] Update manifests and lockfiles only after required dependency approval,
       then rerun the audits, frozen install, workspace checks, and static build
-      in the standard locked environment. Approval, audits, workaround checks,
-      and build are recorded above; the unmodified install and check remain.
+      in the standard locked environment. Approval and validation are recorded
+      above, including the successful Pixi-locked CI checks.
 - [x] Record any unresolved advisories, affected paths, and mitigation rationale
       without misrepresenting an audit finding as a confirmed exploit.
