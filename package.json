@@ -22,12 +22,12 @@
   },
   "devDependencies": {
     "@archont561/tools": "workspace:*",
-    "@asamarts/alint": "^0.22.0",
-    "@ast-grep/cli": "^0.51.1",
-    "@biomejs/biome": "2.6.6",
-    "@eugeniughelbur/agents-md": "0.1.0",
+    "@asamarts/alint": "^0.22.1",
+    "@ast-grep/cli": "^0.51.2",
+    "@biomejs/biome": "2.6.7",
+    "@eugeniughelbur/agents-md": "0.2.0",
     "backlog": "^1.4.56",
-    "turbo": "^2.11.10",
+    "turbo": "^2.11.11",
     "typescript": "^7.0.2"
   },
   "overrides": {
