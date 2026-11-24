@@ -28,7 +28,7 @@
   "devDependencies": {
     "@aboviq/bun-test-cucumber": "^0.2.0",
     "@archont561/bun-test-utils": "^0.2.0",
-    "@types/bun": "^1.4.4",
+    "@types/bun": "^1.4.5",
     "@types/ejs": "^3.1.5"
   }
 }
